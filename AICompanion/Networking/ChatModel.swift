@@ -7,12 +7,8 @@
 
 import Foundation
 
-enum ChatModel {
-    case gpt4o
-    case gpt4o_mini
-    case gpt3_5_turbo
-    
-    var request: URLRequest {
-        return RequestModel(endpoint: self).makeRequest()
-    }
+enum ChatModel: String {
+    case gpt4o = "gpt-4o"
+    case gpt4o_mini = "gpt-4o-mini"
+    case gpt3_5_turbo = "gpt-3.5-turbo"
 }

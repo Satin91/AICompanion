@@ -8,49 +8,50 @@
 import Foundation
 
 
+struct EventMessage: Codable {
+    let model: String
+    let messages: [Message]
+}
+
+struct Message: Codable, Hashable {
+    let role: String
+    let content: String
+    
+    var isUser: Bool {
+        return role == "assistant"
+    }
+}
+
 
 struct RequestModel {
-    var baseURL = ""
-    var endpoint: ChatModel
     
-    init(endpoint: ChatModel) {
-        self.endpoint = endpoint
+//https://gptunnel.ru/v1/chat/completions
+    var baseURL = "https://gptunnel.ru/v1/chat/completions"
+    var model: ChatModel
+    var message: String
+    
+    init(model: ChatModel, message: String) {
+        self.model = model
+        self.message = message
     }
     
     func makeRequest() -> URLRequest {
-        var components = URLComponents()
-        components.host = baseURL
-        components.port = 3000
-        components.scheme = "https"
-        components.path = endpoint.path
+        let url = URL(string: baseURL)!
         
-        var request = URLRequest(url: components.url!)
-        request.addValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("shds-WJN3qNCLcxD3mOXuhchwGOVkF90", forHTTPHeaderField: "Authorization")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
-//        switch endpoint {
-//            
-//        case let .connect(cn, ip):
-//            request.method = .post
-//            let body: [String: Any] = ["cn": cn, "ip": ip]
-//            let jsonData = try? JSONSerialization.data(withJSONObject: body)
-//            request.httpBody = jsonData
-//            
-//        case .getStats:
-//            request.method = .get
-//            
-//        case .traffic:
-//            break
-//            
-//        case .getUsers:
-//            request.method = .get
-//            
-//        case .deleteUser:
-//            request.method = .delete
-//            
-//        }
+        let message = EventMessage(model: model.rawValue, messages: [ .init(role: "user", content: message) ])
+        
+        do {
+            let jsonData = try JSONEncoder().encode(message)
+            request.httpBody = jsonData
+        } catch {
+            print("Error encode", error)
+        }
+        
         return request
     }
 }
