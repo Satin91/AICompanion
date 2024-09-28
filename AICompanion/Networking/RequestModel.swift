@@ -18,14 +18,13 @@ struct Message: Codable, Hashable {
     let content: String
     
     var isUser: Bool {
-        return role == "assistant"
+        return role != "assistant"
     }
 }
 
 
 struct RequestModel {
     
-//https://gptunnel.ru/v1/chat/completions
     var baseURL = "https://gptunnel.ru/v1/chat/completions"
     var model: ChatModel
     var message: String

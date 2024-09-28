@@ -11,6 +11,7 @@ import SwiftUI
 struct AICompanionApp: App {
     var body: some Scene {
         WindowGroup {
+//            ChatView()
             MainView()
         }
     }

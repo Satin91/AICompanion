@@ -8,6 +8,7 @@
 import SwiftUI
 
 enum Constants {
+    
     enum CommonNames {
         static let avatarPlaceholder = "avatarPlaceholder"
     }
@@ -15,8 +16,8 @@ enum Constants {
     enum API {
         static let baseURL = "https://plannerok.ru/"
         static let yandexBaseURL = "https://iam.api.cloud.yandex.net/"
-        
         static let baseHeaders = ["Content-Type": "application/json", "application/json": "accept"]
+        
         enum Auth {
             static let sendAuthCodePath = "api/v1/users/send-auth-code/"
             static let checkAuthCodePath = "api/v1/users/check-auth-code/"
@@ -74,4 +75,6 @@ enum Colors {
     static let chatBackground = Color("chatBackground")
     static let darkBlueShadow = Color("darkBlueShadow")
     static let lightGray = Color("lightGray")
+    static let green = Color("green")
+    static let red = Color("red")
 }
