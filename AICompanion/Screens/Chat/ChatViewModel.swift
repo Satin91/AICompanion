@@ -6,24 +6,42 @@
 //
 
 import Combine
-
+import CoreData
 //struct
 
 final class ChatViewModel: ObservableObject {
-
-    @Published var messages: [Message] = []
     var networkService = NetworkService()
     var cancellable = Set<AnyCancellable>()
+    var storageManager = StorageManager()
+    
+    @Published var chatModel: ChatModel
+    
+    init(model: ChatModel) {
+        self.chatModel = model
+    }
     
     func sendMessage(text: String) {
-        messages.append(Message(role: "user", content: text))
+        
         networkService.sendMessage(message: text).sink { compl in
-            print("completion", compl)
-//            self.message = ""
+            switch compl {
+            case .failure(let error):
+                switch error {
+                case let .serverError(code: code, text: text):
+                    print("Network error \(code), text \(text)")
+                default :
+                    break
+                }
+            default:
+                break
+            }
+            
         } receiveValue: { value in
             print("Пришло значение:", value.model)
-            self.messages.append(value.choices.first!.message)
             
+//            self.storageManager.addMessageToStorage(
+//                role: value.choices.first!.message.role,
+//                content: value.choices.first!.message.content
+//            )
         }
         .store(in: &cancellable)
     }

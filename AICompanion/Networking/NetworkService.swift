@@ -12,7 +12,12 @@ class NetworkService {
     var networkManager = NetworkManager()
     
     func sendMessage(message: String) -> AnyPublisher<ResponseModel, NetworkError> {
-        let request = RequestModel(model: .gpt4o, message: message).makeRequest()
+        let request = RequestEnum.sendMessage(model: .gpt4o, role: "user", content: message).makeRequest()
+        return networkManager.request(request: request)
+    }
+    
+    func getBalance() -> AnyPublisher<Balance, NetworkError> {
+        let request = RequestEnum.getBallance.makeRequest()
         return networkManager.request(request: request)
     }
 }

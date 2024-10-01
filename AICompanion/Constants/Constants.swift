@@ -14,31 +14,13 @@ enum Constants {
     }
     
     enum API {
-        static let baseURL = "https://plannerok.ru/"
-        static let yandexBaseURL = "https://iam.api.cloud.yandex.net/"
-        static let baseHeaders = ["Content-Type": "application/json", "application/json": "accept"]
-        
-        enum Auth {
-            static let sendAuthCodePath = "api/v1/users/send-auth-code/"
-            static let checkAuthCodePath = "api/v1/users/check-auth-code/"
-            static let userRegisterPath = "api/v1/users/register/"
-            static let refreshTokenPath = "api/v1/users/refresh-token/"
-        }
+        static let apiKey = "shds-WJN3qNCLcxD3mOXuhchwGOVkF90"
+        static let sendMessageURL = "https://gptunnel.ru/v1/chat/completions"
+        static let getBalanceURL = "https://gptunnel.ru/v1/balance"
         
         enum User {
             static let getCurrentUserPath = "api/v1/users/me/"
             static let updateUserPath = "api/v1/users/me/"
-        }
-        
-        enum Media {
-            enum Avatar: String {
-                case avatar = "media/ava tars/400x400/"
-                case bigAvatar = "media/avatars/600x600/"
-                case miniAvatar = "media/avatars/200x200/"
-            }
-            static func avatar(size: Media.Avatar, address: String) -> String {
-                return Constants.API.baseURL + size.rawValue + address
-            }
         }
     }
 }
@@ -66,6 +48,7 @@ enum Layout {
 
 enum Colors {
     static let background = Color("background")
+    static let white = Color("white")
     static let dark = Color("dark")
     static let light = Color("light")
     static let neutral = Color("neutral")
@@ -77,4 +60,5 @@ enum Colors {
     static let lightGray = Color("lightGray")
     static let green = Color("green")
     static let red = Color("red")
+    static let stroke = Color("stroke")
 }

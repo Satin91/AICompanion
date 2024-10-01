@@ -8,17 +8,27 @@
 import SwiftUI
 
 struct ChatView: View {
+    
     enum KeyboardForeground: Hashable {
-            case foreground
-        }
-    @ObservedObject var viewModel = ChatViewModel()
+        case foreground
+    }
+    @ObservedObject var viewModel: ChatViewModel
+    
+    init(model: ChatModel) {
+        self._viewModel = ObservedObject(wrappedValue: ChatViewModel(model: model))
+    }
+    
     @FocusState var isKeyboardForeground: KeyboardForeground?
     @State var text = ""
+    
     let textLineSpacing: CGFloat = 5
     
     var body: some View {
         content
             .background(Color.gray.opacity(0.2))
+            .onTapGesture {
+                isKeyboardForeground = nil
+            }
     }
     
     var content: some View {
@@ -30,12 +40,12 @@ struct ChatView: View {
     
     private var messagesContainer: some View {
         ScrollView(.vertical) {
-            ForEach(viewModel.messages, id: \.self) { message in
+            ForEach(viewModel.chatModel.messages, id: \.self) { message in
                 messageView(message: message)
                     .padding(.vertical, 4)
             }.rotationEffect(.degrees(180))
                 .padding(16)
-                .animation(.easeInOut, value: viewModel.messages)
+                .animation(.easeInOut, value: viewModel.chatModel.messages)
         }.rotationEffect(.degrees(180))
     }
     
@@ -56,25 +66,28 @@ struct ChatView: View {
                 .padding()
                 .background(Colors.dark)
                 .cornerRadius(Layout.Radius.defaultRadius, antialiased: true)
-            Button {
-                isKeyboardForeground = nil
-                guard !text.isEmpty else { return }
-                viewModel.sendMessage(text: text)
-                text = ""
-            } label: {
-                Image(systemName: "paperplane.fill")
-                    .font(.system(size: 26))
-                    .foregroundColor(text.isEmpty ? Colors.neutral : Colors.primary)
-            }
-            
+            sendMessageButton
         }
          .padding(.vertical, Layout.Padding.small)
          .padding(.horizontal, Layout.Padding.horizontalEdges)
          .background(Colors.chatBackground)
      }
     
-    @ViewBuilder private func messageView(message: Message) -> some View {
-        if message.isUser {
+    var sendMessageButton: some View {
+        Button {
+            isKeyboardForeground = nil
+            guard !text.isEmpty else { return }
+            viewModel.sendMessage(text: text)
+            text = ""
+        } label: {
+            Image(systemName: "paperplane.fill")
+                .font(.system(size: 26))
+                .foregroundColor(text.isEmpty ? Colors.neutral : Colors.primary)
+        }
+    }
+    
+    @ViewBuilder private func messageView(message: MessageModel) -> some View {
+        if message.role == "user" {
             userMessageView(text: message.content)
         } else {
             companionMessageView(text: message.content)
@@ -114,5 +127,5 @@ struct ChatView: View {
 }
 
 #Preview {
-    ChatView()
+    ChatView(model: ChatModel(name: "", messages: []) )
 }

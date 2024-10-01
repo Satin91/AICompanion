@@ -47,18 +47,11 @@ struct Usage: Codable {
     }
 }
 
-//created = 1727478189;
-//id = 66f739ae92b35d000110c1a1;
-//model = "gpt-4o-mini";
-//object = "chat.completion";
-//"system_fingerprint" = "fp_15ceb02af4";
-//usage =     {
-//    "completion_cost" = "0.017279999999999997";
-//    "completion_tokens" = 36;
-//    "completion_tokens_details" =         {
-//        "reasoning_tokens" = 0;
-//    };
-//    "prompt_cost" = "0.0018";
-//    "prompt_tokens" = 15;
-//    "total_cost" = "0.019079999999999996";
-//    "total_tokens" = 51;
+// MARK: - Balance
+struct Balance: Codable {
+    var orgId: String
+    var object: String
+    var balance: Double
+    var creditLimit: Int
+
+}

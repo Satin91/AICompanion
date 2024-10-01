@@ -6,13 +6,16 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct AICompanionApp: App {
+    
+    let storageManager = StorageManager()
+    
     var body: some Scene {
         WindowGroup {
-//            ChatView()
-            MainView()
+            ChatsView(storageManager: storageManager)
         }
     }
 }

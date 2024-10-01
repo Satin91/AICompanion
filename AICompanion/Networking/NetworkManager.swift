@@ -15,7 +15,6 @@ enum NetworkError: Error {
 }
 
 final class NetworkManager {
-    
     func request<T: Decodable>(request: URLRequest) -> AnyPublisher<T, NetworkError> {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForResource = 10
@@ -24,12 +23,14 @@ final class NetworkManager {
             .tryMap { output in
                 guard let response = output.response as? HTTPURLResponse else { throw NetworkError.serverError(code: 0, text: "Server error") }
                 guard !(400...499).contains(response.statusCode) else { throw NetworkError.notFound }
+                guard !(500...599).contains(response.statusCode) else { throw NetworkError.serverError(code: response.statusCode, text: "Сервер недоступен, возможно он перегружен") }
                 guard (200...299).contains(response.statusCode) else { throw NetworkError.serverError(code: response.statusCode, text: "Bad status code") }
+                
                 return output.data
             }
             .decode(type: T.self, decoder: JSONDecoder())
             .mapError { error in
-                NetworkError.cantDecodeThis(text: error.localizedDescription)
+                error as! NetworkError
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
