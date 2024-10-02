@@ -58,6 +58,7 @@ enum Colors {
     static let chatBackground = Color("chatBackground")
     static let darkBlueShadow = Color("darkBlueShadow")
     static let lightGray = Color("lightGray")
+    static let lightDark = Color("lightDark")
     static let green = Color("green")
     static let red = Color("red")
     static let stroke = Color("stroke")

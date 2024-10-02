@@ -14,24 +14,33 @@ struct ChatListView: View {
         self._viewModel = ObservedObject(wrappedValue: ChatListViewModel(storageManager: storageManager))
     }
     
+    @State var sheetShown = false
+    
     var body: some View {
         NavigationView {
             content
+                .toolbar(.hidden)
+                .sheet(isPresented: $sheetShown) {
+                    sheetView
+                        .presentationDetents([.medium, .large])
+                }
         }
     }
     
     var content: some View {
-        VStack {
+        VStack(spacing: .zero) {
             navigation
-            headerText
+            headerContainer
                 .padding(.top, Layout.Padding.large)
+                .padding(.bottom, Layout.Padding.medium)
+                .background(Colors.lightDark)
+            Divider()
+                .padding(.horizontal, -Layout.Padding.horizontalEdges)
             chatsList
+                .padding(.horizontal, Layout.Padding.horizontalEdges)
             Spacer()
-            createChatButton
-                .padding(.bottom)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(.horizontal, Layout.Padding.horizontalEdges)
         .background(Colors.background)
     }
     
@@ -41,9 +50,8 @@ struct ChatListView: View {
                 ActualChatView(chatName: chat.name, lastMessage: chat.messages.last?.content ?? "Сообщений нет") {
                     viewModel.showChatView(model: chat)
                 }
-            }.onAppear {
-                print(viewModel.chats.count)
             }
+            .padding(.top, Layout.Padding.medium)
         }
     }
     
@@ -58,12 +66,17 @@ struct ChatListView: View {
         }
     }
     
+    var headerContainer: some View {
+        headerText
+            .frame(maxWidth: .infinity)
+            .overlay {
+                createChatButton
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }
+    }
+    
     var headerText: some View {
-            Text("A")
-                .foregroundColor(Colors.green)
-                .font(Fonts.museoSans(weight: .bold, size: 32))
-            +
-            Text("I")
+            Text("AI")
                 .foregroundColor(Colors.green)
                 .font(Fonts.museoSans(weight: .bold, size: 32))
             +
@@ -74,16 +87,13 @@ struct ChatListView: View {
     
     var createChatButton: some View {
         Button {
-            viewModel.createChat(name: "Новый чат")
+            sheetShown.toggle()
+//            viewModel.createChat(name: "Новый чат")
         } label: {
-            Text("Добавить чат")
-                .font(Fonts.museoSans(weight: .medium, size: 18))
-                .foregroundColor(Colors.white)
-                .padding()
-                .background(
-                    Colors.primary
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                )
+            Image(systemName: "plus")
+                .font(.system(size: 22))
+                .foregroundColor(Colors.primary)
+                .padding(.trailing, Layout.Padding.horizontalEdges)
         }
         .buttonStyle(PlainButtonStyle())
     }
@@ -120,14 +130,24 @@ struct ChatListView: View {
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius)
-                        .fill(Colors.white.opacity(0.05))
-                        .stroke(Colors.white.opacity(0.1), lineWidth: 1.5)
+                        .fill(Colors.lightDark)
+                        .stroke(Colors.white.opacity(0.1), lineWidth: 1)
                     
                 )
             }
-            
-            
             //            .clipShape(RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius))
         }
+    }
+    
+    var sheetView: some View {
+        Button {
+            
+        } label: {
+            Text("Создать чат")
+                .padding()
+                .background(Colors.primary)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+
     }
 }
