@@ -35,7 +35,7 @@ struct ChatListView: View {
                 .padding(.bottom, Layout.Padding.medium)
                 .background(Colors.lightDark)
             Divider()
-                .padding(.horizontal, -Layout.Padding.horizontalEdges)
+            balanceView
             chatsList
                 .padding(.horizontal, Layout.Padding.horizontalEdges)
             Spacer()
@@ -98,6 +98,23 @@ struct ChatListView: View {
         .buttonStyle(PlainButtonStyle())
     }
     
+    var balanceView: some View {
+        VStack(spacing: .zero) {
+            Group {
+                Text("Баланс: ")
+                    .font(Fonts.museoSans(weight: .medium , size: 16))
+                    .foregroundColor(Colors.green)
+                +
+                Text(String(format: "%.2f", viewModel.balance) + " ₽")
+                    .font(Fonts.museoSans(weight: .medium , size: 14))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, Layout.Padding.horizontalEdges)
+            .padding(.vertical)
+            Divider()
+        }
+    }
+    
     struct ActualChatView: View {
         var chatName: String
         var lastMessage: String
@@ -135,13 +152,12 @@ struct ChatListView: View {
                     
                 )
             }
-            //            .clipShape(RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius))
         }
     }
     
     var sheetView: some View {
         Button {
-            
+            //TODO: Insert action
         } label: {
             Text("Создать чат")
                 .padding()

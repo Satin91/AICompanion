@@ -14,11 +14,16 @@ final class StorageManager {
     private var defaults = UserDefaults.standard
     
     var chats = CurrentValueSubject<[ChatModel], Never>([])
+    var balance = CurrentValueSubject<Double, Never>(0)
     
     init() {
-        getChats()
+        initialState()
     }
     
+    func initialState() {
+        getChats()
+        getBalance()
+    }
     
     func getChats() {
         do {
@@ -52,7 +57,7 @@ final class StorageManager {
     func createChat(name: String) {
         do {
             let allChatsData = defaults.data(forKey: "Chats")
-            let chatModel = ChatModel(name: name, messages: [])
+            let chatModel = ChatModel(companion: .gpt4o, name: name, messages: [])
             
             if allChatsData == nil {
                 
@@ -71,5 +76,14 @@ final class StorageManager {
         }
     }
     
+    func getBalance() {
+        let balance = defaults.double(forKey: "balance")
+        self.balance.send(balance)
+    }
     
+    func saveBalance(balance: Double) {
+        print("new balance\(balance)")
+        self.balance.send(balance)
+        defaults.setValue(balance, forKey: "balance")
+    }
 }

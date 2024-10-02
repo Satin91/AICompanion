@@ -9,7 +9,7 @@ import Foundation
 
 
 
-enum ChatRequestModel: String {
+enum CompanionType: String, Codable {
     case gpt4o = "gpt-4o"
     case gpt4o_mini = "gpt-4o-mini"
     case gpt3_5_turbo = "gpt-3.5-turbo"

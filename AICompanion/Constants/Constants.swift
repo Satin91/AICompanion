@@ -61,5 +61,6 @@ enum Colors {
     static let lightDark = Color("lightDark")
     static let green = Color("green")
     static let red = Color("red")
+    static let orange = Color("orange")
     static let stroke = Color("stroke")
 }

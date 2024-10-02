@@ -14,10 +14,10 @@ final class ChatListViewModel: ObservableObject {
     var networkService = NetworkService()
     
     @Published var chats: [ChatModel] = []
-    var selectedChat = ChatModel(name: "", messages: [])
+    var selectedChat = ChatModel(companion: .claude3_5_sonnet, name: "", messages: [])
     
     var cancellable = Set<AnyCancellable>()
-    var balance: String = ""
+    @Published private(set) var balance: Double = 0
     
     //Navigation
     @Published var isShowChatView = false
@@ -26,16 +26,20 @@ final class ChatListViewModel: ObservableObject {
         self.storageManager = storageManager
         initialState()
         assign()
-        getBalance()
+//        subscribe()
+        
     }
     
     func initialState() {
         chats = storageManager.chats.value
+        getBalance()
     }
     
     func assign() {
         storageManager.chats
             .assign(to: &$chats)
+        storageManager.balance
+            .assign(to: &$balance)
     }
     
     func showChatView(model: ChatModel) {
@@ -49,11 +53,10 @@ final class ChatListViewModel: ObservableObject {
     }
     
     func getBalance() {
-        networkService.getBalance().sink { completion in
-            
+        networkService.getBalance().sink { _ in
         } receiveValue: { value in
-//            balance
             print("get balance \(value.balance)")
+            self.storageManager.saveBalance(balance: value.balance)
         }
         .store(in: &cancellable)
 

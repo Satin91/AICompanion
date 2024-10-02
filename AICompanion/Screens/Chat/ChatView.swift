@@ -42,21 +42,20 @@ struct ChatView: View {
                     .padding(.vertical, 4)
             }
             .rotationEffect(.degrees(180))
-                .padding(16)
-                .animation(.easeInOut, value: viewModel.chatModel.messages)
+            .padding(16)
+            .animation(.easeInOut, value: viewModel.chatModel.messages)
         }
         .rotationEffect(.degrees(180))
-            .onTapGesture {
-                isKeyboardForeground = nil
-            }
+        .onTapGesture {
+            isKeyboardForeground = nil
+        }
     }
     
     private var textFieldContainer: some View {
         HStack(spacing: Layout.Padding.small) {
-            TextField(
-                "Enter text",
+            TextField("Введите текст",
                 text: $text,
-                prompt: Text("Enter text")
+                prompt: Text("Введите текст")
                     .font(Fonts.museoSans(weight: .regular,
                 size: 16))
                     .foregroundColor(Colors.neutral),
@@ -72,7 +71,7 @@ struct ChatView: View {
         }
          .padding(.vertical, Layout.Padding.small)
          .padding(.horizontal, Layout.Padding.horizontalEdges)
-         .background(Color.black)
+         .background(Colors.lightDark)
      }
     
     var sendMessageButton: some View {
@@ -103,13 +102,12 @@ struct ChatView: View {
                  .lineSpacing(textLineSpacing)
                  .foregroundColor(Colors.white)
                  .padding()
-                 .background(Colors.white.opacity(0.05))
+                 .background(Colors.lightDark)
                  .cornerRadius(4)
                  .cornerRadius(Layout.Radius.defaultRadius, corners: [.bottomRight, .topLeft, .topRight])
              Spacer()
          }
-         
-         .shadow(color: Color.black.opacity(0.5), radius: 10, x: 5, y: 5)
+         .shadow(color: Color.black.opacity(0.3), radius: 10, x: 5, y: 5)
      }
     
     private func userMessageView(text: String) -> some View {
@@ -129,5 +127,5 @@ struct ChatView: View {
 }
 
 #Preview {
-    ChatView(model: ChatModel(name: "", messages: []), storageManager: StorageManager() )
+    ChatView(model: ChatModel(companion: .gpt4o, name: "", messages: []), storageManager: StorageManager() )
 }

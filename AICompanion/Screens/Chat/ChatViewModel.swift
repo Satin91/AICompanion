@@ -23,8 +23,7 @@ final class ChatViewModel: ObservableObject {
     
     func sendMessage(text: String) {
         chatModel.messages.append(MessageModel(role: "user", content: text) )
-//        self.storageManager.saveChat(chat: self.chatModel)
-        networkService.sendMessage(message: text).sink { compl in
+        networkService.sendMessage(message: text, companion: chatModel.companion).sink { compl in
             switch compl {
             case .failure(let error):
                 switch error {
@@ -41,8 +40,17 @@ final class ChatViewModel: ObservableObject {
             print("Пришло значение:", value.model)
             self.chatModel.messages.append(MessageModel(role: value.choices.first?.message.role ?? "", content: value.choices.first?.message.content ?? "") )
             self.storageManager.saveChat(chat: self.chatModel)
+            self.getBalance()
         }
         
+        .store(in: &cancellable)
+    }
+    
+    func getBalance() {
+        networkService.getBalance().sink { _ in
+        } receiveValue: { balance in
+            self.storageManager.saveBalance(balance: balance.balance)
+        }
         .store(in: &cancellable)
     }
 }

@@ -9,11 +9,12 @@ import Foundation
 
 struct ChatModel: Codable, Hashable {
     var id = UUID().uuidString
+    var companion: CompanionType
     var name: String
     var messages: [MessageModel]
 }
 
-struct MessageModel: Hashable, Codable{
+struct MessageModel: Hashable, Codable {
     var role: String
     var content: String
 }

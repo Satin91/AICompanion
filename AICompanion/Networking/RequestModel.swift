@@ -10,7 +10,7 @@ import Foundation
 
 
 enum RequestEnum {
-    case sendMessage(model: ChatRequestModel, role: String, content: String)
+    case sendMessage(model: CompanionType, role: String, content: String)
     case getBallance
 }
 

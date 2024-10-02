@@ -10,5 +10,5 @@ import CoreData
 struct ChatConfigModel {
     var name: String
     var messages: [MessageModel]
-    var chatModel: ChatRequestModel
+    var chatModel: CompanionType
 }
