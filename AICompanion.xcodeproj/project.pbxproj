@@ -15,8 +15,8 @@
 		8E9C28AE2CA5A146006DB348 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9C28AD2CA5A146006DB348 /* ChatViewModel.swift */; };
 		8EA1BF912CA897F700B0A596 /* SpecifiedCornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA1BF902CA897F700B0A596 /* SpecifiedCornerRadius.swift */; };
 		8EA1BF9F2CA89A6300B0A596 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA1BF932CA899C500B0A596 /* Fonts.swift */; };
-		8EA1BFA32CA89C8A00B0A596 /* ChatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA22CA89C8A00B0A596 /* ChatsView.swift */; };
-		8EA1BFA52CA89C9600B0A596 /* ChatsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA42CA89C9600B0A596 /* ChatsViewModel.swift */; };
+		8EA1BFA32CA89C8A00B0A596 /* ChatListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA22CA89C8A00B0A596 /* ChatListView.swift */; };
+		8EA1BFA52CA89C9600B0A596 /* ChatListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA42CA89C9600B0A596 /* ChatListViewModel.swift */; };
 		8EA1BFAA2CA8AA4D00B0A596 /* MuseoSansCyrl-100.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA62CA8AA4C00B0A596 /* MuseoSansCyrl-100.ttf */; };
 		8EA1BFAB2CA8AA4D00B0A596 /* MuseoSansCyrl-500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA72CA8AA4C00B0A596 /* MuseoSansCyrl-500.ttf */; };
 		8EA1BFAC2CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA82CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf */; };
@@ -43,8 +43,8 @@
 		8EA1BF902CA897F700B0A596 /* SpecifiedCornerRadius.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecifiedCornerRadius.swift; sourceTree = "<group>"; };
 		8EA1BF932CA899C500B0A596 /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		8EA1BF9E2CA899F900B0A596 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		8EA1BFA22CA89C8A00B0A596 /* ChatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsView.swift; sourceTree = "<group>"; };
-		8EA1BFA42CA89C9600B0A596 /* ChatsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsViewModel.swift; sourceTree = "<group>"; };
+		8EA1BFA22CA89C8A00B0A596 /* ChatListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListView.swift; sourceTree = "<group>"; };
+		8EA1BFA42CA89C9600B0A596 /* ChatListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListViewModel.swift; sourceTree = "<group>"; };
 		8EA1BFA62CA8AA4C00B0A596 /* MuseoSansCyrl-100.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-100.ttf"; sourceTree = "<group>"; };
 		8EA1BFA72CA8AA4C00B0A596 /* MuseoSansCyrl-500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-500.ttf"; sourceTree = "<group>"; };
 		8EA1BFA82CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-700.ttf"; sourceTree = "<group>"; };
@@ -151,14 +151,14 @@
 			path = Chat;
 			sourceTree = "<group>";
 		};
-		8EA1BFA12CA89C7B00B0A596 /* Chats */ = {
+		8EA1BFA12CA89C7B00B0A596 /* ChatList */ = {
 			isa = PBXGroup;
 			children = (
-				8EA1BFA22CA89C8A00B0A596 /* ChatsView.swift */,
-				8EA1BFA42CA89C9600B0A596 /* ChatsViewModel.swift */,
+				8EA1BFA22CA89C8A00B0A596 /* ChatListView.swift */,
+				8EA1BFA42CA89C9600B0A596 /* ChatListViewModel.swift */,
 				8E72E4CB2CAC3AE800FA5F69 /* ChatsModel.swift */,
 			);
-			path = Chats;
+			path = ChatList;
 			sourceTree = "<group>";
 		};
 		8EA1BFAE2CA8ADC100B0A596 /* App */ = {
@@ -180,7 +180,7 @@
 		8ED8A0532CA88C38001D1CA7 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				8EA1BFA12CA89C7B00B0A596 /* Chats */,
+				8EA1BFA12CA89C7B00B0A596 /* ChatList */,
 				8EA1BFA02CA89C6C00B0A596 /* Chat */,
 			);
 			path = Screens;
@@ -294,11 +294,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EE1A6922CA7665E00056A62 /* ChatRequestModel.swift in Sources */,
-				8EA1BFA32CA89C8A00B0A596 /* ChatsView.swift in Sources */,
+				8EA1BFA32CA89C8A00B0A596 /* ChatListView.swift in Sources */,
 				8EE1A68E2CA7657200056A62 /* NetworkService.swift in Sources */,
 				8EE1A68C2CA7656B00056A62 /* NetworkManager.swift in Sources */,
 				8E9C289F2CA59F3D006DB348 /* ChatView.swift in Sources */,
-				8EA1BFA52CA89C9600B0A596 /* ChatsViewModel.swift in Sources */,
+				8EA1BFA52CA89C9600B0A596 /* ChatListViewModel.swift in Sources */,
 				8E9C289D2CA59F3D006DB348 /* AICompanionApp.swift in Sources */,
 				8ED64B062CA973CC0083B3A7 /* ChatConfigModel.swift in Sources */,
 				8E9C28AE2CA5A146006DB348 /* ChatViewModel.swift in Sources */,

@@ -8,6 +8,7 @@
 import Foundation
 
 struct ChatModel: Codable, Hashable {
+    var id = UUID().uuidString
     var name: String
     var messages: [MessageModel]
 }

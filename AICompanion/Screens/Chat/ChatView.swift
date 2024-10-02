@@ -12,10 +12,10 @@ struct ChatView: View {
     enum KeyboardForeground: Hashable {
         case foreground
     }
-    @ObservedObject var viewModel: ChatViewModel
+    @StateObject var viewModel: ChatViewModel
     
-    init(model: ChatModel) {
-        self._viewModel = ObservedObject(wrappedValue: ChatViewModel(model: model))
+    init(model: ChatModel, storageManager: StorageManager) {
+        self._viewModel = StateObject(wrappedValue: ChatViewModel(model: model, storageManager: storageManager))
     }
     
     @FocusState var isKeyboardForeground: KeyboardForeground?
@@ -25,10 +25,7 @@ struct ChatView: View {
     
     var body: some View {
         content
-            .background(Color.gray.opacity(0.2))
-            .onTapGesture {
-                isKeyboardForeground = nil
-            }
+            .background(Colors.background.ignoresSafeArea(.all))
     }
     
     var content: some View {
@@ -39,14 +36,19 @@ struct ChatView: View {
     }
     
     private var messagesContainer: some View {
-        ScrollView(.vertical) {
+        ScrollView(.vertical, showsIndicators: false) {
             ForEach(viewModel.chatModel.messages, id: \.self) { message in
                 messageView(message: message)
                     .padding(.vertical, 4)
-            }.rotationEffect(.degrees(180))
+            }
+            .rotationEffect(.degrees(180))
                 .padding(16)
                 .animation(.easeInOut, value: viewModel.chatModel.messages)
-        }.rotationEffect(.degrees(180))
+        }
+        .rotationEffect(.degrees(180))
+            .onTapGesture {
+                isKeyboardForeground = nil
+            }
     }
     
     private var textFieldContainer: some View {
@@ -70,7 +72,7 @@ struct ChatView: View {
         }
          .padding(.vertical, Layout.Padding.small)
          .padding(.horizontal, Layout.Padding.horizontalEdges)
-         .background(Colors.chatBackground)
+         .background(Color.black)
      }
     
     var sendMessageButton: some View {
@@ -99,15 +101,15 @@ struct ChatView: View {
              Text(text)
                  .font(Fonts.museoSans(weight: .regular, size: 16))
                  .lineSpacing(textLineSpacing)
-                 .foregroundColor(Colors.dark)
+                 .foregroundColor(Colors.white)
                  .padding()
-                 .background(Colors.light)
+                 .background(Colors.white.opacity(0.05))
                  .cornerRadius(4)
                  .cornerRadius(Layout.Radius.defaultRadius, corners: [.bottomRight, .topLeft, .topRight])
              Spacer()
          }
          
-         .shadow(color: Color.black.opacity(0.2), radius: 10, x: 5, y: 5)
+         .shadow(color: Color.black.opacity(0.5), radius: 10, x: 5, y: 5)
      }
     
     private func userMessageView(text: String) -> some View {
@@ -127,5 +129,5 @@ struct ChatView: View {
 }
 
 #Preview {
-    ChatView(model: ChatModel(name: "", messages: []) )
+    ChatView(model: ChatModel(name: "", messages: []), storageManager: StorageManager() )
 }

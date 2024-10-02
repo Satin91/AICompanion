@@ -7,17 +7,16 @@
 
 import SwiftUI
 
-struct ChatsView: View {
-    @ObservedObject var viewModel: ChatsViewModel
+struct ChatListView: View {
+    @ObservedObject var viewModel: ChatListViewModel
     
     init(storageManager: StorageManager) {
-        self._viewModel = ObservedObject(wrappedValue: ChatsViewModel(storageManager: storageManager))
+        self._viewModel = ObservedObject(wrappedValue: ChatListViewModel(storageManager: storageManager))
     }
     
     var body: some View {
         NavigationView {
             content
-                .background(Colors.background)
         }
     }
     
@@ -26,18 +25,18 @@ struct ChatsView: View {
             navigation
             headerText
                 .padding(.top, Layout.Padding.large)
-//            createChatButton
             chatsList
             Spacer()
-            startChatButton
+            createChatButton
                 .padding(.bottom)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, Layout.Padding.horizontalEdges)
+        .background(Colors.background)
     }
     
     var chatsList: some View {
-        ScrollView(.vertical) {
+        ScrollView(.vertical, showsIndicators: false) {
             ForEach(viewModel.chats, id: \.self) { chat in
                 ActualChatView(chatName: chat.name, lastMessage: chat.messages.last?.content ?? "Сообщений нет") {
                     viewModel.showChatView(model: chat)
@@ -51,29 +50,11 @@ struct ChatsView: View {
     var navigation: some View {
         VStack(spacing: .zero) {
             NavigationLink(
-                destination: ChatView(model: ChatModel(name: "", messages: []) ),
+                destination: ChatView(model: viewModel.selectedChat, storageManager: viewModel.storageManager),
                 isActive: $viewModel.isShowChatView,
                 label: {
                     EmptyView()
                 })
-        }
-    }
-    
-    var createChatButton: some View {
-        Button {
-            viewModel.createChat(name: "New chat!")
-        } label: {
-            Image(systemName: "plus")
-                .resizable()
-                .foregroundColor(.white)
-                .frame(width: 25, height: 25)
-                .padding()
-                .background(
-                    Colors.red
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                )
-                .frame(maxWidth: .infinity, alignment: .leading)
-                
         }
     }
     
@@ -91,13 +72,13 @@ struct ChatsView: View {
                 .font(Fonts.museoSans(weight: .bold, size: 26))
     }
     
-    var startChatButton: some View {
+    var createChatButton: some View {
         Button {
             viewModel.createChat(name: "Новый чат")
         } label: {
             Text("Добавить чат")
-                .font(Fonts.museoSans(weight: .regular, size: 18))
-                .foregroundColor(.white)
+                .font(Fonts.museoSans(weight: .medium, size: 18))
+                .foregroundColor(Colors.white)
                 .padding()
                 .background(
                     Colors.primary
@@ -121,16 +102,17 @@ struct ChatsView: View {
                 onTap()
             } label: {
                 HStack {
-                VStack(spacing: 4) {
+                    VStack(alignment: .leading, spacing: 4) {
                         Text(chatName)
                             .font(Fonts.museoSans(weight: .medium, size: 16))
-                            .foregroundColor(.white)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         Text(lastMessage)
                             .font(Fonts.museoSans(weight: .regular, size: 14))
-                            .foregroundColor(.white)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(1)
                     }
+                    .foregroundColor(Colors.white)
                     Image(systemName: "chevron.right")
                         .font(.system(size: 18))
                         .foregroundColor(Colors.primary)
@@ -140,12 +122,12 @@ struct ChatsView: View {
                     RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius)
                         .fill(Colors.white.opacity(0.05))
                         .stroke(Colors.white.opacity(0.1), lineWidth: 1.5)
-                
+                    
                 )
             }
-
-
-//            .clipShape(RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius))
+            
+            
+            //            .clipShape(RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius))
         }
     }
 }

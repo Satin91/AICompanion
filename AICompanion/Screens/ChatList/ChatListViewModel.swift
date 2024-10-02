@@ -8,12 +8,14 @@
 import Foundation
 import Combine
 
-final class ChatsViewModel: ObservableObject {
+final class ChatListViewModel: ObservableObject {
     
     let storageManager: StorageManager
     var networkService = NetworkService()
     
     @Published var chats: [ChatModel] = []
+    var selectedChat = ChatModel(name: "", messages: [])
+    
     var cancellable = Set<AnyCancellable>()
     var balance: String = ""
     
@@ -37,6 +39,7 @@ final class ChatsViewModel: ObservableObject {
     }
     
     func showChatView(model: ChatModel) {
+        selectedChat = model
         isShowChatView = true
     }
     

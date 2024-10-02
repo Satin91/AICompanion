@@ -12,16 +12,18 @@ import CoreData
 final class ChatViewModel: ObservableObject {
     var networkService = NetworkService()
     var cancellable = Set<AnyCancellable>()
-    var storageManager = StorageManager()
+    var storageManager: StorageManager
     
     @Published var chatModel: ChatModel
     
-    init(model: ChatModel) {
+    init(model: ChatModel, storageManager: StorageManager) {
         self.chatModel = model
+        self.storageManager = storageManager
     }
     
     func sendMessage(text: String) {
-        
+        chatModel.messages.append(MessageModel(role: "user", content: text) )
+//        self.storageManager.saveChat(chat: self.chatModel)
         networkService.sendMessage(message: text).sink { compl in
             switch compl {
             case .failure(let error):
@@ -37,12 +39,10 @@ final class ChatViewModel: ObservableObject {
             
         } receiveValue: { value in
             print("Пришло значение:", value.model)
-            
-//            self.storageManager.addMessageToStorage(
-//                role: value.choices.first!.message.role,
-//                content: value.choices.first!.message.content
-//            )
+            self.chatModel.messages.append(MessageModel(role: value.choices.first?.message.role ?? "", content: value.choices.first?.message.content ?? "") )
+            self.storageManager.saveChat(chat: self.chatModel)
         }
+        
         .store(in: &cancellable)
     }
 }
