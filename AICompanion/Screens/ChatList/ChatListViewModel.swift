@@ -16,6 +16,8 @@ final class ChatListViewModel: ObservableObject {
     @Published var chats: [ChatModel] = []
     var selectedChat = ChatModel(companion: .claude3_5_sonnet, name: "", messages: [])
     
+    @Published var selectedCompanion: CompanionType = .gpt4o
+    
     var cancellable = Set<AnyCancellable>()
     @Published private(set) var balance: Double = 0
     
@@ -48,8 +50,8 @@ final class ChatListViewModel: ObservableObject {
     }
     
     func createChat(name: String) {
-        storageManager.createChat(name: name)
-        print(chats.count)
+        let chat = ChatModel(companion: selectedCompanion, name: name, messages: [])
+        storageManager.createChat(chatModel: chat)
     }
     
     func getBalance() {
@@ -59,6 +61,14 @@ final class ChatListViewModel: ObservableObject {
             self.storageManager.saveBalance(balance: value.balance)
         }
         .store(in: &cancellable)
-
+    }
+    
+    func deleteChat(model: ChatModel) {
+        storageManager.deleteChat(model: model)
+    }
+    
+    // Bottom Sheet
+    func selectCompanion(_ companion: CompanionType) {
+        selectedCompanion = companion
     }
 }

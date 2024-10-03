@@ -15,6 +15,7 @@ struct ChatListView: View {
     }
     
     @State var sheetShown = false
+    @State var chatName = ""
     
     var body: some View {
         NavigationView {
@@ -22,7 +23,7 @@ struct ChatListView: View {
                 .toolbar(.hidden)
                 .sheet(isPresented: $sheetShown) {
                     sheetView
-                        .presentationDetents([.medium, .large])
+                        .presentationDetents([.medium])
                 }
         }
     }
@@ -47,11 +48,27 @@ struct ChatListView: View {
     var chatsList: some View {
         ScrollView(.vertical, showsIndicators: false) {
             ForEach(viewModel.chats, id: \.self) { chat in
-                ActualChatView(chatName: chat.name, lastMessage: chat.messages.last?.content ?? "Сообщений нет") {
+                ActualChatView(chatModel: chat) {
                     viewModel.showChatView(model: chat)
                 }
+                .padding(.top)
+                .contextMenu(
+                    ContextMenu {
+//                        Button(action: {
+//                            
+//                        }) {
+//                            Label("Изменить", systemImage: "pencil")
+//                        }
+                        
+                        Button(role: .destructive, action: {
+                            viewModel.deleteChat(model: chat)
+                        }) {
+                            Label("Удалить", systemImage: "trash")
+                        }
+                    }
+                )
             }
-            .padding(.top, Layout.Padding.medium)
+            .padding(.top, Layout.Padding.medium )
         }
     }
     
@@ -70,7 +87,7 @@ struct ChatListView: View {
         headerText
             .frame(maxWidth: .infinity)
             .overlay {
-                createChatButton
+                showCreateChatBottomSheetButton
                     .frame(maxWidth: .infinity, alignment: .trailing)
             }
     }
@@ -85,10 +102,9 @@ struct ChatListView: View {
                 .font(Fonts.museoSans(weight: .bold, size: 26))
     }
     
-    var createChatButton: some View {
+    var showCreateChatBottomSheetButton: some View {
         Button {
             sheetShown.toggle()
-//            viewModel.createChat(name: "Новый чат")
         } label: {
             Image(systemName: "plus")
                 .font(.system(size: 22))
@@ -106,7 +122,7 @@ struct ChatListView: View {
                     .foregroundColor(Colors.green)
                 +
                 Text(String(format: "%.2f", viewModel.balance) + " ₽")
-                    .font(Fonts.museoSans(weight: .medium , size: 14))
+                    .font(.system(size: 14, weight: .semibold))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, Layout.Padding.horizontalEdges)
@@ -116,8 +132,7 @@ struct ChatListView: View {
     }
     
     struct ActualChatView: View {
-        var chatName: String
-        var lastMessage: String
+        var chatModel: ChatModel
         var onTap: () -> Void
         
         var body: some View {
@@ -130,10 +145,9 @@ struct ChatListView: View {
             } label: {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(chatName)
+                        Text(chatModel.name)
                             .font(Fonts.museoSans(weight: .medium, size: 16))
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Text(lastMessage)
+                        Text(chatModel.messages.last?.content ?? "Сообщений нет")
                             .font(Fonts.museoSans(weight: .regular, size: 14))
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .multilineTextAlignment(.leading)
@@ -147,23 +161,89 @@ struct ChatListView: View {
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius)
-                        .fill(Colors.lightDark)
-                        .stroke(Colors.white.opacity(0.1), lineWidth: 1)
-                    
+                    .fill(Colors.lightDark)
+                    .stroke(Colors.white.opacity(0.1), lineWidth: 1)
                 )
+                .overlay {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Colors.lightDark)
+                            .stroke(Colors.white.opacity(0.1), lineWidth: 1)
+                            .frame(width: 80)
+                        Text(chatModel.companion.name)
+                            .font(.system(size: 8, weight: .semibold))
+                            .foregroundColor(.gray)
+                    }
+                    .frame(height: 18)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .offset(x: 30, y: -9)
+                }
             }
         }
     }
     
     var sheetView: some View {
-        Button {
-            //TODO: Insert action
-        } label: {
-            Text("Создать чат")
+        VStack(spacing: 28) {
+            TextField("Введите имя", text: $chatName)
                 .padding()
-                .background(Colors.primary)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.lightDark)
+                        .stroke(Colors.white.opacity(0.1), lineWidth: 1)
+                )
+                .padding()
+            HStack {
+                Spacer()
+                makeBorderedButton(title: "GPT4o", isSelected: viewModel.selectedCompanion == .gpt4o) { viewModel.selectCompanion(.gpt4o) }
+                Spacer()
+                makeBorderedButton(title: "GPT4o mini", isSelected: viewModel.selectedCompanion == .gpt4o_mini) { viewModel.selectCompanion(.gpt4o_mini) }
+                Spacer()
+                makeBorderedButton(title: "GPT 3.5", isSelected: viewModel.selectedCompanion == .gpt3_5_turbo) { viewModel.selectCompanion(.gpt3_5_turbo) }
+                Spacer()
+            }
+            
+            Text(viewModel.selectedCompanion.description)
+                .font(Fonts.museoSans(weight: .regular, size: 18))
+                .foregroundColor(Colors.white.opacity(0.7))
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .frame(height: 80)
+                .padding(Layout.Padding.horizontalEdges)
+            
+            Button {
+                viewModel.createChat(name: chatName)
+                chatName = ""
+                sheetShown.toggle()
+            } label: {
+                Text("Добавить")
+                    .fontWeight(.medium)
+                    .foregroundColor(Colors.background)
+                    .padding(.horizontal, 56)
+                    .padding(.vertical, 8)
+                    .background(Colors.green)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
+            }
+            .buttonStyle(.plain)
+            Spacer()
         }
-
+        .padding(.top, Layout.Padding.medium)
+        .frame(maxWidth: .infinity)
+        .background(Colors.background)
+    }
+    
+    func makeBorderedButton(title: String, isSelected: Bool, onTap: @escaping () -> Void) -> some View {
+        Button {
+            onTap()
+        } label: {
+            Text(title)
+                .font(Fonts.museoSans(weight: .regular, size: 12))
+                .frame(width: 100, height: 26)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(isSelected ? Colors.primary.opacity(0.4) : Color.clear)
+                        .stroke(isSelected ? Colors.primary : Colors.white.opacity(0.1), lineWidth: 1)
+                    
+                )
+        }.buttonStyle(.plain)
     }
 }

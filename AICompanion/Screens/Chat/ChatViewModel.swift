@@ -14,6 +14,8 @@ final class ChatViewModel: ObservableObject {
     var cancellable = Set<AnyCancellable>()
     var storageManager: StorageManager
     
+    
+    @Published var isCompanionThinking = false
     @Published var chatModel: ChatModel
     
     init(model: ChatModel, storageManager: StorageManager) {
@@ -23,7 +25,10 @@ final class ChatViewModel: ObservableObject {
     
     func sendMessage(text: String) {
         chatModel.messages.append(MessageModel(role: "user", content: text) )
+        isCompanionThinking = true
         networkService.sendMessage(message: text, companion: chatModel.companion).sink { compl in
+            self.isCompanionThinking = false
+            
             switch compl {
             case .failure(let error):
                 switch error {

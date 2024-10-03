@@ -41,7 +41,6 @@ final class StorageManager {
         for (index, element) in chats.enumerated() {
             if element.id == chat.id {
                 chats[index].messages = chat.messages
-                print("CHATS \(chats)")
                 do {
                     let data = try JSONEncoder().encode(chats)
                     defaults.set(data, forKey: "Chats")
@@ -54,10 +53,21 @@ final class StorageManager {
         }
     }
     
-    func createChat(name: String) {
+    func deleteChat(model: ChatModel) {
+        guard let chatIndex = chats.value.firstIndex(of: model) else { return }
+        chats.value.remove(at: chatIndex)
+        do {
+            let data = try JSONEncoder().encode(chats.value)
+            defaults.set(data, forKey: "Chats")
+            chats.send(chats.value)
+        } catch {
+            print("Error delete chat")
+        }
+    }
+    
+    func createChat(chatModel: ChatModel) {
         do {
             let allChatsData = defaults.data(forKey: "Chats")
-            let chatModel = ChatModel(companion: .gpt4o, name: name, messages: [])
             
             if allChatsData == nil {
                 
