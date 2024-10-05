@@ -17,7 +17,7 @@ struct ChatView: View {
     init(model: ChatModel, storageManager: StorageManager) {
         self._viewModel = StateObject(wrappedValue: ChatViewModel(model: model, storageManager: storageManager))
     }
-    
+    @Environment(\.presentationMode) private var presentationMode
     @FocusState var isKeyboardForeground: KeyboardForeground?
     @State var text = ""
     
@@ -25,22 +25,55 @@ struct ChatView: View {
     
     var body: some View {
         content
+//            .navigationTitle(viewModel.isCompanionThinking ? "Думает..." : "")
             .background(Colors.background.ignoresSafeArea(.all))
+            .toolbar(.hidden)
     }
     
     var content: some View {
         VStack(spacing: .zero) {
+            navigationBarView
             messagesContainer
             textFieldContainer
         }
     }
     
+    private var navigationBarView: some View {
+        NavigationBarView()
+            .addCentralContainer({ Text(viewModel.isCompanionThinking ? "Думает..." : "") })
+            .addLeftContainer {
+                Button {
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    HStack {
+                        Image(systemName: "chevron.left")
+                        Text("Back")
+                            .fontWeight(.medium)
+                    }
+                }
+            }
+            .addRightContainer({
+                Toggle("", isOn: $viewModel.isMemoryEnabled)
+            })
+            .frame(height: 60)
+            .padding(.horizontal, Layout.Padding.horizontalEdges)
+            .overlay(content: {
+                Divider()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            })
+            .background(Colors.lightDark)
+    }
+    
     private var messagesContainer: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            ForEach(viewModel.chatModel.messages, id: \.self) { message in
-                messageView(message: message)
-                    .padding(.vertical, 4)
-            }
+//            VStack {
+                ForEach(viewModel.chatModel.messages, id: \.self) { message in
+                    messageView(message: message)
+                        .padding(.vertical, 4)
+                    
+                }
+//                thinkingView
+//            }
             .rotationEffect(.degrees(180))
             .padding(16)
             .animation(.easeInOut, value: viewModel.chatModel.messages)
@@ -48,6 +81,13 @@ struct ChatView: View {
         .rotationEffect(.degrees(180))
         .onTapGesture {
             isKeyboardForeground = nil
+        }
+    }
+    
+    @ViewBuilder var thinkingView: some View {
+        if viewModel.isCompanionThinking {
+            companionMessageView(text: "Думаю что вам ответить...")
+                
         }
     }
     
@@ -65,8 +105,12 @@ struct ChatView: View {
                 .foregroundColor(Colors.light)
                 .focused($isKeyboardForeground, equals: .foreground)
                 .padding()
-                .background(Colors.dark)
-                .cornerRadius(Layout.Radius.defaultRadius, antialiased: true)
+                .background(
+                    RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius)
+                        .fill(Colors.lightDark)
+                        .stroke(Colors.white.opacity(0.1), lineWidth: 1)
+                    )
+//                .cornerRadius(Layout.Radius.defaultRadius, antialiased: true)
             sendMessageButton
         }
          .padding(.vertical, Layout.Padding.small)
@@ -78,7 +122,7 @@ struct ChatView: View {
         Button {
             isKeyboardForeground = nil
             guard !text.isEmpty else { return }
-            viewModel.sendMessage(text: text)
+            viewModel.send(message: text)
             text = ""
         } label: {
             Image(systemName: "paperplane.fill")
@@ -107,7 +151,7 @@ struct ChatView: View {
                  .cornerRadius(Layout.Radius.defaultRadius, corners: [.bottomRight, .topLeft, .topRight])
              Spacer()
          }
-         .shadow(color: Color.black.opacity(0.3), radius: 10, x: 5, y: 5)
+         .shadow(color: Color.black.opacity(0.18), radius: 10, x: 5, y: 5)
      }
     
     private func userMessageView(text: String) -> some View {

@@ -11,6 +11,7 @@ import Foundation
 
 enum RequestEnum {
     case sendMessage(model: CompanionType, role: String, content: String)
+    case sendMessages(model: CompanionType, role: String, messages: [Message])
     case getBallance
 }
 
@@ -25,9 +26,23 @@ extension RequestEnum {
                 let jsonData = try JSONEncoder().encode(message)
                 request.httpBody = jsonData
             } catch {
-                print("Error encode", error)
+                print("Error encode", error.localizedDescription)
             }
             return request
+            
+        case .sendMessages(model: let model, role: let role, messages: let messages):
+            var request = RequestModel(baseURL: Constants.API.sendMessageURL, method: .post).makeRequest()
+            
+            do {
+                let messages = EventMessage(model: model.rawValue, messages: messages)
+                let jsonData = try JSONEncoder().encode(messages)
+                request.httpBody = jsonData
+            } catch {
+                print("Error encode", error.localizedDescription)
+            }
+
+            return request
+            
         case .getBallance:
             let request = RequestModel(baseURL: Constants.API.getBalanceURL, method: .get).makeRequest()
             return request
@@ -44,9 +59,9 @@ struct Message: Codable, Hashable {
     let role: String
     let content: String
     
-    var isUser: Bool {
-        return role != "assistant"
-    }
+//    var isUser: Bool {
+//        return role != "assistant"
+//    }
 }
 
 struct EventBalance: Codable {
@@ -65,7 +80,6 @@ struct RequestModel {
     
     func makeRequest() -> URLRequest {
         let url = URL(string: baseURL)!
-        
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         request.addValue(Constants.API.apiKey, forHTTPHeaderField: "Authorization")

@@ -17,37 +17,69 @@ final class ChatViewModel: ObservableObject {
     
     @Published var isCompanionThinking = false
     @Published var chatModel: ChatModel
+    @Published var isMemoryEnabled = false
     
     init(model: ChatModel, storageManager: StorageManager) {
         self.chatModel = model
         self.storageManager = storageManager
     }
     
-    func sendMessage(text: String) {
+    
+    func send(message: String) {
+        isMemoryEnabled ? sendMessages(text: message) : sendMessage(text: message)
+    }
+    
+    func sendMessages(text: String) {
         chatModel.messages.append(MessageModel(role: "user", content: text) )
+        
+        
+        let messages = chatModel.messages.map { Message(role: $0.role, content: $0.content) }
         isCompanionThinking = true
+        networkService.sendMessages(messages: messages, companion: chatModel.companion)
+            .sink(receiveCompletion: { compl in
+                self.isCompanionThinking = false
+//                
+//                switch compl {
+//                case .finished:
+//                    print("____")
+//                case .failure(let failure):
+//                    print("failure receive message \(failure)")
+//                }
+        }, receiveValue: { value in
+            print("received Value", value.choices.first?.message.content ?? "")
+            self.chatModel.messages.append(MessageModel(role: value.choices.first?.message.role ?? "", content: value.choices.first?.message.content ?? "") )
+            self.storageManager.saveChat(chat: self.chatModel)
+            self.getBalance()
+            
+            
+        })
+            .store(in: &cancellable)
+    }
+    
+    func sendMessage(text: String) {
+        isCompanionThinking = true
+        chatModel.messages.append(MessageModel(role: "user", content: text) )
         networkService.sendMessage(message: text, companion: chatModel.companion).sink { compl in
             self.isCompanionThinking = false
-            
-            switch compl {
-            case .failure(let error):
-                switch error {
-                case let .serverError(code: code, text: text):
-                    print("Network error \(code), text \(text)")
-                default :
-                    break
-                }
-            default:
-                break
-            }
+//            
+//            switch compl {
+//            case .failure(let error):
+//                switch error {
+//                case let .serverError(code: code, text: text):
+//                    print("Network error \(code), text \(text)")
+//                default :
+//                    break
+//                }
+//            default:
+//                break
+//            }
             
         } receiveValue: { value in
-            print("Пришло значение:", value.model)
+            print("Пришло значение:", value.choices.first?.message)
             self.chatModel.messages.append(MessageModel(role: value.choices.first?.message.role ?? "", content: value.choices.first?.message.content ?? "") )
             self.storageManager.saveChat(chat: self.chatModel)
             self.getBalance()
         }
-        
         .store(in: &cancellable)
     }
     

@@ -54,12 +54,6 @@ struct ChatListView: View {
                 .padding(.top)
                 .contextMenu(
                     ContextMenu {
-//                        Button(action: {
-//                            
-//                        }) {
-//                            Label("Изменить", systemImage: "pencil")
-//                        }
-                        
                         Button(role: .destructive, action: {
                             viewModel.deleteChat(model: chat)
                         }) {
@@ -166,12 +160,12 @@ struct ChatListView: View {
                 )
                 .overlay {
                     ZStack {
-                        RoundedRectangle(cornerRadius: 8)
+                        RoundedRectangle(cornerRadius: 6)
                             .fill(Colors.lightDark)
                             .stroke(Colors.white.opacity(0.1), lineWidth: 1)
                             .frame(width: 80)
                         Text(chatModel.companion.name)
-                            .font(.system(size: 8, weight: .semibold))
+                            .font(.system(size: 10, weight: .semibold))
                             .foregroundColor(.gray)
                     }
                     .frame(height: 18)
