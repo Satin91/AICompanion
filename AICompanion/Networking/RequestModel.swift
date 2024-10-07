@@ -13,6 +13,7 @@ enum RequestEnum {
     case sendMessage(model: CompanionType, role: String, content: String)
     case sendMessages(model: CompanionType, role: String, messages: [Message])
     case getBallance
+    case getModels
 }
 
 extension RequestEnum {
@@ -45,6 +46,9 @@ extension RequestEnum {
             
         case .getBallance:
             let request = RequestModel(baseURL: Constants.API.getBalanceURL, method: .get).makeRequest()
+            return request
+        case .getModels:
+            let request = RequestModel(baseURL: "https://gptunnel.ru/v1/models", method: .get).makeRequest()
             return request
         }
     }
@@ -83,7 +87,7 @@ struct RequestModel {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         request.addValue(Constants.API.apiKey, forHTTPHeaderField: "Authorization")
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         return request
     }

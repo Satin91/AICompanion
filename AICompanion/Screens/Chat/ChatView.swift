@@ -14,8 +14,8 @@ struct ChatView: View {
     }
     @StateObject var viewModel: ChatViewModel
     
-    init(model: ChatModel, storageManager: StorageManager) {
-        self._viewModel = StateObject(wrappedValue: ChatViewModel(model: model, storageManager: storageManager))
+    init(model: ChatModel, chatsService: ChatsStorageInteractorProtocol) {
+        self._viewModel = StateObject(wrappedValue: ChatViewModel(model: model, chatsService: chatsService))
     }
     @Environment(\.presentationMode) private var presentationMode
     @FocusState var isKeyboardForeground: KeyboardForeground?
@@ -171,5 +171,5 @@ struct ChatView: View {
 }
 
 #Preview {
-    ChatView(model: ChatModel(companion: .gpt4o, name: "", messages: []), storageManager: StorageManager() )
+    ChatView(model: ChatModel(companion: .gpt4o, name: "", messages: []), chatsService: ChatsStorageInteractor() )
 }

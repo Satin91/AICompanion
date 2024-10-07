@@ -30,7 +30,7 @@ final class NetworkManager {
             }
             .decode(type: T.self, decoder: JSONDecoder())
             .mapError { error in
-                error as? NetworkError ?? NetworkError.notFound
+                return error as? NetworkError ?? NetworkError.cantDecodeThis(text: error.localizedDescription)
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()

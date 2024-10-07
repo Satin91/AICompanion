@@ -10,8 +10,8 @@ import SwiftUI
 struct ChatListView: View {
     @ObservedObject var viewModel: ChatListViewModel
     
-    init(storageManager: StorageManager) {
-        self._viewModel = ObservedObject(wrappedValue: ChatListViewModel(storageManager: storageManager))
+    init(chatsService: ChatsStorageInteractorProtocol) {
+        self._viewModel = ObservedObject(wrappedValue: ChatListViewModel(chatsService: chatsService))
     }
     
     @State var sheetShown = false
@@ -69,7 +69,7 @@ struct ChatListView: View {
     var navigation: some View {
         VStack(spacing: .zero) {
             NavigationLink(
-                destination: ChatView(model: viewModel.selectedChat, storageManager: viewModel.storageManager),
+                destination: ChatView(model: viewModel.selectedChat, chatsService: viewModel.chatsService),
                 isActive: $viewModel.isShowChatView,
                 label: {
                     EmptyView()
@@ -156,7 +156,7 @@ struct ChatListView: View {
                 .background(
                     RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius)
                     .fill(Colors.lightDark)
-                    .stroke(Colors.white.opacity(0.1), lineWidth: 1)
+                    .stroke(Colors.lightDark, lineWidth: 1)
                 )
                 .overlay {
                     ZStack {
@@ -186,15 +186,7 @@ struct ChatListView: View {
                         .stroke(Colors.white.opacity(0.1), lineWidth: 1)
                 )
                 .padding()
-            HStack {
-                Spacer()
-                makeBorderedButton(title: "GPT4o", isSelected: viewModel.selectedCompanion == .gpt4o) { viewModel.selectCompanion(.gpt4o) }
-                Spacer()
-                makeBorderedButton(title: "GPT4o mini", isSelected: viewModel.selectedCompanion == .gpt4o_mini) { viewModel.selectCompanion(.gpt4o_mini) }
-                Spacer()
-                makeBorderedButton(title: "GPT 3.5", isSelected: viewModel.selectedCompanion == .gpt3_5_turbo) { viewModel.selectCompanion(.gpt3_5_turbo) }
-                Spacer()
-            }
+            chatsView
             
             Text(viewModel.selectedCompanion.description)
                 .font(Fonts.museoSans(weight: .regular, size: 18))
@@ -224,6 +216,20 @@ struct ChatListView: View {
         .frame(maxWidth: .infinity)
         .background(Colors.background)
     }
+    
+    var chatsView: some View {
+        LazyVGrid(columns: columns, alignment: .center , spacing: 16, content: {
+            ForEach(CompanionType.allCases, id: \.self) { type in
+                makeBorderedButton(title: type.name, isSelected: type == viewModel.selectedCompanion) { viewModel.selectCompanion(type) }
+            }
+        })
+    }
+    
+    private var columns: [GridItem] = [
+        GridItem(.fixed(100), spacing: 16),
+        GridItem(.fixed(100), spacing: 16),
+        GridItem(.fixed(100), spacing: 16)
+    ]
     
     func makeBorderedButton(title: String, isSelected: Bool, onTap: @escaping () -> Void) -> some View {
         Button {

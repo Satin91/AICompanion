@@ -12,16 +12,16 @@ import CoreData
 final class ChatViewModel: ObservableObject {
     var networkService = NetworkService()
     var cancellable = Set<AnyCancellable>()
-    var storageManager: StorageManager
     
+    var chatsService: ChatsStorageInteractorProtocol
     
     @Published var isCompanionThinking = false
     @Published var chatModel: ChatModel
     @Published var isMemoryEnabled = false
     
-    init(model: ChatModel, storageManager: StorageManager) {
+    init(model: ChatModel, chatsService: ChatsStorageInteractorProtocol) {
         self.chatModel = model
-        self.storageManager = storageManager
+        self.chatsService = chatsService
     }
     
     
@@ -38,7 +38,7 @@ final class ChatViewModel: ObservableObject {
         networkService.sendMessages(messages: messages, companion: chatModel.companion)
             .sink(receiveCompletion: { compl in
                 self.isCompanionThinking = false
-//                
+//
 //                switch compl {
 //                case .finished:
 //                    print("____")
@@ -48,7 +48,7 @@ final class ChatViewModel: ObservableObject {
         }, receiveValue: { value in
             print("received Value", value.choices.first?.message.content ?? "")
             self.chatModel.messages.append(MessageModel(role: value.choices.first?.message.role ?? "", content: value.choices.first?.message.content ?? "") )
-            self.storageManager.saveChat(chat: self.chatModel)
+            self.chatsService.updateChat(chat: self.chatModel)
             self.getBalance()
             
             
@@ -77,7 +77,8 @@ final class ChatViewModel: ObservableObject {
         } receiveValue: { value in
             print("Пришло значение:", value.choices.first?.message)
             self.chatModel.messages.append(MessageModel(role: value.choices.first?.message.role ?? "", content: value.choices.first?.message.content ?? "") )
-            self.storageManager.saveChat(chat: self.chatModel)
+            self.chatsService.updateChat(chat: self.chatModel)
+            
             self.getBalance()
         }
         .store(in: &cancellable)
@@ -86,7 +87,7 @@ final class ChatViewModel: ObservableObject {
     func getBalance() {
         networkService.getBalance().sink { _ in
         } receiveValue: { balance in
-            self.storageManager.saveBalance(balance: balance.balance)
+//            self.storageManager.saveBalance(balance: balance.balance)
         }
         .store(in: &cancellable)
     }

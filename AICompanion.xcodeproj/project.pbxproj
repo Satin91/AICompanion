@@ -22,9 +22,10 @@
 		8EA1BFAB2CA8AA4D00B0A596 /* MuseoSansCyrl-500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA72CA8AA4C00B0A596 /* MuseoSansCyrl-500.ttf */; };
 		8EA1BFAC2CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA82CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf */; };
 		8EA1BFAD2CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA92CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf */; };
-		8ED64B042CA965240083B3A7 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED64B032CA965240083B3A7 /* StorageManager.swift */; };
+		8ED64B042CA965240083B3A7 /* StorageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED64B032CA965240083B3A7 /* StorageRepository.swift */; };
 		8ED64B062CA973CC0083B3A7 /* ChatConfigModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED64B052CA973CC0083B3A7 /* ChatConfigModel.swift */; };
 		8ED8A0522CA7FF5D001D1CA7 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ED8A0512CA7FF5D001D1CA7 /* Colors.xcassets */; };
+		8ED9E9482CB44B4C00CD0F7E /* ChatsStorageInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED9E9472CB44B4C00CD0F7E /* ChatsStorageInteractor.swift */; };
 		8EE1A68C2CA7656B00056A62 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE1A68B2CA7656B00056A62 /* NetworkManager.swift */; };
 		8EE1A68E2CA7657200056A62 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE1A68D2CA7657200056A62 /* NetworkService.swift */; };
 		8EE1A6902CA7662400056A62 /* RequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE1A68F2CA7662400056A62 /* RequestModel.swift */; };
@@ -51,9 +52,10 @@
 		8EA1BFA72CA8AA4C00B0A596 /* MuseoSansCyrl-500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-500.ttf"; sourceTree = "<group>"; };
 		8EA1BFA82CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-700.ttf"; sourceTree = "<group>"; };
 		8EA1BFA92CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-300.ttf"; sourceTree = "<group>"; };
-		8ED64B032CA965240083B3A7 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
+		8ED64B032CA965240083B3A7 /* StorageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageRepository.swift; sourceTree = "<group>"; };
 		8ED64B052CA973CC0083B3A7 /* ChatConfigModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatConfigModel.swift; sourceTree = "<group>"; };
 		8ED8A0512CA7FF5D001D1CA7 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		8ED9E9472CB44B4C00CD0F7E /* ChatsStorageInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsStorageInteractor.swift; sourceTree = "<group>"; };
 		8EE1A68B2CA7656B00056A62 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		8EE1A68D2CA7657200056A62 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		8EE1A68F2CA7662400056A62 /* RequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestModel.swift; sourceTree = "<group>"; };
@@ -102,7 +104,8 @@
 			children = (
 				8EA1BF9E2CA899F900B0A596 /* Info.plist */,
 				8EA1BFAE2CA8ADC100B0A596 /* App */,
-				8ED64AFC2CA959F80083B3A7 /* Storage */,
+				8ED64AFC2CA959F80083B3A7 /* Repositoryes */,
+				8ED9E9492CB46F4800CD0F7E /* Interactors */,
 				8EE1A68A2CA7651000056A62 /* Networking */,
 				8ED8A0532CA88C38001D1CA7 /* Screens */,
 				8E8BA6392CB17B0000EC14E2 /* ViewComponents */,
@@ -180,12 +183,12 @@
 			path = App;
 			sourceTree = "<group>";
 		};
-		8ED64AFC2CA959F80083B3A7 /* Storage */ = {
+		8ED64AFC2CA959F80083B3A7 /* Repositoryes */ = {
 			isa = PBXGroup;
 			children = (
-				8ED64B032CA965240083B3A7 /* StorageManager.swift */,
+				8ED64B032CA965240083B3A7 /* StorageRepository.swift */,
 			);
-			path = Storage;
+			path = Repositoryes;
 			sourceTree = "<group>";
 		};
 		8ED8A0532CA88C38001D1CA7 /* Screens */ = {
@@ -203,6 +206,14 @@
 				8EA1BF902CA897F700B0A596 /* SpecifiedCornerRadius.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		8ED9E9492CB46F4800CD0F7E /* Interactors */ = {
+			isa = PBXGroup;
+			children = (
+				8ED9E9472CB44B4C00CD0F7E /* ChatsStorageInteractor.swift */,
+			);
+			path = Interactors;
 			sourceTree = "<group>";
 		};
 		8EE1A68A2CA7651000056A62 /* Networking */ = {
@@ -311,6 +322,7 @@
 				8E9C289F2CA59F3D006DB348 /* ChatView.swift in Sources */,
 				8EA1BFA52CA89C9600B0A596 /* ChatListViewModel.swift in Sources */,
 				8E9C289D2CA59F3D006DB348 /* AICompanionApp.swift in Sources */,
+				8ED9E9482CB44B4C00CD0F7E /* ChatsStorageInteractor.swift in Sources */,
 				8ED64B062CA973CC0083B3A7 /* ChatConfigModel.swift in Sources */,
 				8E9C28AE2CA5A146006DB348 /* ChatViewModel.swift in Sources */,
 				8EE1A6942CA7708C00056A62 /* ResponseModel.swift in Sources */,
@@ -318,7 +330,7 @@
 				8EA1BF9F2CA89A6300B0A596 /* Fonts.swift in Sources */,
 				8E8BA63B2CB17B1600EC14E2 /* NavigationBarVIew.swift in Sources */,
 				8EE1A6902CA7662400056A62 /* RequestModel.swift in Sources */,
-				8ED64B042CA965240083B3A7 /* StorageManager.swift in Sources */,
+				8ED64B042CA965240083B3A7 /* StorageRepository.swift in Sources */,
 				8EE1A6972CA7768400056A62 /* Constants.swift in Sources */,
 				8E72E4CC2CAC3AE800FA5F69 /* ChatsModel.swift in Sources */,
 			);

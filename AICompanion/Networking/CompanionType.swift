@@ -9,12 +9,11 @@ import Foundation
 
 
 
-enum CompanionType: String, Codable {
+enum CompanionType: String, Codable, CaseIterable {
     case gpt4o = "gpt-4o"
     case gpt4o_mini = "gpt-4o-mini"
     case gpt3_5_turbo = "gpt-3.5-turbo"
     case claude3_5_sonnet = "claude-3.5-sonnet"
-    
 }
 
 
@@ -28,7 +27,7 @@ extension CompanionType {
         case .gpt3_5_turbo:
             "GPT 3.5"
         case .claude3_5_sonnet:
-            "Claude 3.5 sonnet"
+            "Claude Sonnet"
         }
     }
 }

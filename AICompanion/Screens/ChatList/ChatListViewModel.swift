@@ -10,38 +10,37 @@ import Combine
 
 final class ChatListViewModel: ObservableObject {
     
-    let storageManager: StorageManager
+    var chatsService: ChatsStorageInteractorProtocol
     var networkService = NetworkService()
     
     @Published var chats: [ChatModel] = []
-    var selectedChat = ChatModel(companion: .claude3_5_sonnet, name: "", messages: [])
+    var selectedChat = ChatModel(companion: .gpt4o , name: "", messages: [])
     
     @Published var selectedCompanion: CompanionType = .gpt4o
     
     var cancellable = Set<AnyCancellable>()
+    
     @Published private(set) var balance: Double = 0
     
     //Navigation
     @Published var isShowChatView = false
     
-    init(storageManager: StorageManager) {
-        self.storageManager = storageManager
+    init(chatsService: ChatsStorageInteractorProtocol) {
+        self.chatsService = chatsService
         initialState()
         assign()
-//        subscribe()
-        
     }
     
     func initialState() {
-        chats = storageManager.chats.value
+        chats = chatsService.chats.value
         getBalance()
     }
     
     func assign() {
-        storageManager.chats
+        chatsService.chats
             .assign(to: &$chats)
-        storageManager.balance
-            .assign(to: &$balance)
+//        storageManager.balance
+//            .assign(to: &$balance)
     }
     
     func showChatView(model: ChatModel) {
@@ -51,20 +50,20 @@ final class ChatListViewModel: ObservableObject {
     
     func createChat(name: String) {
         let chat = ChatModel(companion: selectedCompanion, name: name, messages: [])
-        storageManager.createChat(chatModel: chat)
+        chatsService.createChat(chat: chat)
     }
     
     func getBalance() {
         networkService.getBalance().sink { _ in
         } receiveValue: { value in
             print("get balance \(value.balance)")
-            self.storageManager.saveBalance(balance: value.balance)
+            self.balance = value.balance
         }
         .store(in: &cancellable)
     }
     
     func deleteChat(model: ChatModel) {
-        storageManager.deleteChat(model: model)
+        chatsService.deleteChat(chat: model)
     }
     
     // Bottom Sheet
