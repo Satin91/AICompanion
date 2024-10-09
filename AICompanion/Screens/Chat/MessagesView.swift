@@ -13,10 +13,12 @@ struct MessagesView: View {
     private let textLineSpacing: CGFloat = 2.5
     private let fontSize: CGFloat = 14
     @State var isAnimate = false
-    @State var onAppear = false
     
     var body: some View {
         content
+            .onAppear {
+                isAnimate.toggle()
+            }
     }
     
     var content: some View {
@@ -24,15 +26,13 @@ struct MessagesView: View {
     }
     
     private var messagesContainer: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            ScrollViewReader { sr in
-                VStack(spacing: .zero) {
-                    ForEach(0..<messages.count, id: \.self) { index in
-                        messageView(message: messages[index])
-                            .padding(.vertical, 8)
-                            .id(index)
-                    }
-                }
+        ScrollViewReader { sr in
+            ScrollView(.vertical, showsIndicators: false) {
+                //                VStack(spacing: .zero) {
+                messagesList
+                .onAppear(perform: {
+                    sr.scrollTo(messages.count - 1)
+                })
                 .onChange(of: messages.count) {
                     withAnimation {
                         sr.scrollTo(messages.count - 1)
@@ -40,9 +40,17 @@ struct MessagesView: View {
                 }
             }
             .padding(.horizontal, Layout.Padding.small)
-            
         }
-        .defaultScrollAnchor(onAppear ? .zero : .bottom)
+    }
+    
+    var messagesList: some View {
+        LazyVStack {
+            ForEach(0..<messages.count, id: \.self) { index in
+                messageView(message: messages[index])
+                    .padding(.vertical, 8)
+                    .id(index)
+            }
+        }
     }
     
     @ViewBuilder private func messageView(message: MessageModel) -> some View {
@@ -62,7 +70,6 @@ struct MessagesView: View {
                 .padding(.top, 10)
             Text(LocalizedStringKey(text))
                 .font(Fonts.museoSans(weight: .regular, size: fontSize))
-
                 .lineSpacing(textLineSpacing)
                 .foregroundColor(Colors.white)
                 .padding(10)
@@ -71,13 +78,9 @@ struct MessagesView: View {
                 .contextMenu(menuItems: {
                     contextMenuView(text)
                 }
-                    
-                    
                 )
             Spacer()
         }
-        //         .shadow(color: Colors.background2.opacity(0.4), radius: 10, x: 5, y: 5)
-        
     }
     
     private func userMessageView(text: String) -> some View {
@@ -93,8 +96,6 @@ struct MessagesView: View {
                 .cornerRadius(Layout.Radius.smallRadius + 2, corners: [.bottomLeft, .topLeft, .topRight])
                 .contextMenu(menuItems: {
                     contextMenuView(text)                }
-                    
-              
                 )
         }
     }

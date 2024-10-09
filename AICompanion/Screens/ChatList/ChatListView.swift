@@ -34,7 +34,6 @@ struct ChatListView: View {
             headerContainer
                 .padding(.top, Layout.Padding.large)
                 .padding(.bottom, Layout.Padding.medium)
-//                .background(Colors.lightDark)
             Divider()
             balanceView
             chatsList

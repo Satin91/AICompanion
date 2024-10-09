@@ -17,7 +17,7 @@ enum NetworkError: Error {
 final class NetworkManager {
     func request<T: Decodable>(request: URLRequest) -> AnyPublisher<T, NetworkError> {
         let config = URLSessionConfiguration.default
-        config.timeoutIntervalForResource = 10
+        config.timeoutIntervalForResource = 20
         let urlSession = URLSession(configuration: config)
         return urlSession.dataTaskPublisher(for: request)
             .tryMap { output in

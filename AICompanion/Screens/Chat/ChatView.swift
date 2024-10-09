@@ -57,11 +57,12 @@ struct ChatView: View {
                 Button {
                     presentationMode.wrappedValue.dismiss()
                 } label: {
-                    HStack {
+                    HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
                         Text("Назад")
                             .fontWeight(.medium)
                     }
+                    .foregroundColor(Colors.primary)
                 }
             }
             .addRightContainer({
@@ -103,8 +104,8 @@ struct ChatView: View {
         .padding(.top, Layout.Padding.extraSmall)
         .padding(.bottom, Layout.Padding.small)
         .padding(.horizontal, Layout.Padding.horizontalEdges)
-        .padding(.bottom, 18)
-        .background(Colors.lightDark)
+        .padding(.bottom, 24)
+        .background(Colors.background2)
     }
     
     var sendMessageButton: some View {

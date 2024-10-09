@@ -17,13 +17,37 @@ struct ResponseModel: Codable {
     let created: Int
     let model: String
     let choices: [Choice]
-    let usage: Usage
+    let usage: Usage?
+    let message: String
+//
+    enum CodingKeys: String, CodingKey {
+        case id
+        case object
+        case created
+        case model
+        case choices
+        case usage
+        case message = "response"
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decodeIfPresent(String.self, forKey: .id) ?? ""
+        self.object = try container.decodeIfPresent(String.self, forKey: .object) ?? ""
+        self.created = try container.decodeIfPresent(Int.self, forKey: .created) ?? 0
+        self.model = try container.decodeIfPresent(String.self, forKey: .model) ?? ""
+        self.choices = try container.decodeIfPresent([Choice].self, forKey: .choices) ?? []
+        self.usage = try container.decodeIfPresent(Usage.self, forKey: .usage)
+        
+        self.message = try container.decodeIfPresent(String.self, forKey: .message) ?? choices.first?.message.content ?? ""
+    }
+    
 }
 
 // MARK: - Choice
 struct Choice: Codable {
     let index: Int
-    let message: Message
+    let message: MessageModel
     let finishReason: String
 
     enum CodingKeys: String, CodingKey {

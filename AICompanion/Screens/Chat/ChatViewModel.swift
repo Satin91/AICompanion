@@ -27,65 +27,56 @@ final class ChatViewModel: ObservableObject {
     
     
     func send(message: String) {
-        isMemoryEnabled ? sendMessages(text: message) : sendMessage(text: message)
+        sendMessages(text: message)
+//        sendMessage(text: message)
     }
     
     func sendMessages(text: String) {
         chatModel.messages.append(MessageModel(role: "user", content: text) )
         self.animateScrollView()
         
-        let messages = chatModel.messages.map { Message(role: $0.role, content: $0.content) }
+        let messages = chatModel.messages
+        let message: [MessageModel] = [MessageModel(role: "user", content: text)]
+        
         isCompanionThinking = true
-        networkService.sendMessages(messages: messages, companion: chatModel.companion)
+        networkService.sendMessage(message: isMemoryEnabled ? messages : message, companion: chatModel.companion)
+//        networkService.sendMessage(message: isMemoryEnabled ? message : messages, companion: chatModel.companion)
             .sink(receiveCompletion: { compl in
                 self.isCompanionThinking = false
-//
-//                switch compl {
-//                case .finished:
-//                    print("____")
-//                case .failure(let failure):
-//                    print("failure receive message \(failure)")
-//                }
-        }, receiveValue: { value in
-            print("received Value", value.choices.first?.message.content ?? "")
-            self.chatModel.messages.append(MessageModel(role: value.choices.first?.message.role ?? "", content: value.choices.first?.message.content ?? "") )
-            self.animateScrollView()
-            self.chatsService.updateChat(chat: self.chatModel)
-            self.getBalance()
-            
-            
-        })
+            }, receiveValue: { value in
+                print("received Value", value.message)
+                self.chatModel.messages.append(MessageModel(role: value.choices.first?.message.role ?? "", content: value.message) )
+                self.animateScrollView()
+                self.chatsService.updateChat(chat: self.chatModel)
+                self.getBalance()
+                
+                
+            })
             .store(in: &cancellable)
     }
     
-    func sendMessage(text: String) {
-        isCompanionThinking = true
-        self.animateScrollView()
-        chatModel.messages.append(MessageModel(role: "user", content: text) )
-        networkService.sendMessage(message: text, companion: chatModel.companion).sink { compl in
-            self.isCompanionThinking = false
-//            
-//            switch compl {
-//            case .failure(let error):
-//                switch error {
-//                case let .serverError(code: code, text: text):
-//                    print("Network error \(code), text \(text)")
-//                default :
-//                    break
-//                }
-//            default:
-//                break
-//            }
-            
-        } receiveValue: { value in
-            print("Пришло значение:", value.choices.first?.message)
-            self.chatModel.messages.append(MessageModel(role: value.choices.first?.message.role ?? "", content: value.choices.first?.message.content ?? "") )
-            self.animateScrollView()
-            self.chatsService.updateChat(chat: self.chatModel)
-            self.getBalance()
-        }
-        .store(in: &cancellable)
-    }
+//    func sendMessage(text: String) {
+//        isCompanionThinking = true
+//        
+//        self.animateScrollView()
+//        let singleMessage = MessageModel(role: "user", content: text)
+//        var any: Any = isMemoryEnabled ? chatModel.messages : singleMessage
+//        
+//        
+//        chatModel.messages.append(singleMessage)
+//        
+//        
+//        networkService.sendMessage(message: any as! [MessageModel], companion: chatModel.companion).sink { compl in
+//            self.isCompanionThinking = false
+//        } receiveValue: { value in
+//            print("Пришло значение:", value.message)
+//            self.chatModel.messages.append(MessageModel(role: value.choices.first?.message.role ?? "", content: value.message) )
+//            self.animateScrollView()
+//            self.chatsService.updateChat(chat: self.chatModel)
+//            self.getBalance()
+//        }
+//        .store(in: &cancellable)
+//    }
     
     func animateScrollView() {
         isScrollViewAnimate.toggle()
@@ -94,7 +85,7 @@ final class ChatViewModel: ObservableObject {
     func getBalance() {
         networkService.getBalance().sink { _ in
         } receiveValue: { balance in
-//            self.storageManager.saveBalance(balance: balance.balance)
+            //            self.storageManager.saveBalance(balance: balance.balance)
         }
         .store(in: &cancellable)
     }
