@@ -8,69 +8,41 @@
 import SwiftUI
 
 struct MessagesView: View {
-   var messages: [MessageModel] {
-        didSet {
-            isAnimate.toggle()
-        }
-    }
+    var messages: [MessageModel]
     
-    private let textLineSpacing: CGFloat = 5
-    @State var viewIsAppear = false
+    private let textLineSpacing: CGFloat = 2.5
+    private let fontSize: CGFloat = 14
     @State var isAnimate = false
-    var isKeyboardShow: FocusState<Bool>.Binding
-    
-    var scrollOffset: CGFloat {
-        isKeyboardShow.wrappedValue ? -295 : 0
-    }
+    @State var onAppear = false
     
     var body: some View {
         content
-            .onAppear {
-                isAnimate.toggle()
-            }
     }
     
     var content: some View {
         messagesContainer
-//            .onTapGesture {
-//                isKeyboardShow.toggle()
-//            }
     }
     
     private var messagesContainer: some View {
         ScrollView(.vertical, showsIndicators: false) {
             ScrollViewReader { sr in
                 VStack(spacing: .zero) {
-                    Spacer()
                     ForEach(0..<messages.count, id: \.self) { index in
                         messageView(message: messages[index])
-                            .padding(.vertical, 16)
+                            .padding(.vertical, 8)
                             .id(index)
-                            .contextMenu(
-                                ContextMenu {
-                                    Button(role: .cancel, action: {
-                                        UIPasteboard.general.string = messages[index].content
-                                        //                                        viewModel.deleteChat(model: chat)
-                                    }) {
-                                        Label("Копировать", systemImage: "doc.on.clipboard")
-                                    }
-                                }
-                            )
                     }
                 }
-                .onChange(of: isAnimate) { count in
-                        sr.scrollTo(messages.count - 1)   // << scroll to view with id
-                }
-                .onChange(of: messages.count) { count in
-                        withAnimation {
-                            sr.scrollTo(count - 1)   // << scroll to view with id
-                        }
+                .onChange(of: messages.count) {
+                    withAnimation {
+                        sr.scrollTo(messages.count - 1)
+                    }
                 }
             }
-            .padding(.horizontal, Layout.Padding.horizontalEdges)
-//            .offset(y: scrollOffset)
-//            .animation(.spring(duration: 0.4, bounce: 0, blendDuration: 0.2), value: isKeyboardShow.wrappedValue)
+            .padding(.horizontal, Layout.Padding.small)
+            
         }
+        .defaultScrollAnchor(onAppear ? .zero : .bottom)
     }
     
     @ViewBuilder private func messageView(message: MessageModel) -> some View {
@@ -82,32 +54,60 @@ struct MessagesView: View {
     }
     
     private func companionMessageView(text: String) -> some View {
-         HStack {
-             Text(text)
-                 .font(Fonts.museoSans(weight: .regular, size: 16))
-                 .lineSpacing(textLineSpacing)
-                 .foregroundColor(Colors.white)
-                 .padding()
-                 .background(Colors.lightDark)
-                 .cornerRadius(4)
-                 .cornerRadius(Layout.Radius.defaultRadius, corners: [.bottomRight, .topLeft, .topRight])
-             Spacer()
-         }
-         .shadow(color: Color.black.opacity(0.18), radius: 10, x: 5, y: 5)
-     }
+        HStack(alignment: .top, spacing: .zero) {
+            Image(systemName: "aqi.medium")
+                .resizable()
+                .foregroundColor(Colors.primary)
+                .frame(width: 20, height: 20)
+                .padding(.top, 10)
+            Text(LocalizedStringKey(text))
+                .font(Fonts.museoSans(weight: .regular, size: fontSize))
+
+                .lineSpacing(textLineSpacing)
+                .foregroundColor(Colors.white)
+                .padding(10)
+                .cornerRadius(4)
+                .cornerRadius(Layout.Radius.smallRadius + 2, corners: [.bottomRight, .topLeft, .topRight])
+                .contextMenu(menuItems: {
+                    contextMenuView(text)
+                }
+                    
+                    
+                )
+            Spacer()
+        }
+        //         .shadow(color: Colors.background2.opacity(0.4), radius: 10, x: 5, y: 5)
+        
+    }
     
     private func userMessageView(text: String) -> some View {
         HStack {
-            Spacer()
+            Spacer(minLength: 40)
             Text(text)
-                .font(Fonts.museoSans(weight: .regular, size: 16))
+                .font(Fonts.museoSans(weight: .regular, size: fontSize))
                 .lineSpacing(textLineSpacing)
-                .foregroundColor(Colors.light)
-                .padding()
-                .background(Colors.primary)
+                .foregroundColor(Colors.white)
+                .padding(10)
+                .background(Colors.background2)
                 .cornerRadius(4)
-                .cornerRadius(Layout.Radius.defaultRadius, corners: [.bottomLeft, .topLeft, .topRight])
+                .cornerRadius(Layout.Radius.smallRadius + 2, corners: [.bottomLeft, .topLeft, .topRight])
+                .contextMenu(menuItems: {
+                    contextMenuView(text)                }
+                    
+              
+                )
         }
-        .shadow(color: Colors.primary.opacity(0.35), radius: 10, x: 5, y: 5)
+    }
+    
+    
+    func contextMenuView(_ text: String) -> some View {
+        Group {
+            Button(role: .cancel, action: {
+                UIPasteboard.general.string = text
+            }) {
+                Label("Копировать", systemImage: "doc.on.clipboard")
+            }
+            ShareLink("Поделиться", items: [text])
+        }
     }
 }

@@ -15,6 +15,8 @@ struct ChatView: View {
     
     @State var text = ""
     
+    private let fontSize: CGFloat = 14
+    
     init(model: ChatModel, chatsService: ChatsStorageInteractorProtocol) {
         self._viewModel = StateObject(wrappedValue: ChatViewModel(model: model, chatsService: chatsService))
     }
@@ -42,7 +44,7 @@ struct ChatView: View {
     @State var scrollViewOffset: CGFloat = 0
     
     private var messagesView: some View {
-        MessagesView(messages: viewModel.chatModel.messages, isKeyboardShow: $isKeyboardForeground)
+        MessagesView(messages: viewModel.chatModel.messages)
             .onTapGesture {
                 isKeyboardForeground = false
             }
@@ -57,21 +59,23 @@ struct ChatView: View {
                 } label: {
                     HStack {
                         Image(systemName: "chevron.left")
-                        Text("Back")
+                        Text("Назад")
                             .fontWeight(.medium)
                     }
                 }
             }
             .addRightContainer({
-                Toggle("", isOn: $viewModel.isMemoryEnabled)
+                ToggleView(isActive: $viewModel.isMemoryEnabled) { isActive in
+                    viewModel.isMemoryEnabled.toggle()
+                }
             })
-            .frame(height: 60)
+            .frame(height: 50)
             .padding(.horizontal, Layout.Padding.horizontalEdges)
             .overlay(content: {
                 Divider()
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             })
-            .background(Colors.lightDark)
+            .background(Colors.background2)
     }
     
     private var textFieldContainer: some View {
@@ -80,32 +84,31 @@ struct ChatView: View {
                       text: $text,
                       prompt: Text("Введите текст")
                 .font(Fonts.museoSans(weight: .regular,
-                                      size: 16))
+                                      size: fontSize))
                     .foregroundColor(Colors.neutral),
                       axis: .vertical
             )
-            .font(Fonts.museoSans(weight: .regular, size: 16))
+            .font(Fonts.museoSans(weight: .regular, size: fontSize))
             .foregroundColor(Colors.light)
             .focused($isKeyboardForeground, equals: true)
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius)
-                    .fill(Colors.lightDark)
+                    .fill(Colors.background)
                     .stroke(Colors.white.opacity(0.1), lineWidth: 1)
             )
             sendMessageButton
         }
         .ignoresSafeArea(.all)
-        .padding(.vertical, Layout.Padding.small)
+        .padding(.top, Layout.Padding.extraSmall)
+        .padding(.bottom, Layout.Padding.small)
         .padding(.horizontal, Layout.Padding.horizontalEdges)
         .padding(.bottom, 18)
         .background(Colors.lightDark)
-        
     }
     
     var sendMessageButton: some View {
         Button {
-            isKeyboardForeground = false
             guard !text.isEmpty else { return }
             viewModel.send(message: text)
             text = ""
@@ -118,5 +121,5 @@ struct ChatView: View {
 }
 
 #Preview {
-    ChatView(model: ChatModel(companion: .gpt4o, name: "", messages: []), chatsService: ChatsStorageInteractor() )
+    ChatView(model: ChatModel(companion: .gpt4o, name: "", messages: [.init(role: "assistant", content: "")]), chatsService: ChatsStorageInteractor() )
 }

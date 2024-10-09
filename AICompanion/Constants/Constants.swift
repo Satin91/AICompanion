@@ -48,6 +48,7 @@ enum Layout {
 
 enum Colors {
     static let background = Color("background")
+    static let background2 = Color("background2")
     static let white = Color("white")
     static let dark = Color("dark")
     static let light = Color("light")

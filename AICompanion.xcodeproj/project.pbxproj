@@ -24,6 +24,7 @@
 		8EA1BFAC2CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA82CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf */; };
 		8EA1BFAD2CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA92CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf */; };
 		8EB758942CB6B62800C09BF7 /* RisingAboveKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB758932CB6B62800C09BF7 /* RisingAboveKeyboard.swift */; };
+		8EB758962CB6DE2D00C09BF7 /* ToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB758952CB6DE2D00C09BF7 /* ToggleView.swift */; };
 		8ED64B042CA965240083B3A7 /* StorageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED64B032CA965240083B3A7 /* StorageRepository.swift */; };
 		8ED64B062CA973CC0083B3A7 /* ChatConfigModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED64B052CA973CC0083B3A7 /* ChatConfigModel.swift */; };
 		8ED8A0522CA7FF5D001D1CA7 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ED8A0512CA7FF5D001D1CA7 /* Colors.xcassets */; };
@@ -56,6 +57,7 @@
 		8EA1BFA82CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-700.ttf"; sourceTree = "<group>"; };
 		8EA1BFA92CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-300.ttf"; sourceTree = "<group>"; };
 		8EB758932CB6B62800C09BF7 /* RisingAboveKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RisingAboveKeyboard.swift; sourceTree = "<group>"; };
+		8EB758952CB6DE2D00C09BF7 /* ToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleView.swift; sourceTree = "<group>"; };
 		8ED64B032CA965240083B3A7 /* StorageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageRepository.swift; sourceTree = "<group>"; };
 		8ED64B052CA973CC0083B3A7 /* ChatConfigModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatConfigModel.swift; sourceTree = "<group>"; };
 		8ED8A0512CA7FF5D001D1CA7 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				8E8BA63A2CB17B1600EC14E2 /* NavigationBarVIew.swift */,
+				8EB758952CB6DE2D00C09BF7 /* ToggleView.swift */,
 			);
 			path = ViewComponents;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 				8E9C28AE2CA5A146006DB348 /* ChatViewModel.swift in Sources */,
 				8EE1A6942CA7708C00056A62 /* ResponseModel.swift in Sources */,
 				8EA1BF912CA897F700B0A596 /* SpecifiedCornerRadius.swift in Sources */,
+				8EB758962CB6DE2D00C09BF7 /* ToggleView.swift in Sources */,
 				8EA1BF9F2CA89A6300B0A596 /* Fonts.swift in Sources */,
 				8E8BA63B2CB17B1600EC14E2 /* NavigationBarVIew.swift in Sources */,
 				8EB758942CB6B62800C09BF7 /* RisingAboveKeyboard.swift in Sources */,

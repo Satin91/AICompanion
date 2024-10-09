@@ -34,7 +34,7 @@ struct ChatListView: View {
             headerContainer
                 .padding(.top, Layout.Padding.large)
                 .padding(.bottom, Layout.Padding.medium)
-                .background(Colors.lightDark)
+//                .background(Colors.lightDark)
             Divider()
             balanceView
             chatsList
@@ -88,7 +88,7 @@ struct ChatListView: View {
     
     var headerText: some View {
             Text("AI")
-                .foregroundColor(Colors.green)
+                .foregroundColor(Colors.primary)
                 .font(Fonts.museoSans(weight: .bold, size: 32))
             +
             Text(" Companion")
@@ -113,7 +113,7 @@ struct ChatListView: View {
             Group {
                 Text("Баланс: ")
                     .font(Fonts.museoSans(weight: .medium , size: 16))
-                    .foregroundColor(Colors.green)
+                    .foregroundColor(Colors.primary)
                 +
                 Text(String(format: "%.2f", viewModel.balance) + " ₽")
                     .font(.system(size: 14, weight: .semibold))
@@ -140,7 +140,7 @@ struct ChatListView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(chatModel.name)
-                            .font(Fonts.museoSans(weight: .medium, size: 16))
+                            .font(Fonts.museoSans(weight: .bold, size: 20))
                         Text(chatModel.messages.last?.content ?? "Сообщений нет")
                             .font(Fonts.museoSans(weight: .regular, size: 14))
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -155,14 +155,14 @@ struct ChatListView: View {
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius)
-                    .fill(Colors.lightDark)
-                    .stroke(Colors.lightDark, lineWidth: 1)
+                    .fill(Colors.background2)
+                    .padding(1)
                 )
                 .overlay {
                     ZStack {
                         RoundedRectangle(cornerRadius: 6)
                             .fill(Colors.lightDark)
-                            .stroke(Colors.white.opacity(0.1), lineWidth: 1)
+                            .stroke(Colors.stroke, lineWidth: 1)
                             .frame(width: 80)
                         Text(chatModel.companion.name)
                             .font(.system(size: 10, weight: .semibold))
