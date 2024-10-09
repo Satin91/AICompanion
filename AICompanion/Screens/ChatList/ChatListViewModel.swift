@@ -56,7 +56,6 @@ final class ChatListViewModel: ObservableObject {
     func getBalance() {
         networkService.getBalance().sink { _ in
         } receiveValue: { value in
-            print("get balance \(value.balance)")
             self.balance = value.balance
         }
         .store(in: &cancellable)

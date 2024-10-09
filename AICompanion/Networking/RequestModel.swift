@@ -87,7 +87,7 @@ struct RequestModel {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         request.addValue(Constants.API.apiKey, forHTTPHeaderField: "Authorization")
-//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         return request
     }

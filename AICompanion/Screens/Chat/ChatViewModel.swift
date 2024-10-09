@@ -18,6 +18,7 @@ final class ChatViewModel: ObservableObject {
     @Published var isCompanionThinking = false
     @Published var chatModel: ChatModel
     @Published var isMemoryEnabled = false
+    @Published var isScrollViewAnimate = false
     
     init(model: ChatModel, chatsService: ChatsStorageInteractorProtocol) {
         self.chatModel = model
@@ -31,7 +32,7 @@ final class ChatViewModel: ObservableObject {
     
     func sendMessages(text: String) {
         chatModel.messages.append(MessageModel(role: "user", content: text) )
-        
+        self.animateScrollView()
         
         let messages = chatModel.messages.map { Message(role: $0.role, content: $0.content) }
         isCompanionThinking = true
@@ -48,6 +49,7 @@ final class ChatViewModel: ObservableObject {
         }, receiveValue: { value in
             print("received Value", value.choices.first?.message.content ?? "")
             self.chatModel.messages.append(MessageModel(role: value.choices.first?.message.role ?? "", content: value.choices.first?.message.content ?? "") )
+            self.animateScrollView()
             self.chatsService.updateChat(chat: self.chatModel)
             self.getBalance()
             
@@ -58,6 +60,7 @@ final class ChatViewModel: ObservableObject {
     
     func sendMessage(text: String) {
         isCompanionThinking = true
+        self.animateScrollView()
         chatModel.messages.append(MessageModel(role: "user", content: text) )
         networkService.sendMessage(message: text, companion: chatModel.companion).sink { compl in
             self.isCompanionThinking = false
@@ -77,11 +80,15 @@ final class ChatViewModel: ObservableObject {
         } receiveValue: { value in
             print("Пришло значение:", value.choices.first?.message)
             self.chatModel.messages.append(MessageModel(role: value.choices.first?.message.role ?? "", content: value.choices.first?.message.content ?? "") )
+            self.animateScrollView()
             self.chatsService.updateChat(chat: self.chatModel)
-            
             self.getBalance()
         }
         .store(in: &cancellable)
+    }
+    
+    func animateScrollView() {
+        isScrollViewAnimate.toggle()
     }
     
     func getBalance() {

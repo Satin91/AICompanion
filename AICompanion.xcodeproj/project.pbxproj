@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E1697122CB5D94200BA70FE /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1697112CB5D94200BA70FE /* MessagesView.swift */; };
 		8E72E4CC2CAC3AE800FA5F69 /* ChatsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E72E4CB2CAC3AE800FA5F69 /* ChatsModel.swift */; };
 		8E8BA63B2CB17B1600EC14E2 /* NavigationBarVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8BA63A2CB17B1600EC14E2 /* NavigationBarVIew.swift */; };
 		8E9C289D2CA59F3D006DB348 /* AICompanionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9C289C2CA59F3D006DB348 /* AICompanionApp.swift */; };
@@ -22,6 +23,7 @@
 		8EA1BFAB2CA8AA4D00B0A596 /* MuseoSansCyrl-500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA72CA8AA4C00B0A596 /* MuseoSansCyrl-500.ttf */; };
 		8EA1BFAC2CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA82CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf */; };
 		8EA1BFAD2CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA92CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf */; };
+		8EB758942CB6B62800C09BF7 /* RisingAboveKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB758932CB6B62800C09BF7 /* RisingAboveKeyboard.swift */; };
 		8ED64B042CA965240083B3A7 /* StorageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED64B032CA965240083B3A7 /* StorageRepository.swift */; };
 		8ED64B062CA973CC0083B3A7 /* ChatConfigModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED64B052CA973CC0083B3A7 /* ChatConfigModel.swift */; };
 		8ED8A0522CA7FF5D001D1CA7 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ED8A0512CA7FF5D001D1CA7 /* Colors.xcassets */; };
@@ -35,6 +37,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8E1697112CB5D94200BA70FE /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
 		8E72E4CB2CAC3AE800FA5F69 /* ChatsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsModel.swift; sourceTree = "<group>"; };
 		8E8BA63A2CB17B1600EC14E2 /* NavigationBarVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarVIew.swift; sourceTree = "<group>"; };
 		8E9C28992CA59F3D006DB348 /* AICompanion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AICompanion.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -52,6 +55,7 @@
 		8EA1BFA72CA8AA4C00B0A596 /* MuseoSansCyrl-500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-500.ttf"; sourceTree = "<group>"; };
 		8EA1BFA82CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-700.ttf"; sourceTree = "<group>"; };
 		8EA1BFA92CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-300.ttf"; sourceTree = "<group>"; };
+		8EB758932CB6B62800C09BF7 /* RisingAboveKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RisingAboveKeyboard.swift; sourceTree = "<group>"; };
 		8ED64B032CA965240083B3A7 /* StorageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageRepository.swift; sourceTree = "<group>"; };
 		8ED64B052CA973CC0083B3A7 /* ChatConfigModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatConfigModel.swift; sourceTree = "<group>"; };
 		8ED8A0512CA7FF5D001D1CA7 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
@@ -104,7 +108,7 @@
 			children = (
 				8EA1BF9E2CA899F900B0A596 /* Info.plist */,
 				8EA1BFAE2CA8ADC100B0A596 /* App */,
-				8ED64AFC2CA959F80083B3A7 /* Repositoryes */,
+				8ED64AFC2CA959F80083B3A7 /* Repositories */,
 				8ED9E9492CB46F4800CD0F7E /* Interactors */,
 				8EE1A68A2CA7651000056A62 /* Networking */,
 				8ED8A0532CA88C38001D1CA7 /* Screens */,
@@ -159,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				8E9C289E2CA59F3D006DB348 /* ChatView.swift */,
+				8E1697112CB5D94200BA70FE /* MessagesView.swift */,
 				8E9C28AD2CA5A146006DB348 /* ChatViewModel.swift */,
 				8ED64B052CA973CC0083B3A7 /* ChatConfigModel.swift */,
 			);
@@ -183,12 +188,12 @@
 			path = App;
 			sourceTree = "<group>";
 		};
-		8ED64AFC2CA959F80083B3A7 /* Repositoryes */ = {
+		8ED64AFC2CA959F80083B3A7 /* Repositories */ = {
 			isa = PBXGroup;
 			children = (
 				8ED64B032CA965240083B3A7 /* StorageRepository.swift */,
 			);
-			path = Repositoryes;
+			path = Repositories;
 			sourceTree = "<group>";
 		};
 		8ED8A0532CA88C38001D1CA7 /* Screens */ = {
@@ -204,6 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				8EA1BF902CA897F700B0A596 /* SpecifiedCornerRadius.swift */,
+				8EB758932CB6B62800C09BF7 /* RisingAboveKeyboard.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -318,6 +324,7 @@
 				8EE1A6922CA7665E00056A62 /* CompanionType.swift in Sources */,
 				8EA1BFA32CA89C8A00B0A596 /* ChatListView.swift in Sources */,
 				8EE1A68E2CA7657200056A62 /* NetworkService.swift in Sources */,
+				8E1697122CB5D94200BA70FE /* MessagesView.swift in Sources */,
 				8EE1A68C2CA7656B00056A62 /* NetworkManager.swift in Sources */,
 				8E9C289F2CA59F3D006DB348 /* ChatView.swift in Sources */,
 				8EA1BFA52CA89C9600B0A596 /* ChatListViewModel.swift in Sources */,
@@ -329,6 +336,7 @@
 				8EA1BF912CA897F700B0A596 /* SpecifiedCornerRadius.swift in Sources */,
 				8EA1BF9F2CA89A6300B0A596 /* Fonts.swift in Sources */,
 				8E8BA63B2CB17B1600EC14E2 /* NavigationBarVIew.swift in Sources */,
+				8EB758942CB6B62800C09BF7 /* RisingAboveKeyboard.swift in Sources */,
 				8EE1A6902CA7662400056A62 /* RequestModel.swift in Sources */,
 				8ED64B042CA965240083B3A7 /* StorageRepository.swift in Sources */,
 				8EE1A6972CA7768400056A62 /* Constants.swift in Sources */,

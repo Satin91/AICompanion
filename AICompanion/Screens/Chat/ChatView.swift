@@ -8,24 +8,19 @@
 import SwiftUI
 
 struct ChatView: View {
+    @Environment(\.presentationMode) private var presentationMode
     
-    enum KeyboardForeground: Hashable {
-        case foreground
-    }
     @StateObject var viewModel: ChatViewModel
+    @FocusState var isKeyboardForeground: Bool
+    
+    @State var text = ""
     
     init(model: ChatModel, chatsService: ChatsStorageInteractorProtocol) {
         self._viewModel = StateObject(wrappedValue: ChatViewModel(model: model, chatsService: chatsService))
     }
-    @Environment(\.presentationMode) private var presentationMode
-    @FocusState var isKeyboardForeground: KeyboardForeground?
-    @State var text = ""
-    
-    let textLineSpacing: CGFloat = 5
     
     var body: some View {
         content
-//            .navigationTitle(viewModel.isCompanionThinking ? "Думает..." : "")
             .background(Colors.background.ignoresSafeArea(.all))
             .toolbar(.hidden)
     }
@@ -33,9 +28,24 @@ struct ChatView: View {
     var content: some View {
         VStack(spacing: .zero) {
             navigationBarView
-            messagesContainer
-            textFieldContainer
+                .zIndex(1)
+            Group {
+                messagesView
+                textFieldContainer
+            }
+            .risingAboveKeyboard()
         }
+        .ignoresSafeArea(.all, edges: .bottom)
+    }
+    
+    
+    @State var scrollViewOffset: CGFloat = 0
+    
+    private var messagesView: some View {
+        MessagesView(messages: viewModel.chatModel.messages, isKeyboardShow: $isKeyboardForeground)
+            .onTapGesture {
+                isKeyboardForeground = false
+            }
     }
     
     private var navigationBarView: some View {
@@ -64,63 +74,38 @@ struct ChatView: View {
             .background(Colors.lightDark)
     }
     
-    private var messagesContainer: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-//            VStack {
-                ForEach(viewModel.chatModel.messages, id: \.self) { message in
-                    messageView(message: message)
-                        .padding(.vertical, 4)
-                    
-                }
-//                thinkingView
-//            }
-            .rotationEffect(.degrees(180))
-            .padding(16)
-            .animation(.easeInOut, value: viewModel.chatModel.messages)
-        }
-        .rotationEffect(.degrees(180))
-        .onTapGesture {
-            isKeyboardForeground = nil
-        }
-    }
-    
-    @ViewBuilder var thinkingView: some View {
-        if viewModel.isCompanionThinking {
-            companionMessageView(text: "Думаю что вам ответить...")
-                
-        }
-    }
-    
     private var textFieldContainer: some View {
         HStack(spacing: Layout.Padding.small) {
             TextField("Введите текст",
-                text: $text,
-                prompt: Text("Введите текст")
-                    .font(Fonts.museoSans(weight: .regular,
-                size: 16))
+                      text: $text,
+                      prompt: Text("Введите текст")
+                .font(Fonts.museoSans(weight: .regular,
+                                      size: 16))
                     .foregroundColor(Colors.neutral),
-                axis: .vertical
+                      axis: .vertical
             )
-                .font(Fonts.museoSans(weight: .regular, size: 16))
-                .foregroundColor(Colors.light)
-                .focused($isKeyboardForeground, equals: .foreground)
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius)
-                        .fill(Colors.lightDark)
-                        .stroke(Colors.white.opacity(0.1), lineWidth: 1)
-                    )
-//                .cornerRadius(Layout.Radius.defaultRadius, antialiased: true)
+            .font(Fonts.museoSans(weight: .regular, size: 16))
+            .foregroundColor(Colors.light)
+            .focused($isKeyboardForeground, equals: true)
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius)
+                    .fill(Colors.lightDark)
+                    .stroke(Colors.white.opacity(0.1), lineWidth: 1)
+            )
             sendMessageButton
         }
-         .padding(.vertical, Layout.Padding.small)
-         .padding(.horizontal, Layout.Padding.horizontalEdges)
-         .background(Colors.lightDark)
-     }
+        .ignoresSafeArea(.all)
+        .padding(.vertical, Layout.Padding.small)
+        .padding(.horizontal, Layout.Padding.horizontalEdges)
+        .padding(.bottom, 18)
+        .background(Colors.lightDark)
+        
+    }
     
     var sendMessageButton: some View {
         Button {
-            isKeyboardForeground = nil
+            isKeyboardForeground = false
             guard !text.isEmpty else { return }
             viewModel.send(message: text)
             text = ""
@@ -129,44 +114,6 @@ struct ChatView: View {
                 .font(.system(size: 26))
                 .foregroundColor(text.isEmpty ? Colors.neutral : Colors.primary)
         }
-    }
-    
-    @ViewBuilder private func messageView(message: MessageModel) -> some View {
-        if message.role == "user" {
-            userMessageView(text: message.content)
-        } else {
-            companionMessageView(text: message.content)
-        }
-    }
-    
-    private func companionMessageView(text: String) -> some View {
-         HStack {
-             Text(text)
-                 .font(Fonts.museoSans(weight: .regular, size: 16))
-                 .lineSpacing(textLineSpacing)
-                 .foregroundColor(Colors.white)
-                 .padding()
-                 .background(Colors.lightDark)
-                 .cornerRadius(4)
-                 .cornerRadius(Layout.Radius.defaultRadius, corners: [.bottomRight, .topLeft, .topRight])
-             Spacer()
-         }
-         .shadow(color: Color.black.opacity(0.18), radius: 10, x: 5, y: 5)
-     }
-    
-    private func userMessageView(text: String) -> some View {
-        HStack {
-            Spacer()
-            Text(text)
-                .font(Fonts.museoSans(weight: .regular, size: 16))
-                .lineSpacing(textLineSpacing)
-                .foregroundColor(Colors.light)
-                .padding()
-                .background(Colors.primary)
-                .cornerRadius(4)
-                .cornerRadius(Layout.Radius.defaultRadius, corners: [.bottomLeft, .topLeft, .topRight])
-        }
-        .shadow(color: Colors.primary.opacity(0.35), radius: 10, x: 5, y: 5)
     }
 }
 
