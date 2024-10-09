@@ -6,13 +6,18 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct AICompanionApp: App {
+    
+    let storageManager = StorageRepository()
+    let chatsService = ChatsStorageInteractor()
+    
     var body: some Scene {
         WindowGroup {
-//            ChatView()
-            MainView()
+            ChatListView(chatsService: chatsService)
+                .preferredColorScheme(.dark)
         }
     }
 }

@@ -11,8 +11,18 @@ import Combine
 class NetworkService {
     var networkManager = NetworkManager()
     
-    func sendMessage(message: String) -> AnyPublisher<ResponseModel, NetworkError> {
-        let request = RequestModel(model: .gpt4o, message: message).makeRequest()
+    func sendMessages(messages: [Message], companion: CompanionType) -> AnyPublisher<ResponseModel, NetworkError> {
+        let request = RequestEnum.sendMessages(model: companion, role: "user", messages: messages).makeRequest()
+        return networkManager.request(request: request)
+    }
+    
+    func sendMessage(message: String, companion: CompanionType) -> AnyPublisher<ResponseModel, NetworkError> {
+        let request = RequestEnum.sendMessage(model: companion, role: "user", content: message).makeRequest()
+        return networkManager.request(request: request)
+    }
+    
+    func getBalance() -> AnyPublisher<Balance, NetworkError> {
+        let request = RequestEnum.getBallance.makeRequest()
         return networkManager.request(request: request)
     }
 }

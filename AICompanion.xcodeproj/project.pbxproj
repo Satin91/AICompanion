@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E1697122CB5D94200BA70FE /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1697112CB5D94200BA70FE /* MessagesView.swift */; };
+		8E72E4CC2CAC3AE800FA5F69 /* ChatsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E72E4CB2CAC3AE800FA5F69 /* ChatsModel.swift */; };
+		8E8BA63B2CB17B1600EC14E2 /* NavigationBarVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8BA63A2CB17B1600EC14E2 /* NavigationBarVIew.swift */; };
 		8E9C289D2CA59F3D006DB348 /* AICompanionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9C289C2CA59F3D006DB348 /* AICompanionApp.swift */; };
 		8E9C289F2CA59F3D006DB348 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9C289E2CA59F3D006DB348 /* ChatView.swift */; };
 		8E9C28A12CA59F3F006DB348 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E9C28A02CA59F3F006DB348 /* Assets.xcassets */; };
@@ -14,22 +17,29 @@
 		8E9C28AE2CA5A146006DB348 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9C28AD2CA5A146006DB348 /* ChatViewModel.swift */; };
 		8EA1BF912CA897F700B0A596 /* SpecifiedCornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA1BF902CA897F700B0A596 /* SpecifiedCornerRadius.swift */; };
 		8EA1BF9F2CA89A6300B0A596 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA1BF932CA899C500B0A596 /* Fonts.swift */; };
-		8EA1BFA32CA89C8A00B0A596 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA22CA89C8A00B0A596 /* MainView.swift */; };
-		8EA1BFA52CA89C9600B0A596 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA42CA89C9600B0A596 /* MainViewModel.swift */; };
+		8EA1BFA32CA89C8A00B0A596 /* ChatListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA22CA89C8A00B0A596 /* ChatListView.swift */; };
+		8EA1BFA52CA89C9600B0A596 /* ChatListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA42CA89C9600B0A596 /* ChatListViewModel.swift */; };
 		8EA1BFAA2CA8AA4D00B0A596 /* MuseoSansCyrl-100.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA62CA8AA4C00B0A596 /* MuseoSansCyrl-100.ttf */; };
 		8EA1BFAB2CA8AA4D00B0A596 /* MuseoSansCyrl-500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA72CA8AA4C00B0A596 /* MuseoSansCyrl-500.ttf */; };
 		8EA1BFAC2CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA82CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf */; };
 		8EA1BFAD2CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA92CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf */; };
+		8EB758942CB6B62800C09BF7 /* RisingAboveKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB758932CB6B62800C09BF7 /* RisingAboveKeyboard.swift */; };
+		8ED64B042CA965240083B3A7 /* StorageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED64B032CA965240083B3A7 /* StorageRepository.swift */; };
+		8ED64B062CA973CC0083B3A7 /* ChatConfigModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED64B052CA973CC0083B3A7 /* ChatConfigModel.swift */; };
 		8ED8A0522CA7FF5D001D1CA7 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ED8A0512CA7FF5D001D1CA7 /* Colors.xcassets */; };
+		8ED9E9482CB44B4C00CD0F7E /* ChatsStorageInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED9E9472CB44B4C00CD0F7E /* ChatsStorageInteractor.swift */; };
 		8EE1A68C2CA7656B00056A62 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE1A68B2CA7656B00056A62 /* NetworkManager.swift */; };
 		8EE1A68E2CA7657200056A62 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE1A68D2CA7657200056A62 /* NetworkService.swift */; };
 		8EE1A6902CA7662400056A62 /* RequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE1A68F2CA7662400056A62 /* RequestModel.swift */; };
-		8EE1A6922CA7665E00056A62 /* ChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE1A6912CA7665E00056A62 /* ChatModel.swift */; };
+		8EE1A6922CA7665E00056A62 /* CompanionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE1A6912CA7665E00056A62 /* CompanionType.swift */; };
 		8EE1A6942CA7708C00056A62 /* ResponseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE1A6932CA7708C00056A62 /* ResponseModel.swift */; };
 		8EE1A6972CA7768400056A62 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE1A6962CA7768400056A62 /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8E1697112CB5D94200BA70FE /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
+		8E72E4CB2CAC3AE800FA5F69 /* ChatsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsModel.swift; sourceTree = "<group>"; };
+		8E8BA63A2CB17B1600EC14E2 /* NavigationBarVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarVIew.swift; sourceTree = "<group>"; };
 		8E9C28992CA59F3D006DB348 /* AICompanion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AICompanion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E9C289C2CA59F3D006DB348 /* AICompanionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICompanionApp.swift; sourceTree = "<group>"; };
 		8E9C289E2CA59F3D006DB348 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
@@ -39,17 +49,21 @@
 		8EA1BF902CA897F700B0A596 /* SpecifiedCornerRadius.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecifiedCornerRadius.swift; sourceTree = "<group>"; };
 		8EA1BF932CA899C500B0A596 /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		8EA1BF9E2CA899F900B0A596 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		8EA1BFA22CA89C8A00B0A596 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
-		8EA1BFA42CA89C9600B0A596 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
+		8EA1BFA22CA89C8A00B0A596 /* ChatListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListView.swift; sourceTree = "<group>"; };
+		8EA1BFA42CA89C9600B0A596 /* ChatListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListViewModel.swift; sourceTree = "<group>"; };
 		8EA1BFA62CA8AA4C00B0A596 /* MuseoSansCyrl-100.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-100.ttf"; sourceTree = "<group>"; };
 		8EA1BFA72CA8AA4C00B0A596 /* MuseoSansCyrl-500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-500.ttf"; sourceTree = "<group>"; };
 		8EA1BFA82CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-700.ttf"; sourceTree = "<group>"; };
 		8EA1BFA92CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-300.ttf"; sourceTree = "<group>"; };
+		8EB758932CB6B62800C09BF7 /* RisingAboveKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RisingAboveKeyboard.swift; sourceTree = "<group>"; };
+		8ED64B032CA965240083B3A7 /* StorageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageRepository.swift; sourceTree = "<group>"; };
+		8ED64B052CA973CC0083B3A7 /* ChatConfigModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatConfigModel.swift; sourceTree = "<group>"; };
 		8ED8A0512CA7FF5D001D1CA7 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		8ED9E9472CB44B4C00CD0F7E /* ChatsStorageInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsStorageInteractor.swift; sourceTree = "<group>"; };
 		8EE1A68B2CA7656B00056A62 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		8EE1A68D2CA7657200056A62 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		8EE1A68F2CA7662400056A62 /* RequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestModel.swift; sourceTree = "<group>"; };
-		8EE1A6912CA7665E00056A62 /* ChatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
+		8EE1A6912CA7665E00056A62 /* CompanionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanionType.swift; sourceTree = "<group>"; };
 		8EE1A6932CA7708C00056A62 /* ResponseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseModel.swift; sourceTree = "<group>"; };
 		8EE1A6962CA7768400056A62 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -65,6 +79,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8E8BA6392CB17B0000EC14E2 /* ViewComponents */ = {
+			isa = PBXGroup;
+			children = (
+				8E8BA63A2CB17B1600EC14E2 /* NavigationBarVIew.swift */,
+			);
+			path = ViewComponents;
+			sourceTree = "<group>";
+		};
 		8E9C28902CA59F3D006DB348 = {
 			isa = PBXGroup;
 			children = (
@@ -86,10 +108,13 @@
 			children = (
 				8EA1BF9E2CA899F900B0A596 /* Info.plist */,
 				8EA1BFAE2CA8ADC100B0A596 /* App */,
-				8EE1A6952CA7767C00056A62 /* Constants */,
+				8ED64AFC2CA959F80083B3A7 /* Repositories */,
+				8ED9E9492CB46F4800CD0F7E /* Interactors */,
 				8EE1A68A2CA7651000056A62 /* Networking */,
 				8ED8A0532CA88C38001D1CA7 /* Screens */,
+				8E8BA6392CB17B0000EC14E2 /* ViewComponents */,
 				8ED8A0542CA89783001D1CA7 /* Extensions */,
+				8EE1A6952CA7767C00056A62 /* Constants */,
 				8EA1BF922CA899BB00B0A596 /* Theme */,
 				8EA1BF942CA899CA00B0A596 /* Resources */,
 				8E9C28A22CA59F3F006DB348 /* Preview Content */,
@@ -138,18 +163,21 @@
 			isa = PBXGroup;
 			children = (
 				8E9C289E2CA59F3D006DB348 /* ChatView.swift */,
+				8E1697112CB5D94200BA70FE /* MessagesView.swift */,
 				8E9C28AD2CA5A146006DB348 /* ChatViewModel.swift */,
+				8ED64B052CA973CC0083B3A7 /* ChatConfigModel.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
 		};
-		8EA1BFA12CA89C7B00B0A596 /* Main */ = {
+		8EA1BFA12CA89C7B00B0A596 /* ChatList */ = {
 			isa = PBXGroup;
 			children = (
-				8EA1BFA22CA89C8A00B0A596 /* MainView.swift */,
-				8EA1BFA42CA89C9600B0A596 /* MainViewModel.swift */,
+				8EA1BFA22CA89C8A00B0A596 /* ChatListView.swift */,
+				8EA1BFA42CA89C9600B0A596 /* ChatListViewModel.swift */,
+				8E72E4CB2CAC3AE800FA5F69 /* ChatsModel.swift */,
 			);
-			path = Main;
+			path = ChatList;
 			sourceTree = "<group>";
 		};
 		8EA1BFAE2CA8ADC100B0A596 /* App */ = {
@@ -160,10 +188,18 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		8ED64AFC2CA959F80083B3A7 /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				8ED64B032CA965240083B3A7 /* StorageRepository.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
 		8ED8A0532CA88C38001D1CA7 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				8EA1BFA12CA89C7B00B0A596 /* Main */,
+				8EA1BFA12CA89C7B00B0A596 /* ChatList */,
 				8EA1BFA02CA89C6C00B0A596 /* Chat */,
 			);
 			path = Screens;
@@ -173,8 +209,17 @@
 			isa = PBXGroup;
 			children = (
 				8EA1BF902CA897F700B0A596 /* SpecifiedCornerRadius.swift */,
+				8EB758932CB6B62800C09BF7 /* RisingAboveKeyboard.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		8ED9E9492CB46F4800CD0F7E /* Interactors */ = {
+			isa = PBXGroup;
+			children = (
+				8ED9E9472CB44B4C00CD0F7E /* ChatsStorageInteractor.swift */,
+			);
+			path = Interactors;
 			sourceTree = "<group>";
 		};
 		8EE1A68A2CA7651000056A62 /* Networking */ = {
@@ -184,7 +229,7 @@
 				8EE1A68D2CA7657200056A62 /* NetworkService.swift */,
 				8EE1A68F2CA7662400056A62 /* RequestModel.swift */,
 				8EE1A6932CA7708C00056A62 /* ResponseModel.swift */,
-				8EE1A6912CA7665E00056A62 /* ChatModel.swift */,
+				8EE1A6912CA7665E00056A62 /* CompanionType.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -276,19 +321,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8EE1A6922CA7665E00056A62 /* ChatModel.swift in Sources */,
-				8EA1BFA32CA89C8A00B0A596 /* MainView.swift in Sources */,
+				8EE1A6922CA7665E00056A62 /* CompanionType.swift in Sources */,
+				8EA1BFA32CA89C8A00B0A596 /* ChatListView.swift in Sources */,
 				8EE1A68E2CA7657200056A62 /* NetworkService.swift in Sources */,
+				8E1697122CB5D94200BA70FE /* MessagesView.swift in Sources */,
 				8EE1A68C2CA7656B00056A62 /* NetworkManager.swift in Sources */,
 				8E9C289F2CA59F3D006DB348 /* ChatView.swift in Sources */,
-				8EA1BFA52CA89C9600B0A596 /* MainViewModel.swift in Sources */,
+				8EA1BFA52CA89C9600B0A596 /* ChatListViewModel.swift in Sources */,
 				8E9C289D2CA59F3D006DB348 /* AICompanionApp.swift in Sources */,
+				8ED9E9482CB44B4C00CD0F7E /* ChatsStorageInteractor.swift in Sources */,
+				8ED64B062CA973CC0083B3A7 /* ChatConfigModel.swift in Sources */,
 				8E9C28AE2CA5A146006DB348 /* ChatViewModel.swift in Sources */,
 				8EE1A6942CA7708C00056A62 /* ResponseModel.swift in Sources */,
 				8EA1BF912CA897F700B0A596 /* SpecifiedCornerRadius.swift in Sources */,
 				8EA1BF9F2CA89A6300B0A596 /* Fonts.swift in Sources */,
+				8E8BA63B2CB17B1600EC14E2 /* NavigationBarVIew.swift in Sources */,
+				8EB758942CB6B62800C09BF7 /* RisingAboveKeyboard.swift in Sources */,
 				8EE1A6902CA7662400056A62 /* RequestModel.swift in Sources */,
+				8ED64B042CA965240083B3A7 /* StorageRepository.swift in Sources */,
 				8EE1A6972CA7768400056A62 /* Constants.swift in Sources */,
+				8E72E4CC2CAC3AE800FA5F69 /* ChatsModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,25 +471,27 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AICompanion/Preview Content\"";
-				DEVELOPMENT_TEAM = 6TVC5Q5R78;
+				DEVELOPMENT_TEAM = 3M3S5JFYGM;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AICompanion/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = arthurKulik.AICompanion;
+				PRODUCT_BUNDLE_IDENTIFIER = arthurKulik.AICompanion1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -449,25 +503,27 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AICompanion/Preview Content\"";
-				DEVELOPMENT_TEAM = 6TVC5Q5R78;
+				DEVELOPMENT_TEAM = 3M3S5JFYGM;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AICompanion/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = arthurKulik.AICompanion;
+				PRODUCT_BUNDLE_IDENTIFIER = arthurKulik.AICompanion1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
