@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ChatView: View {
     @Environment(\.presentationMode) private var presentationMode
-    
     @StateObject var viewModel: ChatViewModel
     @FocusState var isKeyboardForeground: Bool
     
@@ -44,15 +43,28 @@ struct ChatView: View {
     @State var scrollViewOffset: CGFloat = 0
     
     private var messagesView: some View {
-        MessagesView(messages: viewModel.chatModel.messages)
-            .onTapGesture {
-                isKeyboardForeground = false
-            }
+        MessagesView(messages: viewModel.chatModel.messages) { message in
+            viewModel.deleteMessage(message: message)
+        }
+        .onTapGesture {
+            isKeyboardForeground = false
+        }
     }
     
     private var navigationBarView: some View {
         NavigationBarView()
-            .addCentralContainer({ Text(viewModel.isCompanionThinking ? "Думает..." : "") })
+            .addCentralContainer {
+                Text(viewModel.chatModel.companion.name)
+                    .overlay {
+                        ProgressView()
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .offset(x: 30)
+                            .opacity(viewModel.isCompanionThinking ? 1 : 0)
+                    }
+                
+            .font(Fonts.museoSans(weight: .bold, size: 22))
+            .foregroundColor(Colors.subtitle)
+            }
             .addLeftContainer {
                 Button {
                     presentationMode.wrappedValue.dismiss()
@@ -62,7 +74,7 @@ struct ChatView: View {
                         Text("Назад")
                             .fontWeight(.medium)
                     }
-                    .foregroundColor(Colors.primary)
+                    .foregroundColor(Colors.primarySecondary)
                 }
             }
             .addRightContainer({
@@ -86,11 +98,11 @@ struct ChatView: View {
                       prompt: Text("Введите текст")
                 .font(Fonts.museoSans(weight: .regular,
                                       size: fontSize))
-                    .foregroundColor(Colors.neutral),
+                    .foregroundColor(Colors.subtitle),
                       axis: .vertical
             )
             .font(Fonts.museoSans(weight: .regular, size: fontSize))
-            .foregroundColor(Colors.light)
+            .foregroundColor(Colors.white)
             .focused($isKeyboardForeground, equals: true)
             .padding()
             .background(
@@ -110,13 +122,16 @@ struct ChatView: View {
     
     var sendMessageButton: some View {
         Button {
+            isKeyboardForeground = false
             guard !text.isEmpty else { return }
             viewModel.send(message: text)
             text = ""
         } label: {
             Image(systemName: "paperplane.fill")
                 .font(.system(size: 26))
-                .foregroundColor(text.isEmpty ? Colors.neutral : Colors.primary)
+                .foregroundColor(text.isEmpty ? Colors.subtitle : Colors.primary)
+                .shadow(color: Colors.primary.opacity(text.isEmpty ? 0 : 0.3), radius: 5)
+                .animation(.easeInOut(duration: 0.1), value: text.isEmpty)
         }
     }
 }

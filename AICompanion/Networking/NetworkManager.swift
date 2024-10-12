@@ -25,7 +25,6 @@ final class NetworkManager {
                 guard !(400...499).contains(response.statusCode) else { throw NetworkError.notFound }
                 guard !(500...599).contains(response.statusCode) else { throw NetworkError.serverError(code: response.statusCode, text: "Сервер недоступен, возможно он перегружен") }
                 guard (200...299).contains(response.statusCode) else { throw NetworkError.serverError(code: response.statusCode, text: "Bad status code") }
-                
                 return output.data
             }
             .decode(type: T.self, decoder: JSONDecoder())

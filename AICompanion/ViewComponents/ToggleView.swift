@@ -48,7 +48,7 @@ struct ToggleView: View {
     
     private var toggleBackgroundView: some View {
         RoundedRectangle(cornerRadius: 18)
-            .fill(isActive ? Colors.primary : backgroundColor)
+            .fill(isActive ? Colors.primarySecondary : backgroundColor)
             .animation(.easeInOut(duration: 0.2), value: isActive)
     }
 }
