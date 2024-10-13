@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ChatListView: View {
     @ObservedObject var viewModel: ChatListViewModel
+    @EnvironmentObject var coordinator: Coordinator
     
     init(chatsService: ChatsStorageInteractorProtocol) {
         self._viewModel = ObservedObject(wrappedValue: ChatListViewModel(chatsService: chatsService))
@@ -34,7 +35,6 @@ struct ChatListView: View {
     
     var content: some View {
         VStack(spacing: .zero) {
-            navigation
             headerContainer
                 .padding(.top, Layout.Padding.large)
                 .padding(.bottom, Layout.Padding.medium)
@@ -52,7 +52,7 @@ struct ChatListView: View {
         ScrollView(.vertical, showsIndicators: false) {
             ForEach(viewModel.chats, id: \.self) { chat in
                 ActualChatView(chatModel: chat) {
-                    viewModel.showChatView(model: chat)
+                    coordinator.push(page: .chatView(chat: chat, chatsStorage: viewModel.chatsService))
                 }
                 .padding(.top)
                 .contextMenu(
@@ -66,22 +66,6 @@ struct ChatListView: View {
                 )
             }
             .padding(.top, Layout.Padding.medium )
-        }
-    }
-    
-    var navigation: some View {
-        VStack(spacing: .zero) {
-            NavigationLink(
-                destination:
-//                    ChatView(model: viewModel.selectedChat, chatsService: viewModel.chatsService)
-//                ChatView2(chat: viewModel.selectedChat, chatsStorage: viewModel.chatsService)
-                ChatView(chat: viewModel.selectedChat, chatsStorage: viewModel.chatsService)
-                
-                ,
-                isActive: $viewModel.isShowChatView,
-                label: {
-                    EmptyView()
-                })
         }
     }
     

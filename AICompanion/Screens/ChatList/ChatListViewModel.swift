@@ -14,16 +14,12 @@ final class ChatListViewModel: ObservableObject {
     var networkService = NetworkService()
     
     @Published var chats: [ChatModel] = []
-    var selectedChat = ChatModel(companion: .gpt4o , name: "", messages: [])
     
     @Published var selectedCompanion: CompanionType = .gpt4o
     
     var cancellable = Set<AnyCancellable>()
     
     @Published private(set) var balance: Double = 0
-    
-    //Navigation
-    @Published var isShowChatView = false
     
     init(chatsService: ChatsStorageInteractorProtocol) {
         self.chatsService = chatsService
@@ -39,13 +35,6 @@ final class ChatListViewModel: ObservableObject {
     func assign() {
         chatsService.chats
             .assign(to: &$chats)
-//        storageManager.balance
-//            .assign(to: &$balance)
-    }
-    
-    func showChatView(model: ChatModel) {
-        selectedChat = model
-        isShowChatView = true
     }
     
     func createChat(name: String) {

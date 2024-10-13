@@ -13,6 +13,7 @@
 		8E8EE0902CBBE6D7009E3F16 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8EE08F2CBBE6D7009E3F16 /* Store.swift */; };
 		8E8EE0922CBC3107009E3F16 /* ChatReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8EE0912CBC3107009E3F16 /* ChatReducer.swift */; };
 		8E8EE0942CBC31C8009E3F16 /* ChatMiddlewares.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8EE0932CBC31C8009E3F16 /* ChatMiddlewares.swift */; };
+		8E8EE0962CBC57E0009E3F16 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8EE0952CBC57E0009E3F16 /* Coordinator.swift */; };
 		8E9C289D2CA59F3D006DB348 /* AICompanionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9C289C2CA59F3D006DB348 /* AICompanionApp.swift */; };
 		8E9C28A12CA59F3F006DB348 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E9C28A02CA59F3F006DB348 /* Assets.xcassets */; };
 		8E9C28A42CA59F3F006DB348 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E9C28A32CA59F3F006DB348 /* Preview Assets.xcassets */; };
@@ -47,6 +48,7 @@
 		8E8EE08F2CBBE6D7009E3F16 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		8E8EE0912CBC3107009E3F16 /* ChatReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatReducer.swift; sourceTree = "<group>"; };
 		8E8EE0932CBC31C8009E3F16 /* ChatMiddlewares.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMiddlewares.swift; sourceTree = "<group>"; };
+		8E8EE0952CBC57E0009E3F16 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		8E9C28992CA59F3D006DB348 /* AICompanion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AICompanion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E9C289C2CA59F3D006DB348 /* AICompanionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICompanionApp.swift; sourceTree = "<group>"; };
 		8E9C28A02CA59F3F006DB348 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				8E9C289C2CA59F3D006DB348 /* AICompanionApp.swift */,
+				8E8EE0952CBC57E0009E3F16 /* Coordinator.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -355,6 +358,7 @@
 				8ED64B042CA965240083B3A7 /* StorageRepository.swift in Sources */,
 				8EE1A6972CA7768400056A62 /* Constants.swift in Sources */,
 				8E9F40F22CBA8AB600F4FCB2 /* ReadSize.swift in Sources */,
+				8E8EE0962CBC57E0009E3F16 /* Coordinator.swift in Sources */,
 				8E8EE0942CBC31C8009E3F16 /* ChatMiddlewares.swift in Sources */,
 				8E72E4CC2CAC3AE800FA5F69 /* ChatsModel.swift in Sources */,
 			);

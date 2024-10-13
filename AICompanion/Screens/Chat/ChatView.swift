@@ -34,7 +34,8 @@ struct ChatView: View {
     private let fontSize: CGFloat = 14
     
     init(chat: ChatModel, chatsStorage: ChatsStorageInteractorProtocol) {
-        var state = ChatState(chat: chat)
+        let state = ChatState(chat: chat)
+        
         _store = StateObject(
             wrappedValue: .init(
                 state: state,
