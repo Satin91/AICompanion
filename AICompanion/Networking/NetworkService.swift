@@ -10,19 +10,15 @@ import Combine
 
 class NetworkService {
     var networkManager = NetworkManager()
-    
-    func sendMessages(messages: [Message], companion: CompanionType) -> AnyPublisher<ResponseModel, NetworkError> {
-        let request = RequestEnum.sendMessages(model: companion, role: "user", messages: messages).makeRequest()
-        return networkManager.request(request: request)
-    }
-    
-    func sendMessage(message: String, companion: CompanionType) -> AnyPublisher<ResponseModel, NetworkError> {
-        let request = RequestEnum.sendMessage(model: companion, role: "user", content: message).makeRequest()
+
+    func sendMessage(message: [MessageModel], companion: CompanionType) -> AnyPublisher<ResponseModel, NetworkError> {
+        let request = RequestEnum.sendMessages(model: companion, messages: message).request
         return networkManager.request(request: request)
     }
     
     func getBalance() -> AnyPublisher<Balance, NetworkError> {
-        let request = RequestEnum.getBallance.makeRequest()
+        let request = RequestEnum.getBallance.request
         return networkManager.request(request: request)
     }
 }
+

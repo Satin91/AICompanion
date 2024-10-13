@@ -17,6 +17,7 @@ enum CompanionType: String, Codable, CaseIterable {
 }
 
 
+//MARK: - Name
 extension CompanionType {
     var name: String {
         switch self {
@@ -32,6 +33,7 @@ extension CompanionType {
     }
 }
 
+//MARK: - Description
 extension CompanionType {
     var description: String {
         switch self {
@@ -42,7 +44,23 @@ extension CompanionType {
         case .gpt3_5_turbo:
             return "Предыдущая и доступная модель с более низкой производительностью, но всё ещё большой базой данных"
         case .claude3_5_sonnet:
-            return ""
+            return "Новаторский прогресс в генеративном искусственном интеллекте, предлагающий уникальное сочетание скорости, доступности и качества"
+        }
+    }
+}
+
+//MARK: - Base URL
+extension CompanionType {
+    var baseURL: String {
+        switch self {
+        case .gpt4o:
+            return Constants.API.gpTunnelSendMessageURL
+        case .gpt4o_mini:
+            return Constants.API.gpTunnelSendMessageURL
+        case .gpt3_5_turbo:
+            return Constants.API.gpTunnelSendMessageURL
+        case .claude3_5_sonnet:
+            return Constants.API.sonnetBaseURL
         }
     }
 }

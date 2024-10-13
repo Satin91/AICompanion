@@ -1,28 +1,56 @@
 //
-//  ContentView.swift
+//  Redux.swift
 //  AICompanion
 //
-//  Created by Артур Кулик on 26.09.2024.
+//  Created by Артур Кулик on 13.10.2024.
 //
 
 import SwiftUI
+import Combine
+
+struct ChatState {
+    var navigationTitle: String = ""
+    var isHistoryEnabled: Bool = false
+    var isMessageReceiving = false
+    var chat: ChatModel
+}
+
+enum ChatAction {
+    case sendMessage(text: String, isHistoryEnabled: Bool)
+    case delete(message: MessageModel)
+    case receiveComplete(ChatModel)
+    case errorReceiveMessage(error: NetworkError)
+    case toggleHistoryValue
+    case onViewAppear
+}
 
 struct ChatView: View {
     @Environment(\.presentationMode) private var presentationMode
+    @StateObject var store: Store<ChatState, ChatAction>
     
-    @StateObject var viewModel: ChatViewModel
     @FocusState var isKeyboardForeground: Bool
-    
     @State var text = ""
     
-    init(model: ChatModel, chatsService: ChatsStorageInteractorProtocol) {
-        self._viewModel = StateObject(wrappedValue: ChatViewModel(model: model, chatsService: chatsService))
+    private let fontSize: CGFloat = 14
+    
+    init(chat: ChatModel, chatsStorage: ChatsStorageInteractorProtocol) {
+        var state = ChatState(chat: chat)
+        _store = StateObject(
+            wrappedValue: .init(
+                state: state,
+                reducer: chatReducer(state:action:),
+                middlewares: [chatMiddleware(network: NetworkService(), chatsStorage: chatsStorage)]
+            )
+        )
     }
     
     var body: some View {
         content
             .background(Colors.background.ignoresSafeArea(.all))
             .toolbar(.hidden)
+            .onAppear {
+                store.dispatch(.onViewAppear)
+            }
     }
     
     var content: some View {
@@ -42,36 +70,53 @@ struct ChatView: View {
     @State var scrollViewOffset: CGFloat = 0
     
     private var messagesView: some View {
-        MessagesView(messages: viewModel.chatModel.messages, isKeyboardShow: $isKeyboardForeground)
-            .onTapGesture {
-                isKeyboardForeground = false
-            }
+        MessagesView(messages: store.state.chat.messages) { message in
+//            viewModel.deleteMessage(message: message)
+            store.dispatch(.delete(message: message))
+        }
+        .onTapGesture {
+            isKeyboardForeground = false
+        }
     }
     
     private var navigationBarView: some View {
         NavigationBarView()
-            .addCentralContainer({ Text(viewModel.isCompanionThinking ? "Думает..." : "") })
+            .addCentralContainer {
+                Text(store.state.navigationTitle)
+                    .overlay {
+                        ProgressView()
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .offset(x: 30)
+                            .opacity(store.state.isMessageReceiving ? 1 : 0)
+                    }
+                
+            .font(Fonts.museoSans(weight: .bold, size: 22))
+            .foregroundColor(Colors.subtitle)
+            }
             .addLeftContainer {
                 Button {
                     presentationMode.wrappedValue.dismiss()
                 } label: {
-                    HStack {
+                    HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
-                        Text("Back")
+                        Text("Назад")
                             .fontWeight(.medium)
                     }
+                    .foregroundColor(Colors.primarySecondary)
                 }
             }
             .addRightContainer({
-                Toggle("", isOn: $viewModel.isMemoryEnabled)
+                ToggleView(isActive: store.state.isHistoryEnabled) { isActive in
+                    store.dispatch(.toggleHistoryValue)
+                }
             })
-            .frame(height: 60)
+            .frame(height: 50)
             .padding(.horizontal, Layout.Padding.horizontalEdges)
             .overlay(content: {
                 Divider()
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             })
-            .background(Colors.lightDark)
+            .background(Colors.background2)
     }
     
     private var textFieldContainer: some View {
@@ -80,43 +125,43 @@ struct ChatView: View {
                       text: $text,
                       prompt: Text("Введите текст")
                 .font(Fonts.museoSans(weight: .regular,
-                                      size: 16))
-                    .foregroundColor(Colors.neutral),
+                                      size: fontSize))
+                    .foregroundColor(Colors.subtitle),
                       axis: .vertical
             )
-            .font(Fonts.museoSans(weight: .regular, size: 16))
-            .foregroundColor(Colors.light)
+            .font(Fonts.museoSans(weight: .regular, size: fontSize))
+            .foregroundColor(Colors.white)
             .focused($isKeyboardForeground, equals: true)
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius)
-                    .fill(Colors.lightDark)
+                    .fill(Colors.background)
                     .stroke(Colors.white.opacity(0.1), lineWidth: 1)
             )
             sendMessageButton
         }
         .ignoresSafeArea(.all)
-        .padding(.vertical, Layout.Padding.small)
+        .padding(.top, Layout.Padding.extraSmall)
+        .padding(.bottom, Layout.Padding.small)
         .padding(.horizontal, Layout.Padding.horizontalEdges)
-        .padding(.bottom, 18)
-        .background(Colors.lightDark)
-        
+        .padding(.bottom, 24)
+        .background(Colors.background2)
     }
     
     var sendMessageButton: some View {
         Button {
             isKeyboardForeground = false
             guard !text.isEmpty else { return }
-            viewModel.send(message: text)
+            store.dispatch(.sendMessage(text: self.text, isHistoryEnabled: store.state.isHistoryEnabled))
+//            viewModel.send(message: text)
             text = ""
         } label: {
             Image(systemName: "paperplane.fill")
                 .font(.system(size: 26))
-                .foregroundColor(text.isEmpty ? Colors.neutral : Colors.primary)
+                .foregroundColor(text.isEmpty ? Colors.subtitle : Colors.primary)
+                .shadow(color: Colors.primary.opacity(text.isEmpty ? 0 : 0.3), radius: 5)
+                .animation(.easeInOut(duration: 0.1), value: text.isEmpty)
         }
     }
 }
 
-#Preview {
-    ChatView(model: ChatModel(companion: .gpt4o, name: "", messages: []), chatsService: ChatsStorageInteractor() )
-}

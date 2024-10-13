@@ -15,14 +15,18 @@ struct ChatListView: View {
     }
     
     @State var sheetShown = false
-    @State var chatName = ""
     
     var body: some View {
         NavigationView {
             content
                 .toolbar(.hidden)
                 .sheet(isPresented: $sheetShown) {
-                    sheetView
+                    CreateChatView(
+                        onTapCreateButton: { viewModel.createChat(name: $0 ) },
+                        onTapCompanion: { viewModel.selectCompanion($0) },
+                        sheetShown: $sheetShown,
+                        selectedCompanion: $viewModel.selectedCompanion
+                    )
                         .presentationDetents([.medium])
                 }
         }
@@ -34,7 +38,6 @@ struct ChatListView: View {
             headerContainer
                 .padding(.top, Layout.Padding.large)
                 .padding(.bottom, Layout.Padding.medium)
-                .background(Colors.lightDark)
             Divider()
             balanceView
             chatsList
@@ -69,7 +72,12 @@ struct ChatListView: View {
     var navigation: some View {
         VStack(spacing: .zero) {
             NavigationLink(
-                destination: ChatView(model: viewModel.selectedChat, chatsService: viewModel.chatsService),
+                destination:
+//                    ChatView(model: viewModel.selectedChat, chatsService: viewModel.chatsService)
+//                ChatView2(chat: viewModel.selectedChat, chatsStorage: viewModel.chatsService)
+                ChatView(chat: viewModel.selectedChat, chatsStorage: viewModel.chatsService)
+                
+                ,
                 isActive: $viewModel.isShowChatView,
                 label: {
                     EmptyView()
@@ -88,7 +96,7 @@ struct ChatListView: View {
     
     var headerText: some View {
             Text("AI")
-                .foregroundColor(Colors.green)
+                .foregroundColor(Colors.primary)
                 .font(Fonts.museoSans(weight: .bold, size: 32))
             +
             Text(" Companion")
@@ -101,8 +109,8 @@ struct ChatListView: View {
             sheetShown.toggle()
         } label: {
             Image(systemName: "plus")
-                .font(.system(size: 22))
-                .foregroundColor(Colors.primary)
+                .font(.system(size: 22, weight: .bold))
+                .foregroundColor(Colors.primarySecondary)
                 .padding(.trailing, Layout.Padding.horizontalEdges)
         }
         .buttonStyle(PlainButtonStyle())
@@ -113,10 +121,11 @@ struct ChatListView: View {
             Group {
                 Text("Баланс: ")
                     .font(Fonts.museoSans(weight: .medium , size: 16))
-                    .foregroundColor(Colors.green)
+                    .foregroundColor(Colors.primarySecondary)
                 +
                 Text(String(format: "%.2f", viewModel.balance) + " ₽")
                     .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(Colors.white)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, Layout.Padding.horizontalEdges)
@@ -138,11 +147,13 @@ struct ChatListView: View {
                 onTap()
             } label: {
                 HStack {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: 8) {
                         Text(chatModel.name)
-                            .font(Fonts.museoSans(weight: .medium, size: 16))
+                            .font(Fonts.museoSans(weight: .bold, size: 20))
+                            .foregroundColor(Colors.white)
                         Text(chatModel.messages.last?.content ?? "Сообщений нет")
                             .font(Fonts.museoSans(weight: .regular, size: 14))
+                            .foregroundColor(Colors.subtitle)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .multilineTextAlignment(.leading)
                             .lineLimit(1)
@@ -150,19 +161,19 @@ struct ChatListView: View {
                     .foregroundColor(Colors.white)
                     Image(systemName: "chevron.right")
                         .font(.system(size: 18))
-                        .foregroundColor(Colors.primary)
+                        .foregroundColor(Colors.primarySecondary)
                 }
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius)
-                    .fill(Colors.lightDark)
-                    .stroke(Colors.lightDark, lineWidth: 1)
+                    .fill(Colors.background2)
+                    .padding(1)
                 )
                 .overlay {
                     ZStack {
                         RoundedRectangle(cornerRadius: 6)
-                            .fill(Colors.lightDark)
-                            .stroke(Colors.white.opacity(0.1), lineWidth: 1)
+                            .fill(Colors.background2)
+                            .stroke(Color.white.opacity(0.1), lineWidth: 1)
                             .frame(width: 80)
                         Text(chatModel.companion.name)
                             .font(.system(size: 10, weight: .semibold))
@@ -176,74 +187,88 @@ struct ChatListView: View {
         }
     }
     
-    var sheetView: some View {
-        VStack(spacing: 28) {
-            TextField("Введите имя", text: $chatName)
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.lightDark)
-                        .stroke(Colors.white.opacity(0.1), lineWidth: 1)
-                )
-                .padding()
-            chatsView
-            
-            Text(viewModel.selectedCompanion.description)
-                .font(Fonts.museoSans(weight: .regular, size: 18))
-                .foregroundColor(Colors.white.opacity(0.7))
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .frame(height: 80)
-                .padding(Layout.Padding.horizontalEdges)
-            
-            Button {
-                viewModel.createChat(name: chatName)
-                chatName = ""
-                sheetShown.toggle()
-            } label: {
-                Text("Добавить")
-                    .fontWeight(.medium)
-                    .foregroundColor(Colors.background)
-                    .padding(.horizontal, 56)
-                    .padding(.vertical, 8)
-                    .background(Colors.green)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
-            }
-            .buttonStyle(.plain)
-            Spacer()
+    struct CreateChatView: View {
+        @State var chatName = ""
+        
+        var onTapCreateButton: (String) -> Void
+        var onTapCompanion: (CompanionType) -> Void
+        @Binding var sheetShown: Bool
+        @Binding var selectedCompanion: CompanionType
+        
+        var body: some View {
+            content
         }
-        .padding(.top, Layout.Padding.medium)
-        .frame(maxWidth: .infinity)
-        .background(Colors.background)
-    }
-    
-    var chatsView: some View {
-        LazyVGrid(columns: columns, alignment: .center , spacing: 16, content: {
-            ForEach(CompanionType.allCases, id: \.self) { type in
-                makeBorderedButton(title: type.name, isSelected: type == viewModel.selectedCompanion) { viewModel.selectCompanion(type) }
+        
+        var content: some View {
+            VStack(spacing: 22) {
+                TextField("Введите имя", text: $chatName)
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+//                            .fill(Color.background2)
+                            .stroke(Colors.white.opacity(0.1), lineWidth: 1)
+                    )
+                    .padding()
+                companionsView
+                Text(selectedCompanion.description)
+                    .font(Fonts.museoSans(weight: .regular, size: 18))
+                    .foregroundColor(Colors.white.opacity(0.7))
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .frame(height: 90)
+                    .padding(Layout.Padding.horizontalEdges)
+                
+                Button {
+                    onTapCreateButton(chatName)
+                    chatName = ""
+                    sheetShown.toggle()
+                } label: {
+                    Text("Создать")
+                        .fontWeight(.semibold)
+                        .foregroundColor(Colors.background2.opacity(0.8))
+                        .padding(.horizontal, 56)
+                        .padding(.vertical, 8)
+                        .background(Colors.primary)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                }
+                .buttonStyle(.plain)
+                Spacer()
             }
-        })
-    }
-    
-    private var columns: [GridItem] = [
-        GridItem(.fixed(100), spacing: 16),
-        GridItem(.fixed(100), spacing: 16),
-        GridItem(.fixed(100), spacing: 16)
-    ]
-    
-    func makeBorderedButton(title: String, isSelected: Bool, onTap: @escaping () -> Void) -> some View {
-        Button {
-            onTap()
-        } label: {
-            Text(title)
-                .font(Fonts.museoSans(weight: .regular, size: 12))
-                .frame(width: 100, height: 26)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(isSelected ? Colors.primary.opacity(0.4) : Color.clear)
-                        .stroke(isSelected ? Colors.primary : Colors.white.opacity(0.1), lineWidth: 1)
-                    
-                )
-        }.buttonStyle(.plain)
-    }
+            .padding(.top, Layout.Padding.medium)
+            .frame(maxWidth: .infinity)
+            .background(Colors.background)
+        }
+        
+        var companionsView: some View {
+            LazyVGrid(columns: columns, alignment: .center , spacing: 16, content: {
+                ForEach(CompanionType.allCases, id: \.self) { type in
+                    makeBorderedButton(title: type.name, isSelected: type == selectedCompanion) { onTapCompanion(type) }
+                }
+            })
+        }
+        
+        var columns: [GridItem] = [
+            GridItem(.fixed(100), spacing: 16),
+            GridItem(.fixed(100), spacing: 16),
+            GridItem(.fixed(100), spacing: 16)
+        ]
+        
+        func makeBorderedButton(title: String, isSelected: Bool, onTap: @escaping () -> Void) -> some View {
+            Button {
+                onTap()
+            } label: {
+                Text(title)
+                    .font(Fonts.museoSans(weight: .regular, size: 12))
+                    .foregroundColor(Colors.white)
+                    .frame(width: 100, height: 26)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(isSelected ? Colors.primary.opacity(0.4) : Color.clear)
+                            .stroke(isSelected ? Colors.primary : Colors.white.opacity(0.1), lineWidth: 1)
+                        
+                    )
+            }.buttonStyle(.plain)
+        }
+        
+        }
 }

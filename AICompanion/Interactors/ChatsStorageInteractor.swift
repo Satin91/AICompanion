@@ -20,8 +20,6 @@ protocol BalanceStorageServiceProtocol {
     func saveBalance()
 }
 
-
-
 final class ChatsStorageInteractor: ObservableObject, ChatsStorageInteractorProtocol {
     let storageManager = StorageRepository()
     var chats = CurrentValueSubject<[ChatModel], Never>([])
