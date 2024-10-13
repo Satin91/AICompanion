@@ -12,7 +12,7 @@ struct ChatState {
     var navigationTitle: String = ""
     var isHistoryEnabled: Bool = false
     var isMessageReceiving = false
-    var chat: ChatModel = .init(companion: .gpt4o_mini, name: "Mini", messages: [])
+    var chat: ChatModel
 }
 
 enum ChatAction {
@@ -34,9 +34,14 @@ struct ChatView: View {
     private let fontSize: CGFloat = 14
     
     init(chat: ChatModel, chatsStorage: ChatsStorageInteractorProtocol) {
-        var state = ChatState()
-        state.chat = chat
-        _store = StateObject(wrappedValue: .init(state: state, reducer: chatReducer(state:action:), middlewares: [chatMiddleware(network: NetworkService(), chatsStorage: chatsStorage)]))
+        var state = ChatState(chat: chat)
+        _store = StateObject(
+            wrappedValue: .init(
+                state: state,
+                reducer: chatReducer(state:action:),
+                middlewares: [chatMiddleware(network: NetworkService(), chatsStorage: chatsStorage)]
+            )
+        )
     }
     
     var body: some View {
