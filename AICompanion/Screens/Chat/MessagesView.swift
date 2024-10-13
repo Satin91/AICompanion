@@ -15,30 +15,51 @@ struct MessagesView: View {
     @State var isAnimate = false
     @State var onDeleteClosure: (MessageModel) -> Void = { _ in }
     @State var messageToDelete: MessageModel = .init(role: "", content: "")
+    @State var change: Bool = false
+    
+    @State var containerHeight: CGFloat = .zero
+    @State var messagesHeight: CGFloat = .zero
+    @State var spacerHeight: CGFloat = .zero
+    
     
     var body: some View {
         content
             .onAppear {
+                spacerHeight = containerHeight - messagesHeight - 60
                 isAnimate.toggle()
             }
     }
     
     var content: some View {
         messagesContainer
+            .readSize { containerSize in
+                containerHeight = containerSize.height
+            }
     }
     
     private var messagesContainer: some View {
         ScrollViewReader { sr in
             ScrollView(.vertical, showsIndicators: false) {
+                Spacer()
+                    .frame(height: spacerHeight)
                 messagesList
-                .onAppear(perform: {
-                    sr.scrollTo(messages.count - 1)
-                })
-                .onChange(of: messages.count) {
-                    withAnimation {
-                        sr.scrollTo(messages.count - 1)
+                    .onAppear {
+                        sr.scrollTo(messages.count - 1, anchor: .bottom)
                     }
-                }
+                    .onChange(of: messages.count) {
+                            if containerHeight - messagesHeight > 60 {
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    spacerHeight = containerHeight - messagesHeight - 60
+                                }
+                            } else {
+                                withAnimation(.easeInOut(duration: 0.15)) {
+                                    sr.scrollTo(messages.count - 1)
+                                    spacerHeight = .zero
+                                }
+                            }
+                        print("DEBUG: on change message list")
+                    }
+                Spacer()
             }
             .padding(.horizontal, Layout.Padding.small)
             .padding(.leading, -6)
@@ -46,13 +67,17 @@ struct MessagesView: View {
     }
     
     var messagesList: some View {
-        LazyVStack {
+        VStack {
             ForEach(0..<messages.count, id: \.self) { index in
                 messageView(message: messages[index])
-                    .padding(.vertical, 8)
+                    .padding(.bottom, 16)
                     .id(index)
             }
         }
+        .readSize(value: messages.count, in: { size in
+            messagesHeight = size.height
+            print("messages size \(size.height)")
+        })
     }
     
     @ViewBuilder private func messageView(message: MessageModel) -> some View {

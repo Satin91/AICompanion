@@ -72,7 +72,12 @@ struct ChatListView: View {
     var navigation: some View {
         VStack(spacing: .zero) {
             NavigationLink(
-                destination: ChatView(model: viewModel.selectedChat, chatsService: viewModel.chatsService),
+                destination:
+//                    ChatView(model: viewModel.selectedChat, chatsService: viewModel.chatsService)
+//                ChatView2(chat: viewModel.selectedChat, chatsStorage: viewModel.chatsService)
+                ChatView(chat: viewModel.selectedChat, chatsStorage: viewModel.chatsService)
+                
+                ,
                 isActive: $viewModel.isShowChatView,
                 label: {
                     EmptyView()

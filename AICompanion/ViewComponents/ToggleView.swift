@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ToggleView: View {
     
-    @Binding var isActive: Bool
+    var isActive: Bool
     
     var thumbDiameter: CGFloat = 18
     var thumbColor = Colors.white

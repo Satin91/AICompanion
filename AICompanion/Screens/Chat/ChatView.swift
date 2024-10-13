@@ -1,29 +1,51 @@
 //
-//  ContentView.swift
+//  Redux.swift
 //  AICompanion
 //
-//  Created by Артур Кулик on 26.09.2024.
+//  Created by Артур Кулик on 13.10.2024.
 //
 
 import SwiftUI
+import Combine
+
+struct ChatState {
+    var navigationTitle: String = ""
+    var isHistoryEnabled: Bool = false
+    var isMessageReceiving = false
+    var chat: ChatModel = .init(companion: .gpt4o_mini, name: "Mini", messages: [])
+}
+
+enum ChatAction {
+    case sendMessage(text: String, isHistoryEnabled: Bool)
+    case delete(message: MessageModel)
+    case receiveComplete(ChatModel)
+    case errorReceiveMessage(error: NetworkError)
+    case toggleHistoryValue
+    case onViewAppear
+}
 
 struct ChatView: View {
     @Environment(\.presentationMode) private var presentationMode
-    @StateObject var viewModel: ChatViewModel
-    @FocusState var isKeyboardForeground: Bool
+    @StateObject var store: Store<ChatState, ChatAction>
     
+    @FocusState var isKeyboardForeground: Bool
     @State var text = ""
     
     private let fontSize: CGFloat = 14
     
-    init(model: ChatModel, chatsService: ChatsStorageInteractorProtocol) {
-        self._viewModel = StateObject(wrappedValue: ChatViewModel(model: model, chatsService: chatsService))
+    init(chat: ChatModel, chatsStorage: ChatsStorageInteractorProtocol) {
+        var state = ChatState()
+        state.chat = chat
+        _store = StateObject(wrappedValue: .init(state: state, reducer: chatReducer(state:action:), middlewares: [chatMiddleware(network: NetworkService(), chatsStorage: chatsStorage)]))
     }
     
     var body: some View {
         content
             .background(Colors.background.ignoresSafeArea(.all))
             .toolbar(.hidden)
+            .onAppear {
+                store.dispatch(.onViewAppear)
+            }
     }
     
     var content: some View {
@@ -43,8 +65,9 @@ struct ChatView: View {
     @State var scrollViewOffset: CGFloat = 0
     
     private var messagesView: some View {
-        MessagesView(messages: viewModel.chatModel.messages) { message in
-            viewModel.deleteMessage(message: message)
+        MessagesView(messages: store.state.chat.messages) { message in
+//            viewModel.deleteMessage(message: message)
+            store.dispatch(.delete(message: message))
         }
         .onTapGesture {
             isKeyboardForeground = false
@@ -54,12 +77,12 @@ struct ChatView: View {
     private var navigationBarView: some View {
         NavigationBarView()
             .addCentralContainer {
-                Text(viewModel.chatModel.companion.name)
+                Text(store.state.navigationTitle)
                     .overlay {
                         ProgressView()
                             .frame(maxWidth: .infinity, alignment: .trailing)
                             .offset(x: 30)
-                            .opacity(viewModel.isCompanionThinking ? 1 : 0)
+                            .opacity(store.state.isMessageReceiving ? 1 : 0)
                     }
                 
             .font(Fonts.museoSans(weight: .bold, size: 22))
@@ -78,8 +101,8 @@ struct ChatView: View {
                 }
             }
             .addRightContainer({
-                ToggleView(isActive: $viewModel.isMemoryEnabled) { isActive in
-                    viewModel.isMemoryEnabled.toggle()
+                ToggleView(isActive: store.state.isHistoryEnabled) { isActive in
+                    store.dispatch(.toggleHistoryValue)
                 }
             })
             .frame(height: 50)
@@ -124,7 +147,8 @@ struct ChatView: View {
         Button {
             isKeyboardForeground = false
             guard !text.isEmpty else { return }
-            viewModel.send(message: text)
+            store.dispatch(.sendMessage(text: self.text, isHistoryEnabled: store.state.isHistoryEnabled))
+//            viewModel.send(message: text)
             text = ""
         } label: {
             Image(systemName: "paperplane.fill")
@@ -136,6 +160,3 @@ struct ChatView: View {
     }
 }
 
-#Preview {
-    ChatView(model: ChatModel(companion: .gpt4o, name: "", messages: [.init(role: "assistant", content: "")]), chatsService: ChatsStorageInteractor() )
-}

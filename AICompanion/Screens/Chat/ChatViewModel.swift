@@ -18,7 +18,6 @@ final class ChatViewModel: ObservableObject {
     @Published var isCompanionThinking = false
     @Published var chatModel: ChatModel
     @Published var isMemoryEnabled = false
-    @Published var isScrollViewAnimate = false
     
     init(model: ChatModel, chatsService: ChatsStorageInteractorProtocol) {
         self.chatModel = model
@@ -32,7 +31,6 @@ final class ChatViewModel: ObservableObject {
     
     func sendMessages(text: String) {
         chatModel.messages.append(MessageModel(role: "user", content: text) )
-        self.animateScrollView()
         
         let messages = chatModel.messages
         let message: [MessageModel] = [MessageModel(role: "user", content: text)]
@@ -44,23 +42,16 @@ final class ChatViewModel: ObservableObject {
             }, receiveValue: { value in
                 print("received Value", value)
                 self.chatModel.messages.append(MessageModel(role: "assistant", content: value.message) )
-                self.animateScrollView()
                 self.chatsService.updateChat(chat: self.chatModel)
                 self.getBalance()
-                
-                
             })
             .store(in: &cancellable)
     }
     
-    func animateScrollView() {
-        isScrollViewAnimate.toggle()
-    }
-    
     func deleteMessage(message: MessageModel) {
-        guard let firstIndex = chatModel.messages.firstIndex(of: message) else { return }
-        chatModel.messages.remove(at: firstIndex)
-        chatsService.updateChat(chat: chatModel)
+//        guard let firstIndex = chatModel.messages.firstIndex(of: message) else { return }
+//        chatModel.messages.remove(at: firstIndex)
+//        chatsService.updateChat(chat: chatModel)
     }
     
     func getBalance() {
