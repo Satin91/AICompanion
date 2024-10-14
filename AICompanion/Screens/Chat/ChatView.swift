@@ -8,22 +8,6 @@
 import SwiftUI
 import Combine
 
-struct ChatState {
-    var navigationTitle: String = ""
-    var isHistoryEnabled: Bool = false
-    var isMessageReceiving = false
-    var chat: ChatModel
-}
-
-enum ChatAction {
-    case sendMessage(text: String, isHistoryEnabled: Bool)
-    case delete(message: MessageModel)
-    case receiveComplete(ChatModel)
-    case errorReceiveMessage(error: NetworkError)
-    case toggleHistoryValue
-    case onViewAppear
-}
-
 struct ChatView: View {
     @EnvironmentObject private var coordinator: Coordinator
     
@@ -36,18 +20,9 @@ struct ChatView: View {
     private let fontSize: CGFloat = 14
     
     init(chat: ChatModel, chatsStorage: ChatsStorageInteractorProtocol) {
-        _store = StateObject(wrappedValue: ChatViewStore(state: ChatState(chat: chat), middlewares: [chatMiddleware(network: NetworkService(), chatsStorage: chatsStorage)]))
-        
-        
-        let state = ChatState(chat: chat)
-        
-//        _store = StateObject(
-//            wrappedValue: .init(
-//                state: state,
-//                reducer: chatReducer(state:action:),
-//                middlewares: [chatMiddleware(network: NetworkService(), chatsStorage: chatsStorage)]
-//            )
-//        )
+        _store = StateObject(
+            wrappedValue: ChatViewStore(initialState: ChatState(chat: chat), networkService: NetworkService(), chatsStorage: chatsStorage)
+        )
     }
     
     var body: some View {
@@ -158,7 +133,6 @@ struct ChatView: View {
             isKeyboardForeground = false
             guard !text.isEmpty else { return }
             store.dispatch(.sendMessage(text: self.text, isHistoryEnabled: store.state.isHistoryEnabled))
-//            viewModel.send(message: text)
             text = ""
         } label: {
             Image(systemName: "paperplane.fill")

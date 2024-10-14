@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct ChatListView: View {
-    @StateObject var viewModel: ChatListViewModel
+    @StateObject var store: ChatListViewStore
     @EnvironmentObject var coordinator: Coordinator
     
     init(chatsService: ChatsStorageInteractorProtocol) {
-        self._viewModel = StateObject(wrappedValue: ChatListViewModel(chatsService: chatsService))
+        
+        self._store = StateObject(wrappedValue: ChatListViewStore(state: ChatListState(balance: 0) , chatsStorage: chatsService))
     }
     
     @State var sheetShown = false
@@ -23,12 +24,16 @@ struct ChatListView: View {
                 .toolbar(.hidden)
                 .sheet(isPresented: $sheetShown) {
                     CreateChatView(
-                        onTapCreateButton: { viewModel.createChat(name: $0 ) },
-                        onTapCompanion: { viewModel.selectCompanion($0) },
+                        onTapCreateButton: { store.dispatch(.createChat(name: $0)) },
+                        onTapCompanion: { store.dispatch(.selectCompanion($0)) },
                         sheetShown: $sheetShown,
-                        selectedCompanion: $viewModel.selectedCompanion
+                        selectedCompanion: store.state.selectedCompanion
                     )
                         .presentationDetents([.medium])
+                }
+                .onAppear {
+                    store.dispatch(.onViewApear)
+                    store.dispatch(.getBalance)
                 }
         }
     }
@@ -50,15 +55,15 @@ struct ChatListView: View {
     
     var chatsList: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            ForEach(viewModel.chats, id: \.self) { chat in
+            ForEach(store.state.chats.value, id: \.self) { chat in
                 ActualChatView(chatModel: chat) {
-                    coordinator.push(page: .chatView(chat: chat, chatsStorage: viewModel.chatsService))
+                    coordinator.push(page: .chatView(chat: chat, chatsStorage: store.chatsStorage))
                 }
                 .padding(.top)
                 .contextMenu(
                     ContextMenu {
                         Button(role: .destructive, action: {
-                            viewModel.deleteChat(model: chat)
+                            store.dispatch(.deleteChat(model: chat))
                         }) {
                             Label("Удалить", systemImage: "trash")
                         }
@@ -107,7 +112,7 @@ struct ChatListView: View {
                     .font(Fonts.museoSans(weight: .medium , size: 16))
                     .foregroundColor(Colors.primarySecondary)
                 +
-                Text(String(format: "%.2f", viewModel.balance) + " ₽")
+                Text(String(format: "%.2f", store.state.balance) + " ₽")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(Colors.white)
             }
@@ -177,7 +182,7 @@ struct ChatListView: View {
         var onTapCreateButton: (String) -> Void
         var onTapCompanion: (CompanionType) -> Void
         @Binding var sheetShown: Bool
-        @Binding var selectedCompanion: CompanionType
+        var selectedCompanion: CompanionType
         
         var body: some View {
             content
