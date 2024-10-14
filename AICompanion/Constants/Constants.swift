@@ -14,8 +14,6 @@ enum Constants {
     }
     
     enum API {
-        static let apiKeyGPTunnel = "shds-WJN3qNCLcxD3mOXuhchwGOVkF90"
-        static let apiKeyChadAi = "chad-1f12e93df26d447496ee92124adeab2d0kmku1y9"
         static let gpTunnelSendMessageURL = "https://gptunnel.ru/v1/chat/completions"
         
         
