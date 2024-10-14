@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct ChatListView: View {
-    @ObservedObject var viewModel: ChatListViewModel
+    @StateObject var store: ChatListViewStore
+    @EnvironmentObject var coordinator: Coordinator
     
     init(chatsService: ChatsStorageInteractorProtocol) {
-        self._viewModel = ObservedObject(wrappedValue: ChatListViewModel(chatsService: chatsService))
+        
+        self._store = StateObject(wrappedValue: ChatListViewStore(state: ChatListState(balance: 0) , chatsStorage: chatsService))
     }
     
     @State var sheetShown = false
@@ -22,19 +24,21 @@ struct ChatListView: View {
                 .toolbar(.hidden)
                 .sheet(isPresented: $sheetShown) {
                     CreateChatView(
-                        onTapCreateButton: { viewModel.createChat(name: $0 ) },
-                        onTapCompanion: { viewModel.selectCompanion($0) },
+                        onTapCreateButton: { store.dispatch(.createChat(name: $0)) },
+                        onTapCompanion: { store.dispatch(.selectCompanion($0)) },
                         sheetShown: $sheetShown,
-                        selectedCompanion: $viewModel.selectedCompanion
+                        selectedCompanion: store.state.selectedCompanion
                     )
-                        .presentationDetents([.medium])
+                    .presentationDetents([.medium])
+                }
+                .onAppear {
+                    store.dispatch(.onViewApear)
                 }
         }
     }
     
     var content: some View {
         VStack(spacing: .zero) {
-            navigation
             headerContainer
                 .padding(.top, Layout.Padding.large)
                 .padding(.bottom, Layout.Padding.medium)
@@ -50,15 +54,15 @@ struct ChatListView: View {
     
     var chatsList: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            ForEach(viewModel.chats, id: \.self) { chat in
+            ForEach(store.state.chats.value, id: \.self) { chat in
                 ActualChatView(chatModel: chat) {
-                    viewModel.showChatView(model: chat)
+                    coordinator.push(page: .chatView(chat: chat, chatsStorage: store.chatsStorage))
                 }
                 .padding(.top)
                 .contextMenu(
                     ContextMenu {
                         Button(role: .destructive, action: {
-                            viewModel.deleteChat(model: chat)
+                            store.dispatch(.deleteChat(model: chat))
                         }) {
                             Label("Удалить", systemImage: "trash")
                         }
@@ -66,22 +70,6 @@ struct ChatListView: View {
                 )
             }
             .padding(.top, Layout.Padding.medium )
-        }
-    }
-    
-    var navigation: some View {
-        VStack(spacing: .zero) {
-            NavigationLink(
-                destination:
-//                    ChatView(model: viewModel.selectedChat, chatsService: viewModel.chatsService)
-//                ChatView2(chat: viewModel.selectedChat, chatsStorage: viewModel.chatsService)
-                ChatView(chat: viewModel.selectedChat, chatsStorage: viewModel.chatsService)
-                
-                ,
-                isActive: $viewModel.isShowChatView,
-                label: {
-                    EmptyView()
-                })
         }
     }
     
@@ -123,7 +111,7 @@ struct ChatListView: View {
                     .font(Fonts.museoSans(weight: .medium , size: 16))
                     .foregroundColor(Colors.primarySecondary)
                 +
-                Text(String(format: "%.2f", viewModel.balance) + " ₽")
+                Text(String(format: "%.2f", store.state.balance) + " ₽")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(Colors.white)
             }
@@ -193,7 +181,7 @@ struct ChatListView: View {
         var onTapCreateButton: (String) -> Void
         var onTapCompanion: (CompanionType) -> Void
         @Binding var sheetShown: Bool
-        @Binding var selectedCompanion: CompanionType
+        var selectedCompanion: CompanionType
         
         var body: some View {
             content

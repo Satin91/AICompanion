@@ -11,6 +11,7 @@ import Combine
 class NetworkService {
     var networkManager = NetworkManager()
 
+    var cancellable = Set<AnyCancellable>()
     func sendMessage(message: [MessageModel], companion: CompanionType) -> AnyPublisher<ResponseModel, NetworkError> {
         let request = RequestEnum.sendMessages(model: companion, messages: message).request
         return networkManager.request(request: request)

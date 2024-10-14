@@ -8,25 +8,11 @@
 import SwiftUI
 import Combine
 
-struct ChatState {
-    var navigationTitle: String = ""
-    var isHistoryEnabled: Bool = false
-    var isMessageReceiving = false
-    var chat: ChatModel
-}
-
-enum ChatAction {
-    case sendMessage(text: String, isHistoryEnabled: Bool)
-    case delete(message: MessageModel)
-    case receiveComplete(ChatModel)
-    case errorReceiveMessage(error: NetworkError)
-    case toggleHistoryValue
-    case onViewAppear
-}
-
 struct ChatView: View {
-    @Environment(\.presentationMode) private var presentationMode
-    @StateObject var store: Store<ChatState, ChatAction>
+    @EnvironmentObject private var coordinator: Coordinator
+    
+//    @StateObject var store: Store<ChatState, ChatAction>
+    @StateObject var store: ChatViewStore
     
     @FocusState var isKeyboardForeground: Bool
     @State var text = ""
@@ -34,13 +20,8 @@ struct ChatView: View {
     private let fontSize: CGFloat = 14
     
     init(chat: ChatModel, chatsStorage: ChatsStorageInteractorProtocol) {
-        var state = ChatState(chat: chat)
         _store = StateObject(
-            wrappedValue: .init(
-                state: state,
-                reducer: chatReducer(state:action:),
-                middlewares: [chatMiddleware(network: NetworkService(), chatsStorage: chatsStorage)]
-            )
+            wrappedValue: ChatViewStore(initialState: ChatState(chat: chat), networkService: NetworkService(), chatsStorage: chatsStorage)
         )
     }
     
@@ -71,7 +52,6 @@ struct ChatView: View {
     
     private var messagesView: some View {
         MessagesView(messages: store.state.chat.messages) { message in
-//            viewModel.deleteMessage(message: message)
             store.dispatch(.delete(message: message))
         }
         .onTapGesture {
@@ -95,7 +75,7 @@ struct ChatView: View {
             }
             .addLeftContainer {
                 Button {
-                    presentationMode.wrappedValue.dismiss()
+                    coordinator.back()
                 } label: {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
@@ -153,7 +133,6 @@ struct ChatView: View {
             isKeyboardForeground = false
             guard !text.isEmpty else { return }
             store.dispatch(.sendMessage(text: self.text, isHistoryEnabled: store.state.isHistoryEnabled))
-//            viewModel.send(message: text)
             text = ""
         } label: {
             Image(systemName: "paperplane.fill")
