@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct ChatListView: View {
-    @ObservedObject var viewModel: ChatListViewModel
+    @StateObject var viewModel: ChatListViewModel
     @EnvironmentObject var coordinator: Coordinator
     
     init(chatsService: ChatsStorageInteractorProtocol) {
-        self._viewModel = ObservedObject(wrappedValue: ChatListViewModel(chatsService: chatsService))
+        self._viewModel = StateObject(wrappedValue: ChatListViewModel(chatsService: chatsService))
     }
     
     @State var sheetShown = false

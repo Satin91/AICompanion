@@ -14,6 +14,9 @@ enum Constants {
     }
     
     enum API {
+        static let apiKeyGPTunnel = "shds-WJN3qNCLcxD3mOXuhchwGOVkF90"
+        static let apiKeyChadAi = "chad-1f12e93df26d447496ee92124adeab2d0kmku1y9"
+        static let gpTunnelSendMessageURL = "https://gptunnel.ru/v1/chat/completions"
         static let getBalanceURL = "https://gptunnel.ru/v1/balance"
         static let sonnetBaseURL = "https://ask.chadgpt.ru/api/public/claude-3.5-sonnet"
         static let haikuBaseURL = "https://ask.chadgpt.ru/api/public/claude-3-haiku"

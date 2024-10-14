@@ -13,11 +13,12 @@ struct AICompanionApp: App {
     
     let storageManager = StorageRepository()
     let chatsService = ChatsStorageInteractor()
+    @State var colorScheme = ColorScheme.dark
     
     var body: some Scene {
         WindowGroup {
             CoordinatorView(chatsStorage: chatsService)
-                .preferredColorScheme(.dark)
+                .preferredColorScheme(colorScheme)
         }
     }
 }

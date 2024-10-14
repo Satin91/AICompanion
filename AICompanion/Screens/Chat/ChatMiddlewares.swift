@@ -8,8 +8,6 @@
 import Foundation
 import Combine
 
-typealias Middleware<State, Action> = (State, Action) -> AnyPublisher<Action, Never>?
-
 func chatMiddleware(network: NetworkService, chatsStorage: ChatsStorageInteractorProtocol) -> Middleware<ChatState, ChatAction> {
     return { state, action in
         switch action {

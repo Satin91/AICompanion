@@ -8,6 +8,9 @@
 import Foundation
 import Combine
 
+var anycancellable = Set<AnyCancellable>()
+
+
 func chatReducer(state: inout ChatState, action: ChatAction) {
     switch action {
     case .sendMessage(let text, _):
@@ -34,5 +37,4 @@ func chatReducer(state: inout ChatState, action: ChatAction) {
     case .onViewAppear:
         state.navigationTitle = state.chat.companion.name
     }
-    
 }

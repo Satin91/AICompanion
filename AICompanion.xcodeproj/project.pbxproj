@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8E1697122CB5D94200BA70FE /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1697112CB5D94200BA70FE /* MessagesView.swift */; };
+		8E5D55482CBD52530026B623 /* ChatViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5D55472CBD52530026B623 /* ChatViewStore.swift */; };
 		8E72E4CC2CAC3AE800FA5F69 /* ChatsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E72E4CB2CAC3AE800FA5F69 /* ChatsModel.swift */; };
 		8E8BA63B2CB17B1600EC14E2 /* NavigationBarVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8BA63A2CB17B1600EC14E2 /* NavigationBarVIew.swift */; };
 		8E8EE0902CBBE6D7009E3F16 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8EE08F2CBBE6D7009E3F16 /* Store.swift */; };
@@ -43,6 +44,7 @@
 
 /* Begin PBXFileReference section */
 		8E1697112CB5D94200BA70FE /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
+		8E5D55472CBD52530026B623 /* ChatViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewStore.swift; sourceTree = "<group>"; };
 		8E72E4CB2CAC3AE800FA5F69 /* ChatsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsModel.swift; sourceTree = "<group>"; };
 		8E8BA63A2CB17B1600EC14E2 /* NavigationBarVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarVIew.swift; sourceTree = "<group>"; };
 		8E8EE08F2CBBE6D7009E3F16 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
@@ -174,7 +176,7 @@
 			isa = PBXGroup;
 			children = (
 				8E9F40F72CBB211C00F4FCB2 /* ChatView.swift */,
-				8E8EE08F2CBBE6D7009E3F16 /* Store.swift */,
+				8E5D55472CBD52530026B623 /* ChatViewStore.swift */,
 				8E8EE0932CBC31C8009E3F16 /* ChatMiddlewares.swift */,
 				8E8EE0912CBC3107009E3F16 /* ChatReducer.swift */,
 				8E1697112CB5D94200BA70FE /* MessagesView.swift */,
@@ -198,6 +200,7 @@
 			children = (
 				8E9C289C2CA59F3D006DB348 /* AICompanionApp.swift */,
 				8E8EE0952CBC57E0009E3F16 /* Coordinator.swift */,
+				8E8EE08F2CBBE6D7009E3F16 /* Store.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -340,6 +343,7 @@
 				8EA1BFA32CA89C8A00B0A596 /* ChatListView.swift in Sources */,
 				8EE1A68E2CA7657200056A62 /* NetworkService.swift in Sources */,
 				8E1697122CB5D94200BA70FE /* MessagesView.swift in Sources */,
+				8E5D55482CBD52530026B623 /* ChatViewStore.swift in Sources */,
 				8EE1A68C2CA7656B00056A62 /* NetworkManager.swift in Sources */,
 				8E8EE0922CBC3107009E3F16 /* ChatReducer.swift in Sources */,
 				8E8EE0902CBBE6D7009E3F16 /* Store.swift in Sources */,

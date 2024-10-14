@@ -33,6 +33,9 @@ final class Coordinator: ObservableObject {
         path.append(page)
     }
     
+    func back() {
+        path.removeLast()
+    }
     
     
     @ViewBuilder func build(page: Page) -> some View {
