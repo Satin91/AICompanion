@@ -26,6 +26,7 @@
 		8EA1BFAC2CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA82CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf */; };
 		8EA1BFAD2CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EA1BFA92CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf */; };
 		8EA301242CBD7AE800E5B347 /* ChatListViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA301232CBD7AE800E5B347 /* ChatListViewStore.swift */; };
+		8EA301282CBDB95300E5B347 /* ApiKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA301272CBDB95300E5B347 /* ApiKey.swift */; };
 		8EB758942CB6B62800C09BF7 /* RisingAboveKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB758932CB6B62800C09BF7 /* RisingAboveKeyboard.swift */; };
 		8EB758962CB6DE2D00C09BF7 /* ToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB758952CB6DE2D00C09BF7 /* ToggleView.swift */; };
 		8ED64B042CA965240083B3A7 /* StorageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED64B032CA965240083B3A7 /* StorageRepository.swift */; };
@@ -62,6 +63,7 @@
 		8EA1BFA82CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-700.ttf"; sourceTree = "<group>"; };
 		8EA1BFA92CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSansCyrl-300.ttf"; sourceTree = "<group>"; };
 		8EA301232CBD7AE800E5B347 /* ChatListViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListViewStore.swift; sourceTree = "<group>"; };
+		8EA301272CBDB95300E5B347 /* ApiKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiKey.swift; sourceTree = "<group>"; };
 		8EB758932CB6B62800C09BF7 /* RisingAboveKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RisingAboveKeyboard.swift; sourceTree = "<group>"; };
 		8EB758952CB6DE2D00C09BF7 /* ToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleView.swift; sourceTree = "<group>"; };
 		8ED64B032CA965240083B3A7 /* StorageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageRepository.swift; sourceTree = "<group>"; };
@@ -250,6 +252,7 @@
 			isa = PBXGroup;
 			children = (
 				8EE1A6962CA7768400056A62 /* Constants.swift */,
+				8EA301272CBDB95300E5B347 /* ApiKey.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -348,6 +351,7 @@
 				8EE1A6942CA7708C00056A62 /* ResponseModel.swift in Sources */,
 				8EA1BF912CA897F700B0A596 /* SpecifiedCornerRadius.swift in Sources */,
 				8EB758962CB6DE2D00C09BF7 /* ToggleView.swift in Sources */,
+				8EA301282CBDB95300E5B347 /* ApiKey.swift in Sources */,
 				8EA1BF9F2CA89A6300B0A596 /* Fonts.swift in Sources */,
 				8E8BA63B2CB17B1600EC14E2 /* NavigationBarVIew.swift in Sources */,
 				8EB758942CB6B62800C09BF7 /* RisingAboveKeyboard.swift in Sources */,

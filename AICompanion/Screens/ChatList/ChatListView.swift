@@ -29,11 +29,10 @@ struct ChatListView: View {
                         sheetShown: $sheetShown,
                         selectedCompanion: store.state.selectedCompanion
                     )
-                        .presentationDetents([.medium])
+                    .presentationDetents([.medium])
                 }
                 .onAppear {
                     store.dispatch(.onViewApear)
-                    store.dispatch(.getBalance)
                 }
         }
     }

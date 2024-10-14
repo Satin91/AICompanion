@@ -13,6 +13,7 @@ struct ChatListState {
     var chats = CurrentValueSubject<[ChatModel], Never>([])
     var selectedCompanion = CompanionType.gpt4o
 }
+
 enum ChatListActions {
     case getBalance
     case receiveBalance(balance: Double)
@@ -51,6 +52,7 @@ class ChatListViewStore: ViewStore {
             state.balance = balance
         case .onViewApear:
             state.chats = chatsStorage.chats
+            return Just(.getBalance).eraseToAnyPublisher()
         case .createChat(name: let name):
             let chat = ChatModel(id: UUID().uuidString, companion: state.selectedCompanion, name: name, messages: [])
             chatsStorage.createChat(chat: chat)

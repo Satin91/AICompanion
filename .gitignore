@@ -49,7 +49,7 @@ playground.xcworkspace
 # .swiftpm
 
 .build/
-
+/AICompanion/Constants/ApiKey.swift
 # CocoaPods
 # We recommend against adding the Pods directory to your .gitignore. However
 # you should judge for yourself, the pros and cons are mentioned at:
@@ -78,7 +78,6 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
-/AICompanion/Constants/Constants.swift
 
 # Code Injection
 # After new code Injection tools there's a generated folder /iOSInjectionProject
