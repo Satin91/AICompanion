@@ -14,7 +14,6 @@ enum Constants {
     }
     
     enum API {
-     
         static let gpTunnelSendMessageURL = "https://gptunnel.ru/v1/chat/completions"
         static let getBalanceURL = "https://gptunnel.ru/v1/balance"
         static let sonnetBaseURL = "https://ask.chadgpt.ru/api/public/claude-3.5-sonnet"
