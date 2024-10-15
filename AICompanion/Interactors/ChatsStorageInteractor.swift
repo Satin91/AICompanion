@@ -8,11 +8,12 @@
 import Combine
 import Foundation
 
+
 protocol ChatsStorageInteractorProtocol {
-    var chats: CurrentValueSubject<[ChatModel], Never> { get }
-    func createChat(chat: ChatModel)
-    func updateChat(chat: ChatModel)
-    func deleteChat(chat: ChatModel)
+    var chats: CurrentValueSubject<[ChatModelObserver], Never> { get }
+//    func createChat(chat: ChatModel)
+//    func updateChat(chat: ChatModel)
+//    func deleteChat(chat: ChatModel)
 }
 
 protocol BalanceStorageServiceProtocol {
@@ -20,60 +21,77 @@ protocol BalanceStorageServiceProtocol {
     func saveBalance()
 }
 
+
+typealias ChatModelObserver = CurrentValueSubject<ChatModel, Never>
+
+
 final class ChatsStorageInteractor: ObservableObject, ChatsStorageInteractorProtocol {
     let storageManager = StorageRepository()
-    var chats = CurrentValueSubject<[ChatModel], Never>([])
-//    var balance = CurrentValueSubject<Double, Never>(0)
+    var chats = CurrentValueSubject<[ChatModelObserver], Never>([])
     private let chatsKey = "Chats"
+    private var cancellable = Set<AnyCancellable>()
+    
     
     init() {
         fetchChats()
+        subscribe()
     }
     
-    func createChat(chat: ChatModel) {
-        do {
-            let allChatsData = storageManager.fetchObject(for: chatsKey)
-            
-            if allChatsData == nil {
-                try storageManager.saveObject(object: [chat], for: chatsKey)
-                chats.send([chat])
-            } else {
-                var allChats = chats.value
-                allChats.append(chat)
-                try storageManager.saveObject(object: allChats, for: chatsKey)
-                chats.send(allChats)
+    func subscribe() {
+        chats
+            .subscribe(on: DispatchQueue.main)
+            .sink { [unowned self] chats in
+                subscribeForChild()
+            do {
+                let chatsModel: [ChatModel] = chats.map { ChatModel(id: $0.value.id, companion: $0.value.companion, name: $0.value.name, messages: $0.value.messages) }
+                try storageManager.saveObject(object: chatsModel, for: chatsKey)
+            } catch {
+                print("Error save chats")
             }
-        } catch {
-            print("Error of creating chat \(error.localizedDescription)")
         }
+        .store(in: &cancellable)
+        
+        subscribeForChild()
     }
     
-    func updateChat(chat: ChatModel) {
-        var chats = self.chats.value
-        for (index, element) in chats.enumerated() {
-            if element.id == chat.id {
-                chats[index].messages = chat.messages
+    func subscribeForChild() {
+        for chat in chats.value {
+            chat.sink { value in
+                print("New message for \(value.name) with messages \(value.messages)")
                 do {
-                    try storageManager.saveObject(object: chats, for: chatsKey)
-                    self.chats.send(chats)
+                    let chatsModel: [ChatModel] = self.chats.value.map { ChatModel(id: $0.value.id, companion: $0.value.companion, name: $0.value.name, messages: $0.value.messages) }
+                    try self.storageManager.saveObject(object: chatsModel, for: self.chatsKey)
                 } catch {
-                    print("can't save chats \(error.localizedDescription)")
+                    print("Error save chats")
                 }
-                break
             }
+            .store(in: &cancellable)
         }
     }
-    
-    func deleteChat(chat: ChatModel) {
-        guard let chatIndex = chats.value.firstIndex(of: chat) else { return }
-        chats.value.remove(at: chatIndex)
-        do {
-            try storageManager.saveObject(object: chats.value, for: chatsKey)
-            chats.update()
-        } catch {
-            print("Error delete chat")
-        }
-    }
+//    
+//    func createChat(chat: ChatModel) {
+////        if chats.value.isEmpty {
+////            chats.send([chat])
+////        } else {
+////            chats.value.append(chat)
+////        }
+//    }
+//    
+//    func updateChat(chat: ChatModel) {
+//        var chats = self.chats.value
+//        for (index, element) in chats.enumerated() {
+////            if element.id == chat.id {
+////                chats[index] = chat
+////                self.chats.send(chats)
+//                break
+////            }
+//        }
+//    }
+//    
+//    func deleteChat(chat: ChatModel) {
+////        guard let chatIndex = chats.value.firstIndex(of: chat) else { return }
+////        chats.value.remove(at: chatIndex)
+//    }
     
     private func fetchChats() {
         guard let chatsData = storageManager.fetchObject(for: chatsKey) else {
@@ -83,7 +101,8 @@ final class ChatsStorageInteractor: ObservableObject, ChatsStorageInteractorProt
         
         do {
             let chatsArray = try JSONDecoder().decode([ChatModel].self, from: chatsData)
-            chats.send(chatsArray)
+            let chatsar = chatsArray.map { ChatModelObserver($0) }
+            chats.send(chatsar)
         } catch {
             print(error.localizedDescription)
         }
@@ -93,5 +112,11 @@ final class ChatsStorageInteractor: ObservableObject, ChatsStorageInteractorProt
 extension CurrentValueSubject {
     func update() {
         self.send(self.value)
+    }
+}
+
+extension ChatModelObserver: Equatable {
+    public static func == (lhs: CurrentValueSubject<Output, Failure>, rhs: CurrentValueSubject<Output, Failure>) -> Bool {
+        lhs.value.id == rhs.value.id
     }
 }

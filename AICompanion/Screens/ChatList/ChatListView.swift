@@ -54,15 +54,15 @@ struct ChatListView: View {
     
     var chatsList: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            ForEach(store.state.chats.value, id: \.self) { chat in
-                ActualChatView(chatModel: chat) {
-                    coordinator.push(page: .chatView(chat: chat, chatsStorage: store.chatsStorage))
+            ForEach(0..<store.state.chats.value.count, id: \.self) { index in
+                ActualChatView(chatModel: store.state.chats.value[index].value) {
+                    coordinator.push(page: .chatView(chat: store.state.chats.value[index], chatsStorage: store.chatsStorage))
                 }
                 .padding(.top)
                 .contextMenu(
                     ContextMenu {
                         Button(role: .destructive, action: {
-                            store.dispatch(.deleteChat(model: chat))
+                            store.dispatch(.deleteChat(model: store.state.chats.value[index].value))
                         }) {
                             Label("Удалить", systemImage: "trash")
                         }

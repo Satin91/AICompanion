@@ -11,7 +11,6 @@ import Combine
 struct ChatView: View {
     @EnvironmentObject private var coordinator: Coordinator
     
-//    @StateObject var store: Store<ChatState, ChatAction>
     @StateObject var store: ChatViewStore
     
     @FocusState var isKeyboardForeground: Bool
@@ -19,9 +18,9 @@ struct ChatView: View {
     
     private let fontSize: CGFloat = 14
     
-    init(chat: ChatModel, chatsStorage: ChatsStorageInteractorProtocol) {
+    init(chat: ChatModelObserver, chatsStorage: ChatsStorageInteractorProtocol) {
         _store = StateObject(
-            wrappedValue: ChatViewStore(initialState: ChatState(chat: chat), networkService: NetworkService(), chatsStorage: chatsStorage)
+            wrappedValue: ChatViewStore(initialState: ChatState(chat: chat), networkService: ChatsNetworkService(), chatsStorage: chatsStorage)
         )
     }
     
@@ -51,7 +50,7 @@ struct ChatView: View {
     @State var scrollViewOffset: CGFloat = 0
     
     private var messagesView: some View {
-        MessagesView(messages: store.state.chat.messages) { message in
+        MessagesView(messages: store.state.chat.value.messages) { message in
             store.dispatch(.delete(message: message))
         }
         .onTapGesture {
@@ -75,7 +74,7 @@ struct ChatView: View {
             }
             .addLeftContainer {
                 Button {
-                    coordinator.back()
+                    coordinator.pop()
                 } label: {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")

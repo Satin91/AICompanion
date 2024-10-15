@@ -23,7 +23,7 @@ enum Page: Hashable {
     }
     
     case chatsList(chatsStorage: ChatsStorageInteractorProtocol)
-    case chatView(chat: ChatModel, chatsStorage: ChatsStorageInteractorProtocol)
+    case chatView(chat: ChatModelObserver, chatsStorage: ChatsStorageInteractorProtocol)
 }
 
 final class Coordinator: ObservableObject {
@@ -33,7 +33,7 @@ final class Coordinator: ObservableObject {
         path.append(page)
     }
     
-    func back() {
+    func pop() {
         path.removeLast()
     }
     
