@@ -21,4 +21,5 @@ struct ChatModel: Codable, Hashable, Equatable {
 struct MessageModel: Hashable, Codable {
     var role: String
     var content: String
+    var imageURL: String? = nil
 }

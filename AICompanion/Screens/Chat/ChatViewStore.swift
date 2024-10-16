@@ -17,7 +17,7 @@ struct ChatState {
 }
 
 enum ChatAction {
-    case sendMessage(text: String, isHistoryEnabled: Bool)
+    case sendMessage(text: String, isHistoryEnabled: Bool, image: String)
     case delete(message: MessageModel)
     case receiveComplete(ChatModel)
     case errorReceiveMessage(error: NetworkError)
@@ -41,19 +41,17 @@ class ChatViewStore: ViewStore {
     
     func reduce(state: inout ChatState, action: ChatAction) -> AnyPublisher<ChatAction, Never>? {
         switch action {
-        case .sendMessage(let text, let isEnabled):
-            state.chat.value.messages.append(MessageModel(role: "user", content: text))
+        case .sendMessage(let text, let isEnabled, let imageUrl):
+            let sendableMessage = MessageModel(role: "user", content: text, imageURL: imageUrl == "" ? nil : imageUrl)
+            state.chat.value.messages.append(sendableMessage)
             state.isMessageReceiving = true
             var model = state.chat.value
-            let sendableMessage = MessageModel(role: "user", content: text)
-//            chatsStorage.updateChat(chat: model)
             return self.network
                 .sendMessage(message: isEnabled ? model.messages : [sendableMessage], companion: model.companion)
                 .subscribe(on: DispatchQueue.main)
                 .map { value in
                     let receivedMessage = MessageModel(role: "assistant", content: value.message)
-                    model.messages.append(receivedMessage)
-//                    self.chatsStorage.updateChat(chat: model)
+                    model.messages.append(receivedMessage) 
                     return .receiveComplete(model) }
                 .catch { error in
                     return Just(.errorReceiveMessage(error: error))
