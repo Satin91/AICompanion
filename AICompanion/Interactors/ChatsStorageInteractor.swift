@@ -11,9 +11,6 @@ import Foundation
 
 protocol ChatsStorageInteractorProtocol {
     var chats: CurrentValueSubject<[ChatModelObserver], Never> { get }
-    //    func createChat(chat: ChatModel)
-    //    func updateChat(chat: ChatModel)
-    //    func deleteChat(chat: ChatModel)
 }
 
 protocol BalanceStorageServiceProtocol {
@@ -45,7 +42,6 @@ final class ChatsStorageInteractor: ObservableObject, ChatsStorageInteractorProt
                 updateChats()
             }
             .store(in: &cancellable)
-        
         subscribeForChild()
     }
     
@@ -68,40 +64,14 @@ final class ChatsStorageInteractor: ObservableObject, ChatsStorageInteractorProt
             print("Error save chats")
         }
     }
-    //
-    //    func createChat(chat: ChatModel) {
-    ////        if chats.value.isEmpty {
-    ////            chats.send([chat])
-    ////        } else {
-    ////            chats.value.append(chat)
-    ////        }
-    //    }
-    //
-    //    func updateChat(chat: ChatModel) {
-    //        var chats = self.chats.value
-    //        for (index, element) in chats.enumerated() {
-    ////            if element.id == chat.id {
-    ////                chats[index] = chat
-    ////                self.chats.send(chats)
-    //                break
-    ////            }
-    //        }
-    //    }
-    //
-    //    func deleteChat(chat: ChatModel) {
-    ////        guard let chatIndex = chats.value.firstIndex(of: chat) else { return }
-    ////        chats.value.remove(at: chatIndex)
-    //    }
-    
+
     private func fetchChats() {
-        guard let chatsData = storageManager.fetchObject(for: chatsKey) else {
+        guard let chatsData = storageManager.fetchObject(item: [ChatModel].self, for: chatsKey) else {
             chats.send([])
             return
         }
-        
         do {
-            let chatsArray = try JSONDecoder().decode([ChatModel].self, from: chatsData)
-            let chatsar = chatsArray.map { ChatModelObserver($0) }
+            let chatsar = chatsData.map { ChatModelObserver($0) }
             chats.send(chatsar)
         } catch {
             print(error.localizedDescription)

@@ -25,47 +25,38 @@ struct TabBarView: View {
     
     var items: [TabBarItem]
     var onTapItem: (Int) -> Void
-    @State var filledImages: [String] = []
     
-    private let tabBarHeight: CGFloat = 60
+    private let tabBarHeight: CGFloat = 65
     
-    init(currentTab: Binding<Int>, items: [TabBarItem], onTapItem: @escaping (Int) -> Void) {
-        self.items = items
-        self.onTapItem = onTapItem
-        self.filledImages = items.map { $0.image }
-        self._currentTab = currentTab
-    }
     var body: some View {
         content
             .ignoresSafeArea(.all)
-            .onAppear {
-                filledImages = items.map { $0.image }
-            }
     }
     
     @ViewBuilder var content: some View {
         VStack(spacing: .zero) {
             items[currentTab].view
                 .frame(maxHeight: .infinity)
-            Spacer(minLength: 0)
             tabBarContainer
         }
     }
     
     var tabBarContainer: some View {
-        
-        return HStack {
-            ForEach(0..<items.count, id: \.self) { index in
-                makeTabBarItem(item: items[index], of: index)
-                    .frame(maxWidth: .infinity)
+        VStack(spacing: .zero) {
+            Divider()
+            HStack {
+                ForEach(0..<items.count, id: \.self) { index in
+                    makeTabBarItem(item: items[index], of: index)
+                        .frame(maxWidth: .infinity)
+                }
             }
+            .frame(height: tabBarHeight)
+            .padding(.bottom, Layout.Padding.small)
+            .background(
+                Rectangle()
+                    .fill(Colors.background2)
+            )
         }
-        .frame(height: tabBarHeight)
-        .padding(.bottom, Layout.Padding.small)
-        .background(
-            Rectangle()
-                .fill(Colors.background2)
-        )
     }
     
     func makeTabBarItem(item: TabBarItem, of index: Int) -> some View {
@@ -87,7 +78,7 @@ struct TabBarView: View {
             .frame(width: 24, height: 24)
             .frame(maxWidth: .infinity)
             .offset(y: index == currentTab ? -8 : 0)
-            .animation(.bouncy(duration: 0.4, extraBounce: 0.15), value: currentTab)
+            .animation(.bouncy(duration: 0.3, extraBounce: 0.15), value: currentTab)
             .overlay {
                 if isSelected {
                     Text(item.text)
@@ -101,7 +92,5 @@ struct TabBarView: View {
             .frame(maxHeight: .infinity)
         }
         .buttonStyle(.borderless)
-        
-        
     }
 }

@@ -22,7 +22,9 @@ final class StorageRepository {
         }
     }
     
-    func fetchObject(for key: String) -> Data? {
-        return defaults.value(forKey: key) as? Data
+    func fetchObject<T: Decodable>(item: T.Type, for key: String) -> T? {
+        let value = defaults.value(forKey: key) as? Data
+        let decoded = try? JSONDecoder().decode(T.self, from: value ?? Data())
+        return decoded
     }
 }

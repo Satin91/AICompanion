@@ -17,7 +17,6 @@ struct AICompanionApp: App {
     var body: some Scene {
         WindowGroup {
             CoordinatorView(chatsStorage: chatsService)
-                .preferredColorScheme(colorScheme)
         }
     }
 }

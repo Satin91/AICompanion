@@ -169,7 +169,7 @@ struct ChatView: View {
     
     var attachContentButton: some View {
         PhotosPicker(selection: $pickerItem, matching: .any(of: [.images, .not(.livePhotos)]), preferredItemEncoding: .compatible) {
-            Image(systemName: "photo")
+            Image(systemName: "paperclip")
                 .font(.system(size: 26, weight: .light))
                 .foregroundColor(Colors.primarySecondary)
         }.onTapGesture {
@@ -178,23 +178,7 @@ struct ChatView: View {
     }
     
     var textField: some View {
-        TextField("Введите текст",
-                  text: $textFieldText,
-                  prompt: Text("Введите текст")
-            .font(Fonts.museoSans(weight: .regular,
-                                  size: fontSize))
-                .foregroundColor(Colors.subtitle),
-                  axis: .vertical
-        )
-        .font(Fonts.museoSans(weight: .regular, size: fontSize))
-        .foregroundColor(Colors.white)
-        .focused($isKeyboardForeground, equals: true)
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius)
-                .fill(Colors.background)
-                .stroke(Colors.stroke, lineWidth: 1)
-        )
+        BorderedTextField(placeholder: "Введите текст", text: $textFieldText, isKeyboardForeground: _isKeyboardForeground)
     }
     
     var sendMessageButton: some View {

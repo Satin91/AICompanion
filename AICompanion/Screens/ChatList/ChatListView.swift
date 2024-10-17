@@ -19,57 +19,32 @@ struct ChatListView: View {
     @State var sheetShown = false
     
     var body: some View {
-        NavigationView {
-            content
-                .toolbar(.hidden)
-                .sheet(isPresented: $sheetShown) {
-                    CreateChatView(
-                        onTapCreateButton: { store.dispatch(.createChat(name: $0)) },
-                        onTapCompanion: { store.dispatch(.selectCompanion($0)) },
-                        sheetShown: $sheetShown,
-                        selectedCompanion: store.state.selectedCompanion
-                    )
-                    .presentationDetents([.medium])
-                }
-                .onAppear {
-                    store.dispatch(.onViewApear)
-                }
-        }
+        content
+            .background(Colors.background.ignoresSafeArea(.all))
+            .sheet(isPresented: $sheetShown) {
+                CreateChatView(
+                    onTapCreateButton: { store.dispatch(.createChat(name: $0)) },
+                    onTapCompanion: { store.dispatch(.selectCompanion($0)) },
+                    sheetShown: $sheetShown,
+                    selectedCompanion: store.state.selectedCompanion
+                )
+                .presentationDetents([.medium])
+            }
+            .onAppear {
+                store.dispatch(.onViewApear)
+            }
     }
     
     var content: some View {
         VStack(spacing: .zero) {
             headerContainer
-                .padding(.top, Layout.Padding.large)
+                .padding(.top, Layout.Padding.large * 2)
                 .padding(.bottom, Layout.Padding.medium)
             Divider()
             balanceView
             chatsList
                 .padding(.horizontal, Layout.Padding.horizontalEdges)
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Colors.background)
-    }
-    
-    var chatsList: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            ForEach(0..<store.state.chats.value.count, id: \.self) { index in
-                ActualChatView(chatModel: store.state.chats.value[index].value) {
-                    coordinator.push(page: .chat(chat: store.state.chats.value[index]))
-                }
-                .padding(.top)
-                .contextMenu(
-                    ContextMenu {
-                        Button(role: .destructive, action: {
-                            store.dispatch(.deleteChat(model: store.state.chats.value[index].value))
-                        }) {
-                            Label("Удалить", systemImage: "trash")
-                        }
-                    }
-                )
-            }
-            .padding(.top, Layout.Padding.medium )
+            Spacer(minLength: .zero)
         }
     }
     
@@ -119,6 +94,27 @@ struct ChatListView: View {
             .padding(.horizontal, Layout.Padding.horizontalEdges)
             .padding(.vertical)
             Divider()
+        }
+    }
+    
+    var chatsList: some View {
+        ScrollView(.vertical, showsIndicators: false) {
+            ForEach(0..<store.state.chats.value.count, id: \.self) { index in
+                ActualChatView(chatModel: store.state.chats.value[index].value) {
+                    coordinator.push(page: .chat(chat: store.state.chats.value[index]))
+                }
+                .padding(.top)
+                .contextMenu(
+                    ContextMenu {
+                        Button(role: .destructive, action: {
+                            store.dispatch(.deleteChat(model: store.state.chats.value[index].value))
+                        }) {
+                            Label("Удалить", systemImage: "trash")
+                        }
+                    }
+                )
+            }
+            .padding(.top, Layout.Padding.medium )
         }
     }
     

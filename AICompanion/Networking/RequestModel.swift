@@ -38,10 +38,8 @@ extension RequestEnum {
                     method: .post,
                     headers: [(Constants.API.apiKeyGPTunnel,"Authorization"),("application/json", "Content-Type" )]
                 ).makeRequest()
-                
                 let event1 = GPTunnelBodyModel(model: model.rawValue, messages: messages)
                 print("Sendable event \(event1)")
-                
                 request.httpBody = try! JSONEncoder().encode(event1)
                 return request
             }
@@ -59,7 +57,7 @@ extension RequestEnum {
 struct GPTunnelBodyModel: Codable {
     let model: String
     var messages: [Message2] = []
-    let maxTokens: Int = 300
+//    let maxTokens: Int = 300
 
     init(model: String, messages: [MessageModel]) {
         self.model = model
@@ -89,7 +87,6 @@ struct GPTunnelBodyModel: Codable {
     
     enum CodingKeys: String, CodingKey {
         case model, messages
-        case maxTokens = "max_tokens"
     }
 }
 
