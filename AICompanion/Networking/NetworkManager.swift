@@ -21,7 +21,7 @@ final class NetworkManager {
         let urlSession = URLSession(configuration: config)
         return urlSession.dataTaskPublisher(for: request)
             .tryMap { output in
-                print(String(data: output.data, encoding: .utf8) )
+                print(String(data: output.data, encoding: .utf8))
                 guard let response = output.response as? HTTPURLResponse else { throw NetworkError.serverError(code: 0, text: "Server error") }
                 guard !(400...499).contains(response.statusCode) else { throw NetworkError.notFound }
                 guard !(500...599).contains(response.statusCode) else { throw NetworkError.serverError(code: response.statusCode, text: "Сервер недоступен, возможно он перегружен") }

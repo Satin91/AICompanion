@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 import Combine
 
 struct ChatView: View {
@@ -14,14 +15,14 @@ struct ChatView: View {
     @StateObject var store: ChatViewStore
     
     @FocusState var isKeyboardForeground: Bool
-    @State var text = ""
+    @State var textFieldText = ""
+    @State var isSelectedImageLoading = false
+    @State var pickerItem: PhotosPickerItem?
     
     private let fontSize: CGFloat = 14
     
-    init(chat: ChatModelObserver, chatsStorage: ChatsStorageInteractorProtocol) {
-        _store = StateObject(
-            wrappedValue: ChatViewStore(initialState: ChatState(chat: chat), networkService: ChatsNetworkService(), chatsStorage: chatsStorage)
-        )
+    init(chat: ChatModelObserver) {
+        _store = StateObject(wrappedValue: ChatViewStore(initialState: ChatState(chat: chat), networkService: ChatsNetworkService()))
     }
     
     var body: some View {
@@ -30,6 +31,9 @@ struct ChatView: View {
             .toolbar(.hidden)
             .onAppear {
                 store.dispatch(.onViewAppear)
+            }
+            .onChange(of: pickerItem) {
+                store.dispatch(.displayPhotoFromPicker(item: pickerItem))
             }
     }
     
@@ -40,6 +44,11 @@ struct ChatView: View {
             Group {
                 messagesView
                 textFieldContainer
+                    .overlay {
+                        selectedImageContainer
+                            .offset(y: -135)
+                            .padding(.horizontal, Layout.Padding.horizontalEdges)
+                    }
             }
             .risingAboveKeyboard()
         }
@@ -98,26 +107,56 @@ struct ChatView: View {
             .background(Colors.background2)
     }
     
+    @ViewBuilder var selectedImageContainer: some View {
+        if let imageData = store.state.pickerPhotoData {
+            HStack {
+                let image = Image(uiImage: UIImage(data: imageData) ?? UIImage())
+                    .resizable()
+                    .scaledToFill()
+                image
+                    .allowsHitTesting(false)
+                    .frame(width: 150, height: 150)
+                    .clipped()
+                    .fixedSize()
+                    .clipShape(
+                        RoundedRectangle(cornerRadius: 22)
+                    )
+                    .background(
+                        image
+                            .allowsHitTesting(false)
+                            .frame(width: 154, height: 154)
+                            .blur(radius: 15)
+                            .clipShape(RoundedRectangle(cornerRadius: 22))
+                    )
+                    .background(Color.gray.frame(width: 130, height: 130))
+                    .overlay {
+                        ProgressView()
+                            .opacity(isSelectedImageLoading ? 1 : 0)
+                    }
+                    .overlay {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 16, weight: .semibold))
+                            .frame(width: 20, height: 20)
+                            .padding(6)
+                            .background(.thinMaterial)
+                            .clipShape(Circle())
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                            .padding(.top, 14)
+                            .padding(.trailing, 14)
+                            .onTapGesture {
+                                pickerItem = nil
+                            }
+                    }
+                Spacer()
+            }
+            .shadow(color: Colors.background.opacity(0.4), radius: 15)
+        }
+    }
+    
     private var textFieldContainer: some View {
         HStack(spacing: Layout.Padding.small) {
             attachContentButton
-            TextField("Введите текст",
-                      text: $text,
-                      prompt: Text("Введите текст")
-                .font(Fonts.museoSans(weight: .regular,
-                                      size: fontSize))
-                    .foregroundColor(Colors.subtitle),
-                      axis: .vertical
-            )
-            .font(Fonts.museoSans(weight: .regular, size: fontSize))
-            .foregroundColor(Colors.white)
-            .focused($isKeyboardForeground, equals: true)
-            .padding()
-            .background(
-                RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius)
-                    .fill(Colors.background)
-                    .stroke(Colors.white.opacity(0.1), lineWidth: 1)
-            )
+            textField
             sendMessageButton
         }
         .ignoresSafeArea(.all)
@@ -127,38 +166,50 @@ struct ChatView: View {
         .padding(.bottom, 24)
         .background(Colors.background2)
     }
-//    paperclip
-    
     
     var attachContentButton: some View {
-        Button {
-            isKeyboardForeground = false
-            guard !text.isEmpty else { return }
-            store.dispatch(
-                .sendMessage(text: self.text,
-                isHistoryEnabled: store.state.isHistoryEnabled,
-                image: "https://scontent-waw2-2.cdninstagram.com/v/t51.29350-15/448772309_843795750968406_4560991678220512294_n.jpg?stp=dst-jpg_e35_p1080x1080&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-waw2-2.cdninstagram.com&_nc_cat=106&_nc_ohc=eicn2G8AfNoQ7kNvgE8iKRf&_nc_gid=eaca499cdbe149dab6275d56dcb3223a&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzM5NjkxMzU5NTA1ODE3MDkwNw%3D%3D.3-ccb7-5&oh=00_AYALVIPn7ptDbkL7KVczllWXRzwghIhpr12ByJZkr0v-1Q&oe=67149A6C&_nc_sid=7a9f4b")
-            )
-            text = ""
-        } label: {
-            Image(systemName: "paperclip")
-                .font(.system(size: 26))
-                .foregroundColor(Colors.primary)
+        PhotosPicker(selection: $pickerItem, matching: .any(of: [.images, .not(.livePhotos)]), preferredItemEncoding: .compatible) {
+            Image(systemName: "photo")
+                .font(.system(size: 26, weight: .light))
+                .foregroundColor(Colors.primarySecondary)
+        }.onTapGesture {
+            print("Tap")
         }
+    }
+    
+    var textField: some View {
+        TextField("Введите текст",
+                  text: $textFieldText,
+                  prompt: Text("Введите текст")
+            .font(Fonts.museoSans(weight: .regular,
+                                  size: fontSize))
+                .foregroundColor(Colors.subtitle),
+                  axis: .vertical
+        )
+        .font(Fonts.museoSans(weight: .regular, size: fontSize))
+        .foregroundColor(Colors.white)
+        .focused($isKeyboardForeground, equals: true)
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: Layout.Radius.defaultRadius)
+                .fill(Colors.background)
+                .stroke(Colors.stroke, lineWidth: 1)
+        )
     }
     
     var sendMessageButton: some View {
         Button {
             isKeyboardForeground = false
-            guard !text.isEmpty else { return }
-            store.dispatch(.sendMessage(text: self.text, isHistoryEnabled: store.state.isHistoryEnabled, image: ""))
-            text = ""
+            guard !textFieldText.isEmpty else { return }
+            store.dispatch(.sendMessage(text: textFieldText, isHistoryEnabled: store.state.isHistoryEnabled))
+            textFieldText = ""
+            pickerItem = nil
         } label: {
             Image(systemName: "paperplane.fill")
                 .font(.system(size: 26))
-                .foregroundColor(text.isEmpty ? Colors.subtitle : Colors.primary)
-                .shadow(color: Colors.primary.opacity(text.isEmpty ? 0 : 0.3), radius: 5)
-                .animation(.easeInOut(duration: 0.1), value: text.isEmpty)
+                .foregroundColor(textFieldText.isEmpty ? Colors.subtitle : Colors.primary)
+                .shadow(color: Colors.primary.opacity(textFieldText.isEmpty ? 0 : 0.3), radius: 5)
+                .animation(.easeInOut(duration: 0.1), value: textFieldText.isEmpty)
         }
     }
 }

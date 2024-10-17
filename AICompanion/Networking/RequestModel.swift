@@ -39,9 +39,7 @@ extension RequestEnum {
                     headers: [(Constants.API.apiKeyGPTunnel,"Authorization"),("application/json", "Content-Type" )]
                 ).makeRequest()
                 
-                let event = GPTunnelBodyModel(model: model.rawValue, messages: messages)
-//                let messages = messages.map({ Message2(role: $0.role, content: [Content2(type: "text", text: $0.content, imageURL: nil)])})
-                let event1 = GPTunnelBodyModel1(model: model.rawValue, messages: messages)
+                let event1 = GPTunnelBodyModel(model: model.rawValue, messages: messages)
                 print("Sendable event \(event1)")
                 
                 request.httpBody = try! JSONEncoder().encode(event1)
@@ -57,14 +55,8 @@ extension RequestEnum {
     }
 }
 
-struct GPTunnelBodyModel: Codable {
-    let model: String
-    
-    let messages: [MessageModel]
-}
-
 // MARK: - Model1
-struct GPTunnelBodyModel1: Codable {
+struct GPTunnelBodyModel: Codable {
     let model: String
     var messages: [Message2] = []
     let maxTokens: Int = 300
@@ -76,22 +68,21 @@ struct GPTunnelBodyModel1: Codable {
     
     mutating func convert(messages: [MessageModel]) {
         var resultMessages: [Message2] = []
-        let image = UIImage(named: "photo")!.jpegData(compressionQuality: 0.3)!
-        let encodedString = image.base64EncodedString()
-        
-        for message in messages {
-            let textMessage = MessageContent(type: "text", text: message.content, imageURL: nil)
-            print(encodedString)
-            let imageMessage = MessageContent(type: "image_url", text: nil, imageURL: ImageURL2(url: "data:image/jpeg;base64,{\(encodedString)}"))
+        for (index, message) in messages.enumerated() {
+            var content: [MessageContent] = []
             
-            
-            
-            
-            if message.imageURL == nil {
-                resultMessages.append(Message2(role: message.role, content: [textMessage]) )
+            // To save money, I sent the picture only from the last msg :)
+            if let imageData = message.imageData, message == messages.last {
+                let encodedString = imageData.base64EncodedString()
+                let textMessage = MessageContent(type: "text", text: message.content, imageURL: nil)
+                let imageMessage = MessageContent(type: "image_url", text: nil, imageURL: ImageURL2(url: "data:image/jpeg;base64,{\(encodedString)}"))
+                content = [textMessage, imageMessage]
             } else {
-                resultMessages.append(Message2(role: message.role, content: [textMessage, imageMessage]))
+                let textMessage = MessageContent(type: "text", text: message.content, imageURL: nil)
+                content = [textMessage]
             }
+            
+            resultMessages.append(Message2(role: message.role, content: content))
         }
         self.messages = resultMessages
     }

@@ -17,13 +17,16 @@ enum Page: Hashable {
         switch self {
         case .chatsList:
             hasher.combine(UUID())
-        case .chatView:
+        case .chat:
+            hasher.combine(UUID())
+        case .userSettings:
             hasher.combine(UUID())
         }
     }
     
-    case chatsList(chatsStorage: ChatsStorageInteractorProtocol)
-    case chatView(chat: ChatModelObserver, chatsStorage: ChatsStorageInteractorProtocol)
+    case chatsList(storage: ChatsStorageInteractorProtocol)
+    case chat(chat: ChatModelObserver)
+    case userSettings
 }
 
 final class Coordinator: ObservableObject {
@@ -37,28 +40,41 @@ final class Coordinator: ObservableObject {
         path.removeLast()
     }
     
-    
     @ViewBuilder func build(page: Page) -> some View {
         switch page {
-        case .chatsList( let chatsStore):
-            ChatListView(chatsService: chatsStore)
-        case .chatView(let chat, let chatsStorage):
-            ChatView(chat: chat, chatsStorage: chatsStorage)
+        case .chatsList(let chatStorage):
+            ChatListView(chatsService: chatStorage)
+        case .chat(let chat):
+            ChatView(chat: chat)
+        case .userSettings:
+            UserSettingsView()
         }
     }
 }
 
 struct CoordinatorView: View {
     var chatsStorage: ChatsStorageInteractorProtocol
+    
     @StateObject private var coordinator = Coordinator()
+    @State var tabIndex = 0
     
     var body: some View {
         NavigationStack(path: $coordinator.path) {
-            coordinator.build(page: .chatsList(chatsStorage: chatsStorage))
-                .navigationDestination(for: Page.self) { page in
-                    coordinator.build(page: page)
+            TabBarView(
+                currentTab: $tabIndex,
+                items: [
+                    .init(view: coordinator.build(page: .chatsList(storage: chatsStorage)), image: "message", text: "Нообщения"),
+                    .init(view: coordinator.build(page: .userSettings), image: "person", text: "Настройки")
+                ], onTapItem: { index in
+                    self.tabIndex = index
                 }
+            )
+            .navigationDestination(for: Page.self) { page in
+                coordinator.build(page: page)
+            }
         }
         .environmentObject(coordinator)
     }
 }
+
+

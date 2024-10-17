@@ -91,18 +91,36 @@ struct MessagesView: View {
     private func userMessageView(message: MessageModel) -> some View {
         HStack {
             Spacer(minLength: 40)
-            Text(message.content)
-                .font(Fonts.museoSans(weight: .regular, size: fontSize))
-                .lineSpacing(textLineSpacing)
-                .foregroundColor(Colors.white)
-                .padding(10)
-                .background(Colors.background2)
-                .cornerRadius(4)
-                .cornerRadius(Layout.Radius.smallRadius + 2, corners: [.bottomLeft, .topLeft, .topRight])
-                .contextMenu(menuItems: {
-                    contextMenuView(message)
-                }
-                )
+            VStack(alignment: .trailing, spacing: Layout.Padding.extraSmall / 2) {
+                    Text(message.content)
+                        .font(Fonts.museoSans(weight: .regular, size: fontSize))
+                        .lineSpacing(textLineSpacing)
+                        .foregroundColor(Colors.white)
+                        .padding(10)
+                        .background(Colors.background2)
+                        .cornerRadius(4)
+                        .cornerRadius(Layout.Radius.smallRadius + 2, corners: [.bottomLeft, .topLeft, .topRight])
+//                    if let imageData = message.imageData {
+                let image = Image(uiImage: UIImage(data: message.imageData ?? Data()) ?? UIImage())
+                            .resizable()
+                            .scaledToFill()
+//                            .allowsHitTesting(false)
+                            image
+                    .frame(width: 150, height: message.imageData == nil ? 0 : 150)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .padding(2)
+                            .background(
+                                image
+                                    .blur(radius: 15)
+                                    .frame(width: 154, height: 154)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                            )
+//                    }
+            }
+            .contextMenu(menuItems: {
+                contextMenuView(message)
+            }
+            )
         }
     }
     
