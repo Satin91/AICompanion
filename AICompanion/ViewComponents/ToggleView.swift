@@ -12,7 +12,7 @@ struct ToggleView: View {
     var isActive: Bool
     
     var thumbDiameter: CGFloat = 18
-    var thumbColor = Colors.white
+    var thumbColor = Color.white
     var backgroundColor = Colors.background
     
     var onTapToggle: (Bool) -> Void = { _ in }

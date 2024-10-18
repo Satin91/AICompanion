@@ -17,23 +17,31 @@ struct ChatView: View {
     @FocusState var isKeyboardForeground: Bool
     @State var textFieldText = ""
     @State var isSelectedImageLoading = false
-    @State var pickerItem: PhotosPickerItem?
+    @State var isShowAttachItems = false
     
     private let fontSize: CGFloat = 14
     
     init(chat: ChatModelObserver) {
         _store = StateObject(wrappedValue: ChatViewStore(initialState: ChatState(chat: chat), networkService: ChatsNetworkService()))
     }
+    @State var isShowCamera = false
+    @State var isShowPicker = false
     
     var body: some View {
         content
             .background(Colors.background.ignoresSafeArea(.all))
             .toolbar(.hidden)
+            .onTapGesture {
+                isShowAttachItems = false
+            }
             .onAppear {
                 store.dispatch(.onViewAppear)
             }
-            .onChange(of: pickerItem) {
-                store.dispatch(.displayPhotoFromPicker(item: pickerItem))
+            .fullScreenCover(isPresented: $isShowCamera){
+                camera
+            }
+            .sheet(isPresented: $isShowPicker) {
+                imagePicker
             }
     }
     
@@ -45,9 +53,12 @@ struct ChatView: View {
                 messagesView
                 textFieldContainer
                     .overlay {
-                        selectedImageContainer
+                        previewPhotoContainer
                             .offset(y: -135)
                             .padding(.horizontal, Layout.Padding.horizontalEdges)
+                        attachContentMenu
+                            .offset(y: -110)
+                            .padding(.horizontal, Layout.Padding.extraSmall)
                     }
             }
             .risingAboveKeyboard()
@@ -64,6 +75,7 @@ struct ChatView: View {
         }
         .onTapGesture {
             isKeyboardForeground = false
+            isShowAttachItems = false
         }
     }
     
@@ -107,8 +119,8 @@ struct ChatView: View {
             .background(Colors.background2)
     }
     
-    @ViewBuilder var selectedImageContainer: some View {
-        if let imageData = store.state.pickerPhotoData {
+    @ViewBuilder var previewPhotoContainer: some View {
+        if let imageData = store.state.sendableImageData {
             HStack {
                 let image = Image(uiImage: UIImage(data: imageData) ?? UIImage())
                     .resizable()
@@ -116,8 +128,6 @@ struct ChatView: View {
                 image
                     .allowsHitTesting(false)
                     .frame(width: 150, height: 150)
-                    .clipped()
-                    .fixedSize()
                     .clipShape(
                         RoundedRectangle(cornerRadius: 22)
                     )
@@ -144,7 +154,7 @@ struct ChatView: View {
                             .padding(.top, 14)
                             .padding(.trailing, 14)
                             .onTapGesture {
-                                pickerItem = nil
+                                store.dispatch(.closePhotoPreview)
                             }
                     }
                 Spacer()
@@ -155,7 +165,7 @@ struct ChatView: View {
     
     private var textFieldContainer: some View {
         HStack(spacing: Layout.Padding.small) {
-            attachContentButton
+            showAttachContentButton
             textField
             sendMessageButton
         }
@@ -167,14 +177,47 @@ struct ChatView: View {
         .background(Colors.background2)
     }
     
-    var attachContentButton: some View {
-        PhotosPicker(selection: $pickerItem, matching: .any(of: [.images, .not(.livePhotos)]), preferredItemEncoding: .compatible) {
+    var showAttachContentButton: some View {
+        Button {
+            isShowAttachItems = true
+        } label: {
             Image(systemName: "paperclip")
                 .font(.system(size: 26, weight: .light))
                 .foregroundColor(Colors.primarySecondary)
-        }.onTapGesture {
-            print("Tap")
         }
+    }
+    
+    @ViewBuilder
+    var attachContentMenu: some View {
+        if isShowAttachItems {
+            VStack(spacing: 4) {
+                makeAttachMenuItem(image: "camera.circle.fill", text: "Сделать снимок") {
+                    self.isShowCamera = true
+                    self.isShowAttachItems = false
+                }
+                makeAttachMenuItem(image: "photo.circle.fill", text: "Выбрать изображение") {
+                    self.isShowPicker = true
+                    self.isShowAttachItems = false
+                }
+            }
+            .padding(4)
+            .frame(width: 230)
+            .background(
+                Color.clear
+                    .background(.thinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: Layout.Radius.smallRadius + 2))
+            )
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+    
+    
+    var camera: some View {
+        CameraView { store.dispatch(.displayPhotoFromCamera(photoData: $0)) }
+    }
+    
+    var imagePicker: some View {
+        ImagePickerView { store.dispatch(.displayPhotoFromCamera(photoData: $0)) }
     }
     
     var textField: some View {
@@ -187,7 +230,7 @@ struct ChatView: View {
             guard !textFieldText.isEmpty else { return }
             store.dispatch(.sendMessage(text: textFieldText, isHistoryEnabled: store.state.isHistoryEnabled))
             textFieldText = ""
-            pickerItem = nil
+            store.dispatch(.closePhotoPreview)
         } label: {
             Image(systemName: "paperplane.fill")
                 .font(.system(size: 26))
@@ -195,6 +238,27 @@ struct ChatView: View {
                 .shadow(color: Colors.primary.opacity(textFieldText.isEmpty ? 0 : 0.3), radius: 5)
                 .animation(.easeInOut(duration: 0.1), value: textFieldText.isEmpty)
         }
+    }
+    
+    private func makeAttachMenuItem(image: String, text: String, onTap: @escaping () -> Void) -> some View {
+        Button {
+            onTap()
+        } label: {
+            HStack {
+                Image(systemName: image)
+                    .font(.system(size: 28, weight: .light))
+                    .foregroundColor(Colors.primary)
+                Spacer()
+                Text(text)
+                    .font(Fonts.museoSans(weight: .regular, size: 15))
+            }
+            .padding(8)
+            .background(
+                RoundedRectangle(cornerRadius: Layout.Radius.smallRadius)
+                    .fill(Colors.background2)
+            )
+        }
+        .buttonStyle(.plain)
     }
 }
 

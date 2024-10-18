@@ -21,12 +21,15 @@ enum Page: Hashable {
             hasher.combine(UUID())
         case .userSettings:
             hasher.combine(UUID())
+        case .cameraController(shotData: let shotData):
+            hasher.combine(UUID())
         }
     }
     
     case chatsList(storage: ChatsStorageInteractorProtocol)
     case chat(chat: ChatModelObserver)
     case userSettings(appSettings: AppSettingsInteractor)
+    case cameraController(shotData: (Data) -> Void)
 }
 
 final class Coordinator: ObservableObject {
@@ -48,6 +51,8 @@ final class Coordinator: ObservableObject {
             ChatView(chat: chat)
         case .userSettings(let settings):
             UserSettingsView(appSettings: settings)
+        case .cameraController(let data):
+            CameraView(shotData: data)
         }
     }
 }
@@ -74,7 +79,7 @@ struct CoordinatorView: View {
         TabBarView(
             currentTab: $tabIndex,
             items: [
-                .init(view: coordinator.build(page: .chatsList(storage: chatsStorage)), image: "message", text: "Нообщения"),
+                .init(view: coordinator.build(page: .chatsList(storage: chatsStorage)), image: "message", text: "Сообщения"),
                 .init(view: coordinator.build(page: .userSettings(appSettings: appSettings) ), image: "person", text: "Настройки")
             ], onTapItem: { index in
                 self.tabIndex = index
