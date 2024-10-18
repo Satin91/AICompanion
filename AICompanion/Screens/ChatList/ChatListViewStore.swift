@@ -10,7 +10,7 @@ import Combine
 
 struct ChatListState {
     var balance: Double
-    var chats = CurrentValueSubject<[ChatModel], Never>([])
+    var chats = CurrentValueSubject<[ChatModelObserver], Never>([])
     var selectedCompanion = CompanionType.gpt4o
 }
 
@@ -26,7 +26,7 @@ enum ChatListActions {
 class ChatListViewStore: ViewStore {
     @Published var state: ChatListState
     var chatsStorage: ChatsStorageInteractorProtocol
-    var networkService = NetworkService()
+    var networkService = ChatsNetworkService()
     
     init(state: ChatListState, chatsStorage: ChatsStorageInteractorProtocol) {
         self.state = state
@@ -54,10 +54,11 @@ class ChatListViewStore: ViewStore {
             state.chats = chatsStorage.chats
             return Just(.getBalance).eraseToAnyPublisher()
         case .createChat(name: let name):
-            let chat = ChatModel(id: UUID().uuidString, companion: state.selectedCompanion, name: name, messages: [])
-            chatsStorage.createChat(chat: chat)
+            let chat = ChatModel(id: UUID().uuidString, companion: state.selectedCompanion, name: name, messages: []).observer
+            state.chats.value.append(chat)
         case .deleteChat(model: let model):
-            chatsStorage.deleteChat(chat: model)
+            guard let chatIndex = state.chats.value.firstIndex(of: model.observer ) else { return .none}
+            state.chats.value.remove(at: chatIndex)
         }
         return .none
     }

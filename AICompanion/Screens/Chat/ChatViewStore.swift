@@ -6,14 +6,19 @@
 //
 
 import Foundation
+import SwiftUI
+import PhotosUI
 import Combine
 
 
 struct ChatState {
+    var textFieldText: String = ""
     var navigationTitle: String = ""
     var isHistoryEnabled: Bool = false
     var isMessageReceiving = false
-    var chat: ChatModel
+    var isLoadingPhotoFromPicker = false
+    var sendableImageData: Data?
+    var chat: ChatModelObserver
 }
 
 enum ChatAction {
@@ -21,6 +26,8 @@ enum ChatAction {
     case delete(message: MessageModel)
     case receiveComplete(ChatModel)
     case errorReceiveMessage(error: NetworkError)
+    case displayPhotoFromCamera(photoData: Data)
+    case closePhotoPreview
     case toggleHistoryValue
     case onViewAppear
 }
@@ -29,43 +36,42 @@ enum ChatAction {
 class ChatViewStore: ViewStore {
     @Published var state: ChatState
     
-    var network: NetworkService
-    var chatsStorage: ChatsStorageInteractorProtocol
+    var network: ChatsNetworkService
     var cancellable = Set<AnyCancellable>()
     
-    
-    init(initialState: ChatState, networkService: NetworkService, chatsStorage: ChatsStorageInteractorProtocol) {
+    init(initialState: ChatState, networkService: ChatsNetworkService) {
         self.state = initialState
         self.network = networkService
-        self.chatsStorage = chatsStorage
     }
     
     func reduce(state: inout ChatState, action: ChatAction) -> AnyPublisher<ChatAction, Never>? {
         switch action {
-        case .sendMessage(let text, let isEnabled):
-            state.chat.messages.append(MessageModel(role: "user", content: text))
-            state.isMessageReceiving = true
             
-            var model = state.chat
-            let sendableMessage = MessageModel(role: "user", content: text)
-            chatsStorage.updateChat(chat: model)
+        case .sendMessage(let text, let isEnabled):
+            let compressionalyJpeg = UIImage(data: state.sendableImageData ?? Data())?.jpegData(compressionQuality: 0.2)
+            let sendableMessage = MessageModel(role: "user", content: text, imageData: compressionalyJpeg)
+            state.chat.value.messages.append(sendableMessage)
+            state.isMessageReceiving = true
+            var model = state.chat.value
             return self.network
                 .sendMessage(message: isEnabled ? model.messages : [sendableMessage], companion: model.companion)
                 .subscribe(on: DispatchQueue.main)
                 .map { value in
                     let receivedMessage = MessageModel(role: "assistant", content: value.message)
                     model.messages.append(receivedMessage)
-                    self.chatsStorage.updateChat(chat: model)
                     return .receiveComplete(model) }
                 .catch { error in
                     return Just(.errorReceiveMessage(error: error))
                 }
                 .eraseToAnyPublisher()
+            
         case .receiveComplete(let model):
             state.isMessageReceiving = false
-            state.chat = model
+            state.chat.value = model
+            
         case .toggleHistoryValue:
             state.isHistoryEnabled.toggle()
+            
         case .errorReceiveMessage(error: let error):
             state.isMessageReceiving = false
             switch error {
@@ -76,106 +82,28 @@ class ChatViewStore: ViewStore {
             case .serverError(let code, let text):
                 state.navigationTitle = text
             }
+            
+        case .closePhotoPreview:
+            state.sendableImageData = nil
+            
+        case .displayPhotoFromCamera(photoData: let data):
+            state.isLoadingPhotoFromPicker = true
+            
+            state.sendableImageData = UIImage(data: data)?.jpegData(compressionQuality: 0.3)
+            state.isLoadingPhotoFromPicker = false
+            
+        
         case .delete(message: let message):
-            guard let firstIndex = state.chat.messages.firstIndex(of: message) else { return .none }
-            state.chat.messages.remove(at: firstIndex)
+            guard let firstIndex = state.chat.value.messages.firstIndex(of: message) else { return .none }
+            state.chat.value.messages.remove(at: firstIndex)
+            
         case .onViewAppear:
-            state.navigationTitle = state.chat.companion.name
+            state.navigationTitle = state.chat.value.companion.name
         }
         
         return .none
     }
-    
-    func asyncSendMessage(message: String, companion: CompanionType) async -> MessageModel {
-        return await withUnsafeContinuation { continuation in
-            
-            network.sendMessage(message: [MessageModel(role: "user", content: message)], companion: companion)
-                .receive(on: DispatchQueue.main)
-                .sink { _ in
-                    
-                } receiveValue: { response in
-                    let returningValue = MessageModel(role: "assistance", content: response.message)
-                    continuation.resume(returning: returningValue)
-                }
-                .store(in: &cancellable)
-        }
-        
-    }
-    
-    
-    func asyncExecutes(state: inout ChatState, action: ChatAction) -> AnyPublisher<ChatAction, Never> {
-        switch action {
-        case .sendMessage(text: let text, isHistoryEnabled: let isEnabled):
-            var model = state.chat
-            let sendableMessage = MessageModel(role: "user", content: text)
-            chatsStorage.updateChat(chat: model)
-            return self.network
-                .sendMessage(message: isEnabled ? model.messages : [sendableMessage], companion: model.companion)
-                .subscribe(on: DispatchQueue.main)
-                .map { value in
-                    let receivedMessage = MessageModel(role: "assistant", content: value.message)
-                    model.messages.append(receivedMessage)
-                    self.chatsStorage.updateChat(chat: model)
-                    return .receiveComplete(model) }
-                .catch { error in
-                    return Just(.errorReceiveMessage(error: error))
-                }
-                .eraseToAnyPublisher()
-        default: break
-        }
-        return Empty().eraseToAnyPublisher()
-    }
-    
-//    func asyncExecutes() -> Middleware<ChatState, ChatAction> {
-//        return { [weak self] state, action in
-//            guard let self else { return .none}
-//            switch action {
-//            case .sendMessage(text: let text, isHistoryEnabled: let isEnabled):
-//                var model = state.chat
-//                let sendableMessage = MessageModel(role: "user", content: text)
-//                chatsStorage.updateChat(chat: model)
-//                return self.network
-//                    .sendMessage(message: isEnabled ? model.messages : [sendableMessage], companion: model.companion)
-//                    .subscribe(on: DispatchQueue.main)
-//                    .map { value in
-//                        let receivedMessage = MessageModel(role: "assistant", content: value.message)
-//                        model.messages.append(receivedMessage)
-//                        self.chatsStorage.updateChat(chat: model)
-//                        return .receiveComplete(model) }
-//                    .catch { (error: NetworkError) -> Just<ChatAction> in
-//                        return Just(.errorReceiveMessage(error: error))
-//                    }
-//                    .eraseToAnyPublisher()
-//            default: break
-//            }
-//            return Empty().eraseToAnyPublisher()
-//        }
-//    }
-    
-}
-
-func chatMiddleware(network: NetworkService, chatsStorage: ChatsStorageInteractorProtocol) -> Middleware<ChatState, ChatAction> {
-    return { state, action in
-        switch action {
-        case .sendMessage(text: let text, isHistoryEnabled: let isEnabled):
-            var model = state.chat
-            let sendableMessage = MessageModel(role: "user", content: text)
-            chatsStorage.updateChat(chat: model)
-            return network
-                .sendMessage(message: isEnabled ? model.messages : [sendableMessage], companion: model.companion)
-                .subscribe(on: DispatchQueue.main)
-                .map { value in
-                    let receivedMessage = MessageModel(role: "assistant", content: value.message)
-                    model.messages.append(receivedMessage)
-                    chatsStorage.updateChat(chat: model)
-                    return .receiveComplete(model) }
-                .catch { (error: NetworkError) -> Just<ChatAction> in
-                    return Just(.errorReceiveMessage(error: error))
-                }
-                .eraseToAnyPublisher()
-        default: break
-        }
-        return Empty().eraseToAnyPublisher()
+    deinit {
+        print("DEINIT CHAT VIEW STORE")
     }
 }
-

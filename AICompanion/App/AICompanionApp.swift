@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftData
 
 @main
 struct AICompanionApp: App {
@@ -18,7 +17,6 @@ struct AICompanionApp: App {
     var body: some Scene {
         WindowGroup {
             CoordinatorView(chatsStorage: chatsService)
-                .preferredColorScheme(colorScheme)
         }
     }
 }

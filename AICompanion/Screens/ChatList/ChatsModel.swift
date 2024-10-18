@@ -7,14 +7,20 @@
 
 import Foundation
 
-struct ChatModel: Codable, Hashable {
+struct ChatModel: Codable, Hashable, Equatable {
     var id = UUID().uuidString
     var companion: CompanionType
     var name: String
     var messages: [MessageModel]
+    
+    var observer: ChatModelObserver {
+        return ChatModelObserver(self)
+    }
 }
 
 struct MessageModel: Hashable, Codable {
     var role: String
     var content: String
+    var imageData: Data?
+//    var imageBase64: String? = nil
 }

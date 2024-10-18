@@ -50,6 +50,7 @@ enum Layout {
 enum Colors {
     static let background = Color("background")
     static let background2 = Color("background2")
+    static let stroke = Color("stroke")
     static let white = Color("white")
     static let subtitle = Color("subtitle")
     static let primary = Color("primary")
