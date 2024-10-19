@@ -22,10 +22,9 @@ struct BorderedTextField: View {
         TextField(
             placeholder, // Localized string key
             text: $text,
-            prompt: Text(placeholder).font(Fonts.museoSans(weight: .regular,
-            size: fontSize)
-        )
-            .foregroundColor(Colors.subtitle),axis: axis)
+            prompt: Text(placeholder)
+                .font(Fonts.museoSans(weight: .regular, size: fontSize))
+                .foregroundColor(Colors.subtitle),axis: axis)
         .font(Fonts.museoSans(weight: .regular, size: fontSize))
         .foregroundColor(Colors.white)
         .focused($isKeyboardForeground, equals: true)

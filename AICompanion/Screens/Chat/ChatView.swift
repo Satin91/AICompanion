@@ -57,7 +57,7 @@ struct ChatView: View {
                             .offset(y: -135)
                             .padding(.horizontal, Layout.Padding.horizontalEdges)
                         attachContentMenu
-                            .offset(y: -110)
+                            .offset(y: -115)
                             .padding(.horizontal, Layout.Padding.extraSmall)
                     }
             }
@@ -190,21 +190,21 @@ struct ChatView: View {
     @ViewBuilder
     var attachContentMenu: some View {
         if isShowAttachItems {
-            VStack(spacing: 4) {
+            VStack(spacing: .zero) {
                 makeAttachMenuItem(image: "camera.circle.fill", text: "Сделать снимок") {
                     self.isShowCamera = true
                     self.isShowAttachItems = false
                 }
+                Divider()
                 makeAttachMenuItem(image: "photo.circle.fill", text: "Выбрать изображение") {
                     self.isShowPicker = true
                     self.isShowAttachItems = false
                 }
             }
-            .padding(4)
             .frame(width: 230)
             .background(
                 Color.clear
-                    .background(.thinMaterial)
+                    .background(Colors.background2)
                     .clipShape(RoundedRectangle(cornerRadius: Layout.Radius.smallRadius + 2))
             )
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -252,7 +252,7 @@ struct ChatView: View {
                 Text(text)
                     .font(Fonts.museoSans(weight: .regular, size: 15))
             }
-            .padding(8)
+            .padding(12)
             .background(
                 RoundedRectangle(cornerRadius: Layout.Radius.smallRadius)
                     .fill(Colors.background2)

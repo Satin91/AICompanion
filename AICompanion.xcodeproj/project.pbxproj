@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		8E1697122CB5D94200BA70FE /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1697112CB5D94200BA70FE /* MessagesView.swift */; };
 		8E3A6E1B2CC2F4F50032206A /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3A6E1A2CC2F4F50032206A /* ImagePickerView.swift */; };
+		8E3A6E1D2CC320A50032206A /* PublishersError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3A6E1C2CC320A50032206A /* PublishersError.swift */; };
+		8E3A6E222CC322070032206A /* GlassBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3A6E212CC322070032206A /* GlassBackground.swift */; };
+		8E3A6E242CC322CC0032206A /* DismissKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3A6E232CC322CC0032206A /* DismissKeyboard.swift */; };
+		8E3A6E262CC323160032206A /* BackgroundBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3A6E252CC323160032206A /* BackgroundBlur.swift */; };
 		8E4D2DF92CC27FE600AE694F /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4D2DF82CC27FE600AE694F /* CameraView.swift */; };
 		8E5D55482CBD52530026B623 /* ChatViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5D55472CBD52530026B623 /* ChatViewStore.swift */; };
 		8E72E4CC2CAC3AE800FA5F69 /* ChatsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E72E4CB2CAC3AE800FA5F69 /* ChatsModel.swift */; };
@@ -50,6 +54,10 @@
 /* Begin PBXFileReference section */
 		8E1697112CB5D94200BA70FE /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
 		8E3A6E1A2CC2F4F50032206A /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
+		8E3A6E1C2CC320A50032206A /* PublishersError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishersError.swift; sourceTree = "<group>"; };
+		8E3A6E212CC322070032206A /* GlassBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassBackground.swift; sourceTree = "<group>"; };
+		8E3A6E232CC322CC0032206A /* DismissKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissKeyboard.swift; sourceTree = "<group>"; };
+		8E3A6E252CC323160032206A /* BackgroundBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundBlur.swift; sourceTree = "<group>"; };
 		8E4D2DF82CC27FE600AE694F /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		8E5D55472CBD52530026B623 /* ChatViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewStore.swift; sourceTree = "<group>"; };
 		8E72E4CB2CAC3AE800FA5F69 /* ChatsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsModel.swift; sourceTree = "<group>"; };
@@ -101,6 +109,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8E3A6E202CC321FC0032206A /* Modifiers */ = {
+			isa = PBXGroup;
+			children = (
+				8E3A6E212CC322070032206A /* GlassBackground.swift */,
+				8E3A6E252CC323160032206A /* BackgroundBlur.swift */,
+				8E3A6E232CC322CC0032206A /* DismissKeyboard.swift */,
+			);
+			path = Modifiers;
+			sourceTree = "<group>";
+		};
 		8E8BA6392CB17B0000EC14E2 /* ViewComponents */ = {
 			isa = PBXGroup;
 			children = (
@@ -238,9 +256,11 @@
 		8ED8A0542CA89783001D1CA7 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				8E3A6E202CC321FC0032206A /* Modifiers */,
 				8EA1BF902CA897F700B0A596 /* SpecifiedCornerRadius.swift */,
 				8EB758932CB6B62800C09BF7 /* RisingAboveKeyboard.swift */,
 				8E9F40F12CBA8AB600F4FCB2 /* ReadSize.swift */,
+				8E3A6E1C2CC320A50032206A /* PublishersError.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -373,6 +393,7 @@
 				8E8EE0902CBBE6D7009E3F16 /* ViewStore.swift in Sources */,
 				8E9F40F82CBB211C00F4FCB2 /* ChatView.swift in Sources */,
 				8E9C289D2CA59F3D006DB348 /* AICompanionApp.swift in Sources */,
+				8E3A6E242CC322CC0032206A /* DismissKeyboard.swift in Sources */,
 				8E4D2DF92CC27FE600AE694F /* CameraView.swift in Sources */,
 				8ED9E9482CB44B4C00CD0F7E /* ChatsStorageInteractor.swift in Sources */,
 				8ED64B062CA973CC0083B3A7 /* ChatConfigModel.swift in Sources */,
@@ -389,6 +410,9 @@
 				8ED64B042CA965240083B3A7 /* StorageRepository.swift in Sources */,
 				8EE1A6972CA7768400056A62 /* Constants.swift in Sources */,
 				8E9F40F22CBA8AB600F4FCB2 /* ReadSize.swift in Sources */,
+				8E3A6E222CC322070032206A /* GlassBackground.swift in Sources */,
+				8E3A6E262CC323160032206A /* BackgroundBlur.swift in Sources */,
+				8E3A6E1D2CC320A50032206A /* PublishersError.swift in Sources */,
 				8E8EE0962CBC57E0009E3F16 /* Coordinator.swift in Sources */,
 				8EFFF1832CC12564006B489C /* UserSettingsView.swift in Sources */,
 				8EFFF1872CC1A874006B489C /* BorderedTextField.swift in Sources */,

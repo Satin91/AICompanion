@@ -189,7 +189,6 @@ struct ChatListView: View {
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-//                            .fill(Color.background2)
                             .stroke(Colors.white.opacity(0.1), lineWidth: 1)
                     )
                     .padding()

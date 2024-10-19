@@ -10,7 +10,6 @@ import SwiftUI
 import PhotosUI
 import Combine
 
-
 struct ChatState {
     var textFieldText: String = ""
     var navigationTitle: String = ""
@@ -88,10 +87,8 @@ class ChatViewStore: ViewStore {
             
         case .displayPhotoFromCamera(photoData: let data):
             state.isLoadingPhotoFromPicker = true
-            
-            state.sendableImageData = UIImage(data: data)?.jpegData(compressionQuality: 0.3)
+            state.sendableImageData = UIImage(data: data)?.pngData()
             state.isLoadingPhotoFromPicker = false
-            
         
         case .delete(message: let message):
             guard let firstIndex = state.chat.value.messages.firstIndex(of: message) else { return .none }

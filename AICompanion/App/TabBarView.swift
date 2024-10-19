@@ -68,13 +68,13 @@ struct TabBarView: View {
             ZStack {
                 Image(systemName: item.image)
                     .resizable()
-                    .fontWeight(.regular)
+                    .fontWeight(.light)
                 Image(systemName: item.image + ".fill")
                     .resizable()
-                    .opacity(index == currentTab ? 1 : 0)
+                    .opacity(index == currentTab ? 0.15 : 0)
             }
             .scaledToFill()
-            .foregroundColor(isSelected ? Colors.white : Colors.subtitle.opacity(0.7))
+            .foregroundColor(isSelected ? Colors.primary : Colors.subtitle.opacity(0.7))
             .frame(width: 24, height: 24)
             .frame(maxWidth: .infinity)
             .offset(y: index == currentTab ? -8 : 0)
@@ -83,7 +83,7 @@ struct TabBarView: View {
                 if isSelected {
                     Text(item.text)
                         .font(.system(size: 12, weight: .regular))
-                        .foregroundColor(Colors.white)
+                        .foregroundColor(Colors.primary)
                         .opacity(isSelected ? 1 : 0)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                         .offset(y: 12)
