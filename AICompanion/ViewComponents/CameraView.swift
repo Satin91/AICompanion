@@ -7,10 +7,15 @@
 
 import SwiftUI
 import AVKit
+import RealityKit
+import ARKit
 
 struct CameraView: View {
     @StateObject var cameraManager = CameraManager()
+    
     var shotData: (Data) -> Void
+    
+    @State var imageData: Data?
     @Environment(\.dismiss) var dismiss
     @State var zoom: CGFloat = 1
     @State var previousZoomValue: CGFloat = 1
@@ -30,7 +35,7 @@ struct CameraView: View {
             .gesture(
                 MagnificationGesture()
                     .onChanged { val in
-                       changeCameraScale(gesture: val)
+                        changeCameraScale(gesture: val)
                     }.onEnded { val in
                         self.previousZoomValue = 1
                     }
@@ -41,10 +46,8 @@ struct CameraView: View {
     
     var content: some View {
         ZStack {
-            VStack(spacing: .zero) {
-                cameraTopPanelContainer
-                camera
-            }
+            //                cameraTopPanelContainer
+            camera
             cameraBottomPanelContainer
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         }
@@ -105,8 +108,20 @@ struct CameraView: View {
                     }
             }
             .frame(maxWidth: .infinity)
-            Spacer()
-                .frame(maxWidth: .infinity)
+            
+            Button {
+                //TODO: MAKE FRONT CAMERA
+                cameraManager.switchCamera()
+            } label: {
+                Image(systemName: "arrow.triangle.2.circlepath")
+                    .resizable()
+                    .fontWeight(.light)
+                    .scaledToFit()
+                    .frame(width: 30, height: 30)
+                    .foregroundColor(.white.opacity(0.6))
+                    .padding(15)
+            }
+            .frame(maxWidth: .infinity)
         }
     }
     
@@ -116,10 +131,10 @@ struct CameraView: View {
                 .frame(maxWidth: .infinity)
             Button {
                 print("Close controller, send the photo")
-                cameraManager.send { photoData in
-                    shotData(photoData)
-                    dismiss()
-                }
+                cameraManager.send(shotData)
+                dismiss()
+                cameraManager.state = .shotTaken
+                
             } label: {
                 Image(systemName: "arrow.up")
                     .resizable()
@@ -150,23 +165,11 @@ struct CameraView: View {
     
     @State var startFlip: CGFloat = 5
     private func changeCameraScale(gesture value: CGFloat) {
-        
-        
         let delta = value / self.previousZoomValue
-
-        
         var newScale = (self.zoom * delta)
-        
-        print("previous value", previousZoomValue)
-        if previousZoomValue == 1 { // Это условие убирает начальный скачек зума
-            startFlip = self.zoom - newScale
-        } else {
-            startFlip = 0
-        }
-        
+        startFlip = previousZoomValue == 1 ? self.zoom - newScale : .zero // Это условие убирает начальный скачек зума
         self.previousZoomValue = value
-        
-        newScale += startFlip // startFlip убирает начальный люфт на первом обновлении
+        newScale += startFlip // startFlip убирает люфт на первом обновлении
         guard (1...115).contains(newScale) else { return }
         self.zoom = newScale
         cameraManager.zoom(to: zoom)
@@ -236,13 +239,15 @@ final class CameraManager: NSObject, ObservableObject {
         try? device?.lockForConfiguration()
         device?.videoZoomFactor = to
         device?.unlockForConfiguration()
+        setup(withZoom: to)
     }
     
-    func setup() {
+    func setup(withZoom: CGFloat = 1) {
         
-        guard let device = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) else {
+        guard let device = AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) else {
             fatalError("device not configurated")
         }
+        
         guard let input = try? AVCaptureDeviceInput(device: device) else {
             fatalError("device input not captured")
         }
@@ -259,6 +264,22 @@ final class CameraManager: NSObject, ObservableObject {
             session.addOutput(self.output)
         }
         
+        session.commitConfiguration()
+    }
+    
+    func switchCamera() {
+        session.beginConfiguration()
+        let currentInput = session.inputs.first as? AVCaptureDeviceInput
+        session.removeInput(currentInput!)
+        
+        let frontCamera =  AVCaptureDevice.default(.builtInTrueDepthCamera, for: .video, position: .front)
+        let backCamera = AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back)
+        
+        self.device = device
+        
+        let newCameraDevice = currentInput?.device.position == .back ? frontCamera : backCamera
+        let newVideoInput = try? AVCaptureDeviceInput(device: newCameraDevice!)
+        session.addInput(newVideoInput!)
         session.commitConfiguration()
     }
 }
@@ -298,13 +319,10 @@ struct CameraPreview: UIViewControllerRepresentable {
     }
     
     func makeUIViewController(context: Context) -> UIViewController {
-        let view = UIView(frame: UIScreen.main.bounds)
         cameraManager.preview = AVCaptureVideoPreviewLayer(session: cameraManager.session)
-        cameraManager.preview.frame = view.frame
-        
         cameraManager.preview.videoGravity = .resizeAspectFill
-        view.layer.addSublayer(cameraManager.preview)
-        context.coordinator.view = view
+        context.coordinator.view.layer.addSublayer(cameraManager.preview)
+        cameraManager.preview.frame = context.coordinator.view.bounds
         return context.coordinator
     }
     
