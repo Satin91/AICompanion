@@ -12,15 +12,12 @@ import ARKit
 
 struct CameraView: View {
     @StateObject var cameraManager = CameraManager()
-    
+    let generator = UIImpactFeedbackGenerator(style: .medium)
     var shotData: (Data) -> Void
-    
-    @State var imageData: Data?
     @Environment(\.dismiss) var dismiss
-    @State var zoom: CGFloat = 1
-    @State var previousZoomValue: CGFloat = 1
+    @State private  var zoom: CGFloat = 1
+    @State private var previousZoomValue: CGFloat = 1
     
-    @State var changedZoomValue: CGFloat = 0
     var body: some View {
         content
             .onAppear {
@@ -46,26 +43,49 @@ struct CameraView: View {
     
     var content: some View {
         ZStack {
-            //                cameraTopPanelContainer
-            camera
-            cameraBottomPanelContainer
+            VStack(spacing: .zero) {
+                topPanelContainer
+                ZStack {
+                    camera
+                    photo
+                }
+            }
+            bottomPanelContainer
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         }
     }
     
-    var cameraTopPanelContainer: some View {
+    var topPanelContainer: some View {
         Rectangle()
             .fill(.black)
-            .frame(height: 160)
+            .frame(height: 150)
+            .overlay {
+                HStack {
+                    flashButton
+                        .frame(maxHeight: .infinity, alignment: .bottom)
+                        Spacer()
+                }
+                .padding(Layout.Padding.horizontalEdges)
+            }
     }
     
     var camera: some View {
         CameraPreview(cameraManager: cameraManager)
     }
     
-    var cameraBottomPanelContainer: some View {
+    @ViewBuilder var photo: some View {
+        if let data = cameraManager.capturedPhotoData {
+            Image(uiImage: UIImage(data: data)!)
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .ignoresSafeArea(.all)
+        }
+    }
+    
+    var bottomPanelContainer: some View {
         Rectangle()
-            .fill(.black.opacity(0.5))
+            .fill(.black.opacity(0.7))
             .ignoresSafeArea(.all)
             .padding(.bottom, 20)
             .background(.thinMaterial)
@@ -80,16 +100,31 @@ struct CameraView: View {
             }
     }
     
+    var flashButton: some View {
+        Button {
+            cameraManager.flipFlashState()
+        } label: {
+            let imageName = cameraManager.isFlashEnamle ? "bolt.fill" : "bolt.slash.fill"
+            Image(systemName: imageName)
+                .font(.system(size: 22))
+                .foregroundColor(Color.white)
+        }
+        .buttonStyle(.plain)
+
+    }
+    
+    let queue = DispatchQueue(label: "dddqueue", qos: .userInteractive)
+    
     var shootingPhotoPanel: some View {
         HStack {
             Button {
                 dismiss()
             } label: {
-                Image(systemName: "arrow.left")
+                Image(systemName: "xmark")
                     .resizable()
                     .fontWeight(.light)
                     .scaledToFit()
-                    .frame(width: 30, height: 30)
+                    .frame(width: 22, height: 22)
                     .foregroundColor(.white.opacity(0.6))
                     .padding(15)
             }
@@ -110,8 +145,11 @@ struct CameraView: View {
             .frame(maxWidth: .infinity)
             
             Button {
-                //TODO: MAKE FRONT CAMERA
-                cameraManager.switchCamera()
+                queue.async {
+                    self.generator.impactOccurred()
+                    self.cameraManager.switchCamera()
+                }
+                    
             } label: {
                 Image(systemName: "arrow.triangle.2.circlepath")
                     .resizable()
@@ -131,10 +169,8 @@ struct CameraView: View {
                 .frame(maxWidth: .infinity)
             Button {
                 print("Close controller, send the photo")
-                cameraManager.send(shotData)
                 dismiss()
-                cameraManager.state = .shotTaken
-                
+                shotData(cameraManager.capturedPhotoData ?? Data())
             } label: {
                 Image(systemName: "arrow.up")
                     .resizable()
@@ -149,7 +185,7 @@ struct CameraView: View {
             .frame(maxWidth: .infinity)
             
             Button {
-                cameraManager.continueShooting()
+                cameraManager.startShooting()
             } label: {
                 Image(systemName: "arrow.clockwise")
                     .resizable()
@@ -163,11 +199,16 @@ struct CameraView: View {
         }
     }
     
-    @State var startFlip: CGFloat = 5
     private func changeCameraScale(gesture value: CGFloat) {
+        var startFlip: CGFloat = 0
+        
         let delta = value / self.previousZoomValue
         var newScale = (self.zoom * delta)
-        startFlip = previousZoomValue == 1 ? self.zoom - newScale : .zero // Это условие убирает начальный скачек зума
+        
+        if previousZoomValue == 1 { // Это условие убирает начальный скачек зума
+            startFlip = self.zoom - newScale
+        }
+
         self.previousZoomValue = value
         newScale += startFlip // startFlip убирает люфт на первом обновлении
         guard (1...115).contains(newScale) else { return }
@@ -177,40 +218,52 @@ struct CameraView: View {
 }
 
 final class CameraManager: NSObject, ObservableObject {
-    @Published var session = AVCaptureSession()
-    @Published var showCamera: Bool = false
-    @Published var output = AVCapturePhotoOutput()
-    @Published var preview: AVCaptureVideoPreviewLayer!
-    @Published var state = CameraState.shooting
-    @Published var device: AVCaptureDevice?
     
+    private var currentDevice: AVCaptureDevice?
+    private var output = AVCapturePhotoOutput()
+    private var frontCamera: AVCaptureDevice?
+    private var backCamera: AVCaptureDevice?
+    var session = AVCaptureSession()
+    var preview: AVCaptureVideoPreviewLayer!
+    @Published var state = CameraState.shooting
+    @Published var isFlashEnamle = false
+    private var generator = UIImpactFeedbackGenerator(style: .light)
     
     var queue = DispatchQueue(label: "com.aicompanion.arthur.backgroundThread")
-    private var shotData: Data?
-    var shot: (Data) -> Void = { _ in }
+    var capturedPhotoData: Data?
     
     enum CameraState {
         case shooting
         case shotTaken
     }
-    
-    func send(_ completion: (Data) -> Void) {
-        guard let data = shotData else { return }
-        completion(data)
-    }
-    
+
     func takeShot() {
-        self.output.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
+        let photoSettings = AVCapturePhotoSettings()
+        photoSettings.isHighResolutionPhotoEnabled = true
+        photoSettings.flashMode = isFlashEnamle ? .on : .off
+        generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+        self.output.capturePhoto(with: photoSettings, delegate: self)
+        
+      
     }
     
-    func continueShooting() {
-        state = .shooting
+    func flipFlashState() {
+        isFlashEnamle.toggle()
+    }
+    
+    func startShooting() {
+
         queue.async {
             self.session.startRunning()
         }
+        DispatchQueue.main.async {
+            self.state = .shooting
+            self.capturedPhotoData = nil
+        }
     }
     
-    func checkAccess () async -> Bool {
+    func checkAccess() async -> Bool {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             setup()
@@ -236,55 +289,89 @@ final class CameraManager: NSObject, ObservableObject {
     }
     
     func zoom(to: CGFloat) {
-        try? device?.lockForConfiguration()
-        device?.videoZoomFactor = to
-        device?.unlockForConfiguration()
-        setup(withZoom: to)
+        try? currentDevice?.lockForConfiguration()
+        currentDevice?.videoZoomFactor = to
+        currentDevice?.unlockForConfiguration()
     }
     
-    func setup(withZoom: CGFloat = 1) {
+    func setup() {
+        let backCamera = findCurrentDevice()
+        let frontCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
         
-        guard let device = AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) else {
+        guard let backCamera = backCamera,
+              let frontCamera = frontCamera
+        else {
             fatalError("device not configurated")
         }
         
-        guard let input = try? AVCaptureDeviceInput(device: device) else {
+        self.backCamera = backCamera
+        self.frontCamera = frontCamera
+        
+        guard let backInput = try? AVCaptureDeviceInput(device: backCamera) else {
             fatalError("device input not captured")
         }
         
-        self.device = device
-        
-        session.beginConfiguration()
-        
-        if session.canAddInput(input) {
-            session.addInput(input)
+        guard let frontInput = try? AVCaptureDeviceInput(device: frontCamera) else {
+            fatalError("device input not captured")
         }
         
-        if session.canAddOutput(self.output) {
-            session.addOutput(self.output)
+        queue.async { [unowned self] in
+            session.beginConfiguration()
+            
+            if session.canAddInput(backInput) {
+                session.addInput(backInput)
+            }
+            
+            if session.canAddInput(frontInput) {
+                session.addInput(frontInput)
+            }
+            
+            if session.canAddOutput(self.output) {
+                output.isHighResolutionCaptureEnabled = true
+                output.maxPhotoQualityPrioritization = .balanced
+                session.addOutput(self.output)
+            }
+            
+            self.currentDevice = backCamera
+            
+            session.commitConfiguration()
         }
-        
-        session.commitConfiguration()
+
     }
     
     func switchCamera() {
+        queue.async { [unowned self] in
+            
+        
         session.beginConfiguration()
         let currentInput = session.inputs.first as? AVCaptureDeviceInput
         session.removeInput(currentInput!)
-        
-        let frontCamera =  AVCaptureDevice.default(.builtInTrueDepthCamera, for: .video, position: .front)
-        let backCamera = AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back)
-        
-        self.device = device
-        
+
         let newCameraDevice = currentInput?.device.position == .back ? frontCamera : backCamera
+        self.currentDevice = newCameraDevice
         let newVideoInput = try? AVCaptureDeviceInput(device: newCameraDevice!)
         session.addInput(newVideoInput!)
         session.commitConfiguration()
+        }
+    }
+    
+    private func findCurrentDevice() -> AVCaptureDevice? {
+
+            let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInTripleCamera, .builtInDualWideCamera, .builtInDualCamera, .builtInWideAngleCamera],
+                                                                    mediaType: .video,
+                                                                    position: .back)
+            guard let device = discoverySession.devices.first else {
+                return nil
+            }
+        
+            return device
+
     }
 }
 
 extension CameraManager: AVCapturePhotoCaptureDelegate {
+    
+    
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         guard error == nil else { return }
         state = .shotTaken
@@ -292,39 +379,37 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
         DispatchQueue.main.async {
             self.session.stopRunning()
         }
-        
         guard let imageData = photo.fileDataRepresentation() else { return }
-        
-        self.shotData = imageData
+        print("size of image", imageData)
+        self.capturedPhotoData = imageData
+        queue.asyncAfter(deadline: .now() + 0.4) {
+            self.session.startRunning()
+        }
     }
+    
 }
 
 struct CameraPreview: UIViewControllerRepresentable {
     
     
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+        cameraManager.preview.frame = context.coordinator.view.bounds
     }
     
     
     @ObservedObject var cameraManager: CameraManager
     
-    var queue = DispatchQueue(label: "com.aicompanion.arthur.backgroundThread", qos: .userInteractive)
-    
     init(cameraManager: CameraManager) {
         self.cameraManager = cameraManager
     }
     
-    func startShooting() {
-        cameraManager.continueShooting()
-    }
-    
     func makeUIViewController(context: Context) -> UIViewController {
         cameraManager.preview = AVCaptureVideoPreviewLayer(session: cameraManager.session)
-        cameraManager.preview.videoGravity = .resizeAspectFill
         context.coordinator.view.layer.addSublayer(cameraManager.preview)
-        cameraManager.preview.frame = context.coordinator.view.bounds
         return context.coordinator
     }
+    
+    
     
     func makeCoordinator() -> Coordinator {
         return Coordinator(cameraPreview: self)
@@ -344,7 +429,7 @@ struct CameraPreview: UIViewControllerRepresentable {
         
         override func viewWillAppear(_ animated: Bool) {
             super.viewWillAppear(animated)
-            cameraPreview.startShooting()
+            cameraPreview.cameraManager.startShooting()
         }
     }
 }

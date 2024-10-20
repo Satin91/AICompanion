@@ -71,7 +71,7 @@ struct TabBarView: View {
                     .fontWeight(.light)
                 Image(systemName: item.image + ".fill")
                     .resizable()
-                    .opacity(index == currentTab ? 0.15 : 0)
+                    .opacity(index == currentTab ? 0.05 : 0)
             }
             .scaledToFill()
             .foregroundColor(isSelected ? Colors.primary : Colors.subtitle.opacity(0.7))

@@ -16,6 +16,7 @@ struct AICompanionApp: App {
     
     var body: some Scene {
         WindowGroup {
+//            CameraView(shotData: { _ in  })
             CoordinatorView(chatsStorage: chatsService)
         }
     }

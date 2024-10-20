@@ -25,6 +25,7 @@ typealias ChatModelObserver = CurrentValueSubject<ChatModel, Never>
 final class ChatsStorageInteractor: ObservableObject, ChatsStorageInteractorProtocol {
     let storageManager = StorageRepository()
     var chats = CurrentValueSubject<[ChatModelObserver], Never>([])
+    private let backgroundQueue = DispatchQueue(label: "com.ai.chatsbackgroundqueue", qos: .background)
     private let chatsKey = "Chats"
     private var cancellable = Set<AnyCancellable>()
     
@@ -57,11 +58,13 @@ final class ChatsStorageInteractor: ObservableObject, ChatsStorageInteractorProt
     }
     
     private func updateChats() {
-        do {
-            let chatsModel: [ChatModel] = self.chats.value.map { ChatModel(id: $0.value.id, companion: $0.value.companion, name: $0.value.name, messages: $0.value.messages) }
-            try self.storageManager.saveObject(object: chatsModel, for: self.chatsKey)
-        } catch {
-            print("Error save chats")
+        backgroundQueue.async {
+            do {
+                let chatsModel: [ChatModel] = self.chats.value.map { ChatModel(id: $0.value.id, companion: $0.value.companion, name: $0.value.name, messages: $0.value.messages) }
+                try self.storageManager.saveObject(object: chatsModel, for: self.chatsKey)
+            } catch {
+                print("Error save chats")
+            }
         }
     }
 
