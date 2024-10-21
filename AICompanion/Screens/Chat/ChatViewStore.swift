@@ -70,7 +70,6 @@ class ChatViewStore: ViewStore {
             
         case .toggleHistoryValue:
             state.isHistoryEnabled.toggle()
-            
         case .errorReceiveMessage(error: let error):
             state.isMessageReceiving = false
             switch error {

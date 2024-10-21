@@ -21,7 +21,8 @@ final class NetworkManager {
         let urlSession = URLSession(configuration: config)
         return urlSession.dataTaskPublisher(for: request)
             .tryMap { output in
-                print(String(data: output.data, encoding: .utf8))
+                print("DEBUG: \(String(data: output.data, encoding: .utf8))")
+//                print("Получаем данные ",output.data.readableJson)
                 guard let response = output.response as? HTTPURLResponse else { throw NetworkError.serverError(code: 0, text: "Server error") }
                 guard !(400...499).contains(response.statusCode) else { throw NetworkError.notFound }
                 guard !(500...599).contains(response.statusCode) else { throw NetworkError.serverError(code: response.statusCode, text: "Сервер недоступен, возможно он перегружен") }
@@ -30,9 +31,11 @@ final class NetworkManager {
             }
             .decode(type: T.self, decoder: JSONDecoder())
             .mapError { error in
-                return error as? NetworkError ?? NetworkError.cantDecodeThis(text: error.localizedDescription)
+                print("ERROR DECODING\(error.localizedDescription)")
+                return error as? NetworkError ?? NetworkError.cantDecodeThis(text: "Не реально декодировать")
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
 }
+ 
