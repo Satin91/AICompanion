@@ -47,7 +47,7 @@ class ChatViewStore: ViewStore {
         switch action {
             
         case .sendMessage(let text, let isEnabled):
-            let compressionalyJpeg = UIImage(data: state.sendableImageData ?? Data())?.jpegData(compressionQuality: 0.2)
+            let compressionalyJpeg = UIImage(data: state.sendableImageData ?? Data())?.resized(sizeReduce: 0.4, isOpaque: false)!.jpegData(compressionQuality: 0.2)
             let sendableMessage = MessageModel(role: "user", content: text, imageData: compressionalyJpeg)
             state.chat.value.messages.append(sendableMessage)
             state.isMessageReceiving = true

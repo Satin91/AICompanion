@@ -18,28 +18,25 @@ extension RequestEnum {
     var request: URLRequest {
         switch self {
         case .sendMessages(let model, let messages):
+            
             switch model {
-                
-//            case .claude3_5_sonnet:
-//                var request = RequestModel(
-//                    baseURL: Constants.API.sonnetBaseURL,
-//                    method: .post
-//                ).makeRequest()
-//                let message = messages.last?.content ?? ""
-//                let history: [MessageModel]? = messages.count > 1 ? messages : nil
-//                let requestModel = ClaudeBodyModel(message: message, api_key: Constants.API.apiKeyChadAi, history: history)
-//                let encoded = try! JSONEncoder().encode(requestModel)
-//                request.httpBody = encoded
-//                return request
-//                
-            default:
+            case .claude3_5_sonnet:
                 var request = RequestModel(
                     baseURL: Constants.API.botHubBaseURL,
                     method: .post,
                     headers: [("Bearer \(Constants.API.apiKeyBotHub)","Authorization"),("application/json", "Content-Type" )]
                 ).makeRequest()
                 let event1 = GPTunnelBodyModel(model: model.rawValue, messages: messages)
-//                print("Sendable event \(event1)")
+                request.httpBody = try! JSONEncoder().encode(event1)
+                return request
+                
+            default:
+                var request = RequestModel(
+                    baseURL: Constants.API.gpTunnelSendMessageURL,
+                    method: .post,
+                    headers: [("Bearer \(Constants.API.apiKeyGPTunnel)","Authorization"),("application/json", "Content-Type" )]
+                ).makeRequest()
+                let event1 = GPTunnelBodyModel(model: model.rawValue, messages: messages)
                 request.httpBody = try! JSONEncoder().encode(event1)
                 return request
             }
@@ -71,13 +68,12 @@ struct GPTunnelBodyModel: Codable {
             
             // To save money, I sent the picture only from the last msg :)
             if let imageData = message.imageData, message == messages.last {
-                print("image size", message.imageData)
-                let encodedString = imageData.base64EncodedString()
-                let textMessage = MessageContent(type: "text", text: message.content, imageURL: nil)
-                let imageMessage = MessageContent(type: "image_url", text: nil, imageURL: ImageURL2(url: "data:image/jpeg;base64,{\(encodedString)}"))
+                let encodedString = imageData.base64EncodedString(options: .lineLength64Characters)
+                let textMessage = MessageContent(type: "text", text: message.content, image_url: nil)
+                let imageMessage = MessageContent(type: "image_url", text: nil, image_url: ImageURL2(url: "data:image/png;base64,{\(encodedString)}"))
                 content = [textMessage, imageMessage]
             } else {
-                let textMessage = MessageContent(type: "text", text: message.content, imageURL: nil)
+                let textMessage = MessageContent(type: "text", text: message.content, image_url: nil)
                 content = [textMessage]
             }
             
@@ -101,11 +97,11 @@ struct Message2: Codable {
 struct MessageContent: Codable {
     let type: String
     let text: String?
-    let imageURL: ImageURL2?
+    let image_url: ImageURL2?
 
     enum CodingKeys: String, CodingKey {
         case type, text
-        case imageURL = "image_url"
+        case image_url
     }
 }
 
@@ -149,4 +145,24 @@ struct RequestModel {
 enum HTTPMethod: String {
     case get = "GET"
     case post = "POST"
+}
+
+
+
+
+extension UIImage {
+    func imageResized(to size: CGSize) -> UIImage {
+        return UIGraphicsImageRenderer(size: size).image { _ in
+            draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+    func resized(sizeReduce: CGFloat, isOpaque: Bool = false) -> UIImage? {
+        let canvas = CGSize(width: size.width * sizeReduce, height: size.height * sizeReduce)
+        let format = imageRendererFormat
+        format.opaque = isOpaque
+         
+        return UIGraphicsImageRenderer(size: canvas, format: format).image {
+            _ in draw(in: CGRect(origin: .zero, size: canvas))
+        }
+    }
 }
