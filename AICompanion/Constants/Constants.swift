@@ -17,8 +17,8 @@ enum Constants {
         static let gpTunnelSendMessageURL = "https://gptunnel.ru/v1/chat/completions"
         static let getBalanceURL = "https://gptunnel.ru/v1/balance"
         static let botHubBaseURL = "https://bothub.chat/api/v2/openai/v1/chat/completions"
-        static let sonnetBaseURL = "https://ask.chadgpt.ru/api/public/claude-3.5-sonnet"
-        static let haikuBaseURL = "https://ask.chadgpt.ru/api/public/claude-3-haiku"
+        static let chadGptSonnetBaseURL = "https://ask.chadgpt.ru/api/public/claude-3.5-sonnet"
+        static let chadGpthaikuBaseURL = "https://ask.chadgpt.ru/api/public/claude-3-haiku"
         
         enum User {
             static let getCurrentUserPath = "api/v1/users/me/"
@@ -60,5 +60,9 @@ enum Colors {
     static let red = Color("red")
     static let orange = Color("orange")
     static let yellow = Color("yellow")
+}
 
+enum Images {
+    static let dialog = "dialog"
+    static let dialogFill = "dialogFill"
 }

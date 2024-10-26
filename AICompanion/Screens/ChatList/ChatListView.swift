@@ -71,10 +71,10 @@ struct ChatListView: View {
         Button {
             sheetShown.toggle()
         } label: {
-            Image(systemName: "plus")
-                .font(.system(size: 22, weight: .bold))
+            Image(systemName: "plus.bubble.fill")
+                .font(.system(size: 22, weight: .medium))
                 .foregroundColor(Colors.primarySecondary)
-                .padding(.trailing, Layout.Padding.horizontalEdges)
+                .padding(.trailing, Layout.Padding.medium)
         }
         .buttonStyle(PlainButtonStyle())
     }

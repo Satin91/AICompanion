@@ -17,6 +17,9 @@ enum CompanionType: String, Codable, CaseIterable {
     case mistralLarge = "mistral-large"
 }
 
+struct CompanionTypeModel {
+    
+}
 
 //MARK: - Name
 extension CompanionType {
@@ -49,12 +52,12 @@ extension CompanionType {
         case .claude3_5_sonnet:
             return "Новаторский прогресс в генеративном искусственном интеллекте, предлагающий уникальное сочетание скорости, доступности и качества"
         case .mistralLarge:
-            return "Производительный, точный, новый. Доступнее чем Cloude Sonnet"
+            return "Думает дольше, вырожается точнее, доступный и простой"
         }
     }
 }
 
-//MARK: - Base URL
+//MARK: - Request properties
 extension CompanionType {
     var baseURL: String {
         switch self {
@@ -65,9 +68,36 @@ extension CompanionType {
         case .gpt3_5_turbo:
             return Constants.API.gpTunnelSendMessageURL
         case .claude3_5_sonnet:
-            return Constants.API.sonnetBaseURL
+            return Constants.API.botHubBaseURL
         case .mistralLarge:
             return Constants.API.botHubBaseURL
+        }
+    }
+    
+    var apiKey: String {
+        switch self {
+        case .gpt4o:
+            return Constants.API.apiKeyGPTunnel
+        case .gpt4o_mini:
+            return Constants.API.apiKeyGPTunnel
+        case .gpt3_5_turbo:
+            return Constants.API.apiKeyGPTunnel
+        case .claude3_5_sonnet:
+            return Constants.API.apiKeyBotHub
+        case .mistralLarge:
+            return Constants.API.apiKeyBotHub
+        }
+    }
+}
+
+// MARK: - Specification properties
+extension CompanionType {
+    var hasImageAnalysis: Bool {
+        switch self {
+        case .gpt4o, .gpt4o_mini:
+            return true
+        default:
+            return false
         }
     }
 }

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8E1697122CB5D94200BA70FE /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1697112CB5D94200BA70FE /* MessagesView.swift */; };
+		8E3043DB2CCDA25C0047F3BD /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E3043DA2CCDA25C0047F3BD /* Images.xcassets */; };
 		8E3A6E1B2CC2F4F50032206A /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3A6E1A2CC2F4F50032206A /* ImagePickerView.swift */; };
 		8E3A6E1D2CC320A50032206A /* PublishersError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3A6E1C2CC320A50032206A /* PublishersError.swift */; };
 		8E3A6E222CC322070032206A /* GlassBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3A6E212CC322070032206A /* GlassBackground.swift */; };
@@ -15,6 +16,7 @@
 		8E3A6E262CC323160032206A /* BackgroundBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3A6E252CC323160032206A /* BackgroundBlur.swift */; };
 		8E4D2DF92CC27FE600AE694F /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4D2DF82CC27FE600AE694F /* CameraView.swift */; };
 		8E5D55482CBD52530026B623 /* ChatViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5D55472CBD52530026B623 /* ChatViewStore.swift */; };
+		8E676F9A2CC9B2740099EE52 /* UIImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E676F992CC9B2740099EE52 /* UIImageExtensions.swift */; };
 		8E72E4CC2CAC3AE800FA5F69 /* ChatsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E72E4CB2CAC3AE800FA5F69 /* ChatsModel.swift */; };
 		8E8BA63B2CB17B1600EC14E2 /* NavigationBarVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8BA63A2CB17B1600EC14E2 /* NavigationBarVIew.swift */; };
 		8E8EE0902CBBE6D7009E3F16 /* ViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8EE08F2CBBE6D7009E3F16 /* ViewStore.swift */; };
@@ -54,6 +56,7 @@
 
 /* Begin PBXFileReference section */
 		8E1697112CB5D94200BA70FE /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
+		8E3043DA2CCDA25C0047F3BD /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		8E3A6E1A2CC2F4F50032206A /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
 		8E3A6E1C2CC320A50032206A /* PublishersError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishersError.swift; sourceTree = "<group>"; };
 		8E3A6E212CC322070032206A /* GlassBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassBackground.swift; sourceTree = "<group>"; };
@@ -61,6 +64,7 @@
 		8E3A6E252CC323160032206A /* BackgroundBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundBlur.swift; sourceTree = "<group>"; };
 		8E4D2DF82CC27FE600AE694F /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		8E5D55472CBD52530026B623 /* ChatViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewStore.swift; sourceTree = "<group>"; };
+		8E676F992CC9B2740099EE52 /* UIImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtensions.swift; sourceTree = "<group>"; };
 		8E72E4CB2CAC3AE800FA5F69 /* ChatsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsModel.swift; sourceTree = "<group>"; };
 		8E8BA63A2CB17B1600EC14E2 /* NavigationBarVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarVIew.swift; sourceTree = "<group>"; };
 		8E8EE08F2CBBE6D7009E3F16 /* ViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStore.swift; sourceTree = "<group>"; };
@@ -189,6 +193,7 @@
 			children = (
 				8EA1BF952CA899DB00B0A596 /* Fonts */,
 				8E9C28A02CA59F3F006DB348 /* Assets.xcassets */,
+				8E3043DA2CCDA25C0047F3BD /* Images.xcassets */,
 				8ED8A0512CA7FF5D001D1CA7 /* Colors.xcassets */,
 			);
 			path = Resources;
@@ -264,6 +269,7 @@
 				8E9F40F12CBA8AB600F4FCB2 /* ReadSize.swift */,
 				8E3A6E1C2CC320A50032206A /* PublishersError.swift */,
 				8E98F2952CC7094D006B204B /* Data.swift */,
+				8E676F992CC9B2740099EE52 /* UIImageExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -369,6 +375,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EA1BFAD2CA8AA4D00B0A596 /* MuseoSansCyrl-300.ttf in Resources */,
+				8E3043DB2CCDA25C0047F3BD /* Images.xcassets in Resources */,
 				8ED8A0522CA7FF5D001D1CA7 /* Colors.xcassets in Resources */,
 				8EA1BFAC2CA8AA4D00B0A596 /* MuseoSansCyrl-700.ttf in Resources */,
 				8E9C28A42CA59F3F006DB348 /* Preview Assets.xcassets in Resources */,
@@ -409,6 +416,7 @@
 				8EA1BF9F2CA89A6300B0A596 /* Fonts.swift in Sources */,
 				8E8BA63B2CB17B1600EC14E2 /* NavigationBarVIew.swift in Sources */,
 				8EB758942CB6B62800C09BF7 /* RisingAboveKeyboard.swift in Sources */,
+				8E676F9A2CC9B2740099EE52 /* UIImageExtensions.swift in Sources */,
 				8EE1A6902CA7662400056A62 /* RequestModel.swift in Sources */,
 				8EFFF1892CC1B2A4006B489C /* AppSettingsInteractor.swift in Sources */,
 				8ED64B042CA965240083B3A7 /* StorageRepository.swift in Sources */,
@@ -559,6 +567,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AICompanion/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Companion;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -591,6 +601,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AICompanion/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Companion;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

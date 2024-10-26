@@ -26,11 +26,14 @@ struct ChatView: View {
     }
     @State var isShowCamera = false
     @State var isShowPicker = false
-    
+    @State var isShowAlert = false
     var body: some View {
         content
             .background(Colors.background.ignoresSafeArea(.all))
             .toolbar(.hidden)
+            .alert(isPresented: $isShowAlert, content: {
+                alertView
+            })
             .onTapGesture {
                 isShowAttachItems = false
             }
@@ -105,11 +108,31 @@ struct ChatView: View {
                     .foregroundColor(Colors.primarySecondary)
                 }
             }
-            .addRightContainer({
-                ToggleView(isActive: store.state.isHistoryEnabled) { isActive in
-                    store.dispatch(.toggleHistoryValue)
+            .addRightContainer {
+                let isHistoryEnabled = store.state.isHistoryEnabled
+                return  HStack(spacing: Layout.Padding.medium) {
+                    Image(systemName: "bubble.left.and.bubble.right.fill")
+                        .resizable()
+                        .scaledToFill()
+                        .fontWeight(.regular)
+                        .foregroundStyle(isHistoryEnabled ? Colors.primary : Colors.subtitle.opacity(0.5))
+                        .frame(width: 22, height: 22)
+                        .shadow(color: Colors.primary.opacity(textFieldText.isEmpty ? 0 : 0.3), radius: 5)
+                        .animation(.easeInOut(duration: 0.1), value: isHistoryEnabled)
+                        .onTapGesture {
+                            store.dispatch(.toggleHistoryValue)
+                        }
+                    
+                    Menu {
+                        Button("Скопировать историю") {  }
+                        Button("Очистить всё", role: .destructive) { store.dispatch(.deleteAllMessages) }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .font(.system(size: 22, weight: .regular))
+                            .foregroundStyle(Colors.primarySecondary)
+                    }
                 }
-            })
+            }
             .frame(height: 50)
             .padding(.horizontal, Layout.Padding.horizontalEdges)
             .overlay(content: {
@@ -259,6 +282,13 @@ struct ChatView: View {
             )
         }
         .buttonStyle(.plain)
+    }
+    
+    
+    //TODO: Сделать кастомный алёрт
+    var alertView: Alert {
+        Alert(title: Text("") , message: Text(store.state.alertText), dismissButton: .cancel(Text("Понятно..")))
+        
     }
 }
 

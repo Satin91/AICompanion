@@ -18,11 +18,14 @@ struct ChatState {
     var isLoadingPhotoFromPicker = false
     var sendableImageData: Data?
     var chat: ChatModelObserver
+    var alertText: String = ""
+    var isShowAlert: Bool = false
 }
 
 enum ChatAction {
     case sendMessage(text: String, isHistoryEnabled: Bool)
     case delete(message: MessageModel)
+    case deleteAllMessages
     case receiveComplete(ChatModel)
     case errorReceiveMessage(error: NetworkError)
     case displayPhotoFromCamera(photoData: Data)
@@ -43,7 +46,7 @@ class ChatViewStore: ViewStore {
         self.network = networkService
     }
     
-    func reduce(state: inout ChatState, action: ChatAction) -> AnyPublisher<ChatAction, Never>? {
+    internal func reduce(state: inout ChatState, action: ChatAction) -> AnyPublisher<ChatAction, Never>? {
         switch action {
             
         case .sendMessage(let text, let isEnabled):
@@ -78,9 +81,8 @@ class ChatViewStore: ViewStore {
             case .cantDecodeThis(let text):
                 state.navigationTitle = text
             case .serverError(let code, let text):
-                state.navigationTitle = text
+                state.alertText = text + "\(code) code"
             }
-            
         case .closePhotoPreview:
             state.sendableImageData = nil
             
@@ -92,7 +94,8 @@ class ChatViewStore: ViewStore {
         case .delete(message: let message):
             guard let firstIndex = state.chat.value.messages.firstIndex(of: message) else { return .none }
             state.chat.value.messages.remove(at: firstIndex)
-            
+        case .deleteAllMessages:
+            state.chat.value.messages = []
         case .onViewAppear:
             state.navigationTitle = state.chat.value.companion.name
         }
