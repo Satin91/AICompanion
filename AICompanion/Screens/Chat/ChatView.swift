@@ -29,20 +29,21 @@ struct ChatView: View {
     @State var isShowAlert = false
     var body: some View {
         content
-            .background(Colors.background.ignoresSafeArea(.all))
             .toolbar(.hidden)
-            .alert(isPresented: $isShowAlert, content: {
+            .background(Colors.background.ignoresSafeArea(.all))
+            .alert(isPresented: $isShowAlert) {
                 alertView
-            })
+            }
+            .fullScreenCover(isPresented: $isShowCamera){
+                camera
+            }
             .onTapGesture {
                 isShowAttachItems = false
             }
             .onAppear {
                 store.dispatch(.onViewAppear)
             }
-            .fullScreenCover(isPresented: $isShowCamera){
-                camera
-            }
+          
             .sheet(isPresented: $isShowPicker) {
                 imagePicker
             }
@@ -117,7 +118,7 @@ struct ChatView: View {
                         .fontWeight(.regular)
                         .foregroundStyle(isHistoryEnabled ? Colors.primary : Colors.subtitle.opacity(0.5))
                         .frame(width: 22, height: 22)
-                        .shadow(color: Colors.primary.opacity(textFieldText.isEmpty ? 0 : 0.3), radius: 5)
+                        .shadow(color: Colors.primary.opacity(isHistoryEnabled ? 0.3 : 0), radius: 5)
                         .animation(.easeInOut(duration: 0.1), value: isHistoryEnabled)
                         .onTapGesture {
                             store.dispatch(.toggleHistoryValue)

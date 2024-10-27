@@ -12,6 +12,8 @@ struct MessagesView: View {
     
     private let textLineSpacing: CGFloat = 2.5
     private let fontSize: CGFloat = 14
+    private let speechSinthesizer = SpeechSenthesizer()
+    
     @State var isAnimate = false
     @State var onDeleteClosure: (MessageModel) -> Void = { _ in }
     @State var messageToDelete: MessageModel = .init(role: "", content: "")
@@ -151,6 +153,12 @@ struct MessagesView: View {
     
     func contextMenuView(_ message: MessageModel) -> some View {
         Group {
+            Button(role: .cancel, action: {
+                speechSinthesizer.speech(text: message.content)
+            }) {
+                Label("Прочитать вслух", systemImage: "wave.3.right")
+            }
+            
             Button(role: .cancel, action: {
                 UIPasteboard.general.string = message.content
             }) {

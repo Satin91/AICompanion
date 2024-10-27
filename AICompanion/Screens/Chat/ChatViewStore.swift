@@ -7,8 +7,8 @@
 
 import Foundation
 import SwiftUI
-import PhotosUI
 import Combine
+import AVFoundation
 
 struct ChatState {
     var textFieldText: String = ""
@@ -40,6 +40,7 @@ class ChatViewStore: ViewStore {
     
     var network: ChatsNetworkService
     var cancellable = Set<AnyCancellable>()
+    var speechSentisizer = AVSpeechSynthesizer()
     
     init(initialState: ChatState, networkService: ChatsNetworkService) {
         self.state = initialState
@@ -49,14 +50,20 @@ class ChatViewStore: ViewStore {
     internal func reduce(state: inout ChatState, action: ChatAction) -> AnyPublisher<ChatAction, Never>? {
         switch action {
             
-        case .sendMessage(let text, let isEnabled):
+        case .sendMessage(let text, let isHistoryEnabled):
             let compressionalyJpeg = UIImage(data: state.sendableImageData ?? Data())?.resized(sizeReduce: 0.4, isOpaque: false)!.jpegData(compressionQuality: 0.2)
             let sendableMessage = MessageModel(role: "user", content: text, imageData: compressionalyJpeg)
+            
             state.chat.value.messages.append(sendableMessage)
             state.isMessageReceiving = true
+            
+            // Для удешевления контекст берётся с 10 последних сообщений
+            let last12Messages = Array(state.chat.value.messages.suffix(12))
+            
+            
             var model = state.chat.value
             return self.network
-                .sendMessage(message: isEnabled ? model.messages : [sendableMessage], companion: model.companion)
+                .sendMessage(message: isHistoryEnabled ? last12Messages : [sendableMessage], companion: model.companion)
                 .subscribe(on: DispatchQueue.main)
                 .map { value in
                     let receivedMessage = MessageModel(role: "assistant", content: value.message)

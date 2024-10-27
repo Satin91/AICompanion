@@ -37,6 +37,7 @@
 		8EA301242CBD7AE800E5B347 /* ChatListViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA301232CBD7AE800E5B347 /* ChatListViewStore.swift */; };
 		8EB758942CB6B62800C09BF7 /* RisingAboveKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB758932CB6B62800C09BF7 /* RisingAboveKeyboard.swift */; };
 		8EB758962CB6DE2D00C09BF7 /* ToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB758952CB6DE2D00C09BF7 /* ToggleView.swift */; };
+		8ED556CF2CCE50CB00C29700 /* SpeechSenthesizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED556CE2CCE50CB00C29700 /* SpeechSenthesizer.swift */; };
 		8ED64B042CA965240083B3A7 /* StorageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED64B032CA965240083B3A7 /* StorageRepository.swift */; };
 		8ED64B062CA973CC0083B3A7 /* ChatConfigModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED64B052CA973CC0083B3A7 /* ChatConfigModel.swift */; };
 		8ED8A0522CA7FF5D001D1CA7 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ED8A0512CA7FF5D001D1CA7 /* Colors.xcassets */; };
@@ -87,6 +88,7 @@
 		8EA301232CBD7AE800E5B347 /* ChatListViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListViewStore.swift; sourceTree = "<group>"; };
 		8EB758932CB6B62800C09BF7 /* RisingAboveKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RisingAboveKeyboard.swift; sourceTree = "<group>"; };
 		8EB758952CB6DE2D00C09BF7 /* ToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleView.swift; sourceTree = "<group>"; };
+		8ED556CE2CCE50CB00C29700 /* SpeechSenthesizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechSenthesizer.swift; sourceTree = "<group>"; };
 		8ED64B032CA965240083B3A7 /* StorageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageRepository.swift; sourceTree = "<group>"; };
 		8ED64B052CA973CC0083B3A7 /* ChatConfigModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatConfigModel.swift; sourceTree = "<group>"; };
 		8ED8A0512CA7FF5D001D1CA7 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
@@ -217,6 +219,7 @@
 				8E5D55472CBD52530026B623 /* ChatViewStore.swift */,
 				8E1697112CB5D94200BA70FE /* MessagesView.swift */,
 				8ED64B052CA973CC0083B3A7 /* ChatConfigModel.swift */,
+				8ED556CE2CCE50CB00C29700 /* SpeechSenthesizer.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -407,6 +410,7 @@
 				8E3A6E242CC322CC0032206A /* DismissKeyboard.swift in Sources */,
 				8E4D2DF92CC27FE600AE694F /* CameraView.swift in Sources */,
 				8ED9E9482CB44B4C00CD0F7E /* ChatsStorageInteractor.swift in Sources */,
+				8ED556CF2CCE50CB00C29700 /* SpeechSenthesizer.swift in Sources */,
 				8ED64B062CA973CC0083B3A7 /* ChatConfigModel.swift in Sources */,
 				8EE1A6942CA7708C00056A62 /* ResponseModel.swift in Sources */,
 				8EA1BF912CA897F700B0A596 /* SpecifiedCornerRadius.swift in Sources */,
