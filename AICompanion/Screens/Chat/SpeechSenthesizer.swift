@@ -10,9 +10,12 @@ import AVFoundation
 
 class SpeechSenthesizer {
     let sinthesizer = AVSpeechSynthesizer()
+    let audioSession = AVAudioSession.sharedInstance()
     
     func speech(text: String) {
         let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: "ru_RU")
+        try! audioSession.setCategory(.soloAmbient)
         sinthesizer.speak(utterance)
     }
 }

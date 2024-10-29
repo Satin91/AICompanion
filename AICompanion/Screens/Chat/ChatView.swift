@@ -43,7 +43,6 @@ struct ChatView: View {
             .onAppear {
                 store.dispatch(.onViewAppear)
             }
-          
             .sheet(isPresented: $isShowPicker) {
                 imagePicker
             }
@@ -74,9 +73,11 @@ struct ChatView: View {
     @State var scrollViewOffset: CGFloat = 0
     
     private var messagesView: some View {
-        MessagesView(messages: store.state.chat.value.messages) { message in
+        MessagesView(messages: store.state.chat.value.messages, onDeleteClosure: { message in
             store.dispatch(.delete(message: message))
-        }
+        }, onTapFavorite: { message in
+            store.dispatch(.tapFavorite(message: message))
+        })
         .onTapGesture {
             isKeyboardForeground = false
             isShowAttachItems = false
@@ -258,7 +259,7 @@ struct ChatView: View {
         } label: {
             Image(systemName: "paperplane.fill")
                 .font(.system(size: 26))
-                .foregroundColor(textFieldText.isEmpty ? Colors.subtitle : Colors.primary)
+                .foregroundColor(textFieldText.isEmpty ? Colors.subtitle.opacity(0.5) : Colors.primary)
                 .shadow(color: Colors.primary.opacity(textFieldText.isEmpty ? 0 : 0.3), radius: 5)
                 .animation(.easeInOut(duration: 0.1), value: textFieldText.isEmpty)
         }

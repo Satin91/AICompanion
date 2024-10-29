@@ -16,7 +16,7 @@ struct MessagesView: View {
     
     @State var isAnimate = false
     @State var onDeleteClosure: (MessageModel) -> Void = { _ in }
-    @State var messageToDelete: MessageModel = .init(role: "", content: "")
+    var onTapFavorite: (MessageModel) -> Void = { _ in }
     @State var change: Bool = false
     
     @State var containerHeight: CGFloat = .zero
@@ -102,11 +102,9 @@ struct MessagesView: View {
                         .background(Colors.background2)
                         .cornerRadius(4)
                         .cornerRadius(Layout.Radius.smallRadius + 2, corners: [.bottomLeft, .topLeft, .topRight])
-//                    if let imageData = message.imageData {
                 let image = Image(uiImage: UIImage(data: message.imageData ?? Data()) ?? UIImage())
                             .resizable()
                             .scaledToFill()
-//                            .allowsHitTesting(false)
                             image
                     .frame(width: 150, height: message.imageData == nil ? 0 : 150)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -117,7 +115,6 @@ struct MessagesView: View {
                                     .frame(width: 154, height: 154)
                                     .clipShape(RoundedRectangle(cornerRadius: 12))
                             )
-//                    }
             }
             .contextMenu(menuItems: {
                 contextMenuView(message)
@@ -127,6 +124,7 @@ struct MessagesView: View {
     }
     
     private func companionMessageView(message: MessageModel) -> some View {
+        VStack(spacing: .zero) {
         HStack(alignment: .top, spacing: .zero) {
             Image(systemName: "aqi.low", variableValue: 0.52)
                 .font(.system(size: 26, weight: .medium))
@@ -144,12 +142,30 @@ struct MessagesView: View {
                 )
             Spacer()
         }
+            makeMessageBottomMenu(message: message)
+                .padding(.leading, Layout.Padding.large + 20)
+                .padding(.vertical, Layout.Padding.extraSmall)
+        }
     }
     
-    func onDelete(_ closure: (MessageModel) -> Void) -> MessagesView {
-        closure(messageToDelete)
-        return self
+    private func makeMessageBottomMenu(message: MessageModel) -> some View {
+        HStack(spacing: Layout.Padding.medium) {
+            Image(systemName: message.isFavorite! ? "star.fill" : "star")
+                .font(.system(size: 22))
+                .foregroundStyle(message.isFavorite! ? Colors.orange : Colors.subtitle )
+                .onTapGesture {
+                    onTapFavorite(message)
+                }
+            Image(systemName: "wave.3.right")
+                .font(.system(size: 22))
+                .foregroundStyle(Colors.subtitle)
+                .onTapGesture {
+                    speechSinthesizer.speech(text: message.content)
+                }
+            Spacer()
+        }
     }
+    
     
     func contextMenuView(_ message: MessageModel) -> some View {
         Group {

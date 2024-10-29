@@ -22,5 +22,6 @@ struct MessageModel: Hashable, Codable {
     var role: String
     var content: String
     var imageData: Data?
+    var isFavorite: Bool? = false
 //    var imageBase64: String? = nil
 }

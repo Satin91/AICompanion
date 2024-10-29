@@ -25,6 +25,7 @@ struct ChatState {
 enum ChatAction {
     case sendMessage(text: String, isHistoryEnabled: Bool)
     case delete(message: MessageModel)
+    case tapFavorite(message: MessageModel)
     case deleteAllMessages
     case receiveComplete(ChatModel)
     case errorReceiveMessage(error: NetworkError)
@@ -97,10 +98,12 @@ class ChatViewStore: ViewStore {
             state.isLoadingPhotoFromPicker = true
             state.sendableImageData = UIImage(data: data)?.pngData()
             state.isLoadingPhotoFromPicker = false
-        
         case .delete(message: let message):
             guard let firstIndex = state.chat.value.messages.firstIndex(of: message) else { return .none }
             state.chat.value.messages.remove(at: firstIndex)
+        case .tapFavorite(message: let message):
+            guard let firstIndex = state.chat.value.messages.firstIndex(of: message) else { return .none}
+            state.chat.value.messages[firstIndex].isFavorite!.toggle()
         case .deleteAllMessages:
             state.chat.value.messages = []
         case .onViewAppear:
