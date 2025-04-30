@@ -42,6 +42,7 @@ struct ChatView: View {
             }
             .onAppear {
                 store.dispatch(.onViewAppear)
+                store.dispatch(.connectToStream)
             }
             .sheet(isPresented: $isShowPicker) {
                 imagePicker

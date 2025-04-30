@@ -30,7 +30,9 @@ extension RequestEnum {
             let request = RequestModel(
                 baseURL: Constants.API.getBalanceURL,
                 method: .get,
-                headers: [(Constants.API.apiKeyGPTunnel,"Authorization"), ("application/json", "Content-Type" )]).makeRequest()
+                headers: [("NO_API_KEY","Authorization"), ("application/json", "Content-Type" )]).makeRequest()
+            
+//                headers: [(Constants.API.apiKeyGPTunnel,"Authorization"), ("application/json", "Content-Type" )]).makeRequest()
             return request
         }
     }

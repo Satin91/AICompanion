@@ -78,7 +78,6 @@ struct MessagesView: View {
         }
         .readSize(value: messages.count, in: { size in
             messagesHeight = size.height
-            print("messages size \(size.height)")
         })
     }
     

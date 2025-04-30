@@ -15,6 +15,7 @@ enum CompanionType: String, Codable, CaseIterable {
     case gpt3_5_turbo = "gpt-3.5-turbo"
     case claude3_5_sonnet = "claude-3.5-sonnet"
     case mistralLarge = "mistral-large"
+    case mistrallSmall = "mistral-small"
 }
 
 struct CompanionTypeModel {
@@ -35,6 +36,8 @@ extension CompanionType {
             "Claude Sonnet"
         case .mistralLarge:
             "Mistral Large"
+        case .mistrallSmall:
+            "Mistral Small"
         }
     }
 }
@@ -53,6 +56,8 @@ extension CompanionType {
             return "Новаторский прогресс в генеративном искусственном интеллекте, предлагающий уникальное сочетание скорости, доступности и качества"
         case .mistralLarge:
             return "Думает дольше, вырожается точнее, доступный и простой"
+        case .mistrallSmall:
+            return "Open Source Модель, доступная для всех, но труднее в настройке, работает в режиме стримминга"
         }
     }
 }
@@ -71,22 +76,25 @@ extension CompanionType {
             return Constants.API.botHubBaseURL
         case .mistralLarge:
             return Constants.API.botHubBaseURL
+        case .mistrallSmall:
+            return Constants.API.localNetworkURL
         }
     }
     
     var apiKey: String {
-        switch self {
-        case .gpt4o:
-            return Constants.API.apiKeyGPTunnel
-        case .gpt4o_mini:
-            return Constants.API.apiKeyGPTunnel
-        case .gpt3_5_turbo:
-            return Constants.API.apiKeyGPTunnel
-        case .claude3_5_sonnet:
-            return Constants.API.apiKeyBotHub
-        case .mistralLarge:
-            return Constants.API.apiKeyBotHub
-        }
+        return "NO API KEY"
+//        switch self {
+//        case .gpt4o:
+//            return Constants.API.apiKeyGPTunnel
+//        case .gpt4o_mini:
+//            return Constants.API.apiKeyGPTunnel
+//        case .gpt3_5_turbo:
+//            return Constants.API.apiKeyGPTunnel
+//        case .claude3_5_sonnet:
+//            return Constants.API.apiKeyBotHub
+//        case .mistralLarge:
+//            return Constants.API.apiKeyBotHub
+//        }
     }
 }
 

@@ -23,6 +23,7 @@ struct ChatState {
 }
 
 enum ChatAction {
+    case connectToStream
     case sendMessage(text: String, isHistoryEnabled: Bool)
     case delete(message: MessageModel)
     case tapFavorite(message: MessageModel)
@@ -42,6 +43,7 @@ class ChatViewStore: ViewStore {
     var network: ChatsNetworkService
     var cancellable = Set<AnyCancellable>()
     var speechSentisizer = AVSpeechSynthesizer()
+    private var currentMessageIndex: Int = 0
     
     init(initialState: ChatState, networkService: ChatsNetworkService) {
         self.state = initialState
@@ -50,7 +52,25 @@ class ChatViewStore: ViewStore {
     
     internal func reduce(state: inout ChatState, action: ChatAction) -> AnyPublisher<ChatAction, Never>? {
         switch action {
-            
+        case .connectToStream:
+            var model = state.chat.value
+            return self.network
+                .connectToStream()
+                .receive(on: DispatchQueue.main)
+                .subscribe(on: DispatchQueue.main)
+                .map { value in
+                    if self.currentMessageIndex == value.created {
+                        let count = model.messages.count - 1
+                        model.messages[count].content = value.message
+                    } else {
+                        let receivedMessage = MessageModel(role: "assistant", content: value.message)
+                        model.messages.append(receivedMessage)
+                    }
+                    return .receiveComplete(model) }
+                .catch { error in
+                    return Just(.errorReceiveMessage(error: error))
+                }
+                .eraseToAnyPublisher()
         case .sendMessage(let text, let isHistoryEnabled):
             let compressionalyJpeg = UIImage(data: state.sendableImageData ?? Data())?.resized(sizeReduce: 0.4, isOpaque: false)!.jpegData(compressionQuality: 0.2)
             let sendableMessage = MessageModel(role: "user", content: text, imageData: compressionalyJpeg)
@@ -61,19 +81,19 @@ class ChatViewStore: ViewStore {
             // Для удешевления контекст берётся с 10 последних сообщений
             let last12Messages = Array(state.chat.value.messages.suffix(12))
             
+            self.network.sendMessage(message: isHistoryEnabled ? last12Messages : [sendableMessage])
             
-            var model = state.chat.value
-            return self.network
-                .sendMessage(message: isHistoryEnabled ? last12Messages : [sendableMessage], companion: model.companion)
-                .subscribe(on: DispatchQueue.main)
-                .map { value in
-                    let receivedMessage = MessageModel(role: "assistant", content: value.message)
-                    model.messages.append(receivedMessage)
-                    return .receiveComplete(model) }
-                .catch { error in
-                    return Just(.errorReceiveMessage(error: error))
-                }
-                .eraseToAnyPublisher()
+            return .none
+//                .sendMessage(message: isHistoryEnabled ? last12Messages : [sendableMessage], companion: model.companion)
+//                .subscribe(on: DispatchQueue.main)
+//                .map { value in
+//                    let receivedMessage = MessageModel(role: "assistant", content: value.message)
+//                    model.messages.append(receivedMessage)
+//                    return .receiveComplete(model) }
+//                .catch { error in
+//                    return Just(.errorReceiveMessage(error: error))
+//                }
+//                .eraseToAnyPublisher()
             
         case .receiveComplete(let model):
             state.isMessageReceiving = false
@@ -111,8 +131,5 @@ class ChatViewStore: ViewStore {
         }
         
         return .none
-    }
-    deinit {
-        print("DEINIT CHAT VIEW STORE")
     }
 }

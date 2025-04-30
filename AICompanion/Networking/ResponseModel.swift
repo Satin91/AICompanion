@@ -14,7 +14,7 @@ struct TokenCostInfo: Decodable {
 
 struct ResponseModel: Codable {
     let id, object: String
-    let created: Int
+    var created: Int
 //    let provider: String
 //    let model: String
     let choices: [Choice]
@@ -32,8 +32,15 @@ struct ResponseModel: Codable {
         case choices
 //        case usage
         case message = "response"
-        
 //        case wordsCount = "used_words_count"
+    }
+    
+    init(message: String) {
+        self.id = "No id"
+        self.object = "No object"
+        self.message = message
+        self.choices = []
+        self.created = Int(Date().timeIntervalSince1970)
     }
     
     init(from decoder: Decoder) throws {
