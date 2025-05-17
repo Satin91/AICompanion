@@ -6,9 +6,38 @@
 //
 
 import SwiftUI
+import Combine
+
+final class MessagesViewModel: ObservableObject {
+    enum ViewState {
+        case loading
+        case loaded
+    }
+    
+    var cancellables: Set<AnyCancellable> = []
+    
+    @Published var messages: [MessageModel] = []
+    @Published var viewState = ViewState.loading
+    
+    private var observer: ChatModelObserver
+    
+    
+    init(observer: ChatModelObserver) {
+        self.observer = observer
+        self.messages = observer.value.messages
+        subscribe()
+    }
+    
+    func subscribe() {
+        observer.sink { model in
+            self.messages = model.messages
+        }
+        .store(in: &cancellables)
+    }
+}
 
 struct MessagesView: View {
-    var messages: [MessageModel]
+//    var messages: [MessageModel]
     
     private let textLineSpacing: CGFloat = 2.5
     private let fontSize: CGFloat = 14
@@ -22,6 +51,23 @@ struct MessagesView: View {
     @State var containerHeight: CGFloat = .zero
     @State var messagesHeight: CGFloat = .zero
     @State var spacerHeight: CGFloat = .zero
+    
+    
+    @StateObject var viewModel: MessagesViewModel
+    
+    init(
+        messages: [MessageModel],
+        observer: ChatModelObserver,
+        isAnimate: Bool = false,
+        onDeleteClosure: @escaping (MessageModel) -> Void,
+        onTapFavorite: @escaping (MessageModel) -> Void,
+    ) {
+//        self.messages = messages
+        self.isAnimate = isAnimate
+        self.onDeleteClosure = onDeleteClosure
+        self.onTapFavorite = onTapFavorite
+        self._viewModel = StateObject(wrappedValue: .init(observer: observer))
+    }
     
     
     var body: some View {
@@ -46,16 +92,16 @@ struct MessagesView: View {
                     .frame(height: spacerHeight)
                 messagesList
                     .onAppear {
-                        sr.scrollTo(messages.count - 1, anchor: .bottom)
+                        sr.scrollTo(viewModel.messages.count - 1, anchor: .bottom)
                     }
-                    .onChange(of: messages.count) {
+                    .onChange(of: viewModel.messages.count) {
                             if containerHeight - messagesHeight > 60 {
                                 withAnimation(.easeInOut(duration: 0.3)) {
                                     spacerHeight = containerHeight - messagesHeight - 60
                                 }
                             } else {
                                 withAnimation(.easeInOut(duration: 0.15)) {
-                                    sr.scrollTo(messages.count - 1)
+                                    sr.scrollTo(viewModel.messages.count - 1)
                                     spacerHeight = .zero
                                 }
                             }
@@ -70,13 +116,13 @@ struct MessagesView: View {
     
     var messagesList: some View {
         VStack {
-            ForEach(0..<messages.count, id: \.self) { index in
-                messageView(message: messages[index])
+            ForEach(0..<viewModel.messages.count, id: \.self) { index in
+                messageView(message: viewModel.messages[index])
                     .padding(.bottom, 16)
                     .id(index)
             }
         }
-        .readSize(value: messages.count, in: { size in
+        .readSize(value: viewModel.messages.count, in: { size in
             messagesHeight = size.height
         })
     }

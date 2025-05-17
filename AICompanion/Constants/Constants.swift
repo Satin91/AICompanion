@@ -19,7 +19,7 @@ enum Constants {
         static let botHubBaseURL = "https://bothub.chat/api/v2/openai/v1/chat/completions"
         static let chadGptSonnetBaseURL = "https://ask.chadgpt.ru/api/public/claude-3.5-sonnet"
         static let chadGpthaikuBaseURL = "https://ask.chadgpt.ru/api/public/claude-3-haiku"
-        static let localNetworkURL = "ws://192.168.1.2:8081"
+        static let localNetworkURL = "ws://192.168.1.5:8082"
         
         enum User {
             static let getCurrentUserPath = "api/v1/users/me/"

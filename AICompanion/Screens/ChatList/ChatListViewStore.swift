@@ -11,7 +11,7 @@ import Combine
 struct ChatListState {
     var balance: Double
     var chats = CurrentValueSubject<[ChatModelObserver], Never>([])
-    var selectedCompanion = CompanionType.gpt4o
+    var selectedCompanion = CompanionType.mistrallSmall
 }
 
 enum ChatListActions {

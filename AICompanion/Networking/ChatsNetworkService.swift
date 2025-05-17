@@ -29,11 +29,16 @@ class ChatsNetworkService: ChatsNetworkServiceProtocol {
     }
     
     func connectToStream() -> AnyPublisher<ResponseModel, NetworkError> {
-        return webSocketService.connect(url: URL(string: "https:/asdsdg")!)
+        return webSocketService.connect(url: URL(string: Constants.API.localNetworkURL)!)
     }
     
-    func sendMessage(message: [MessageModel]) {
-        webSocketService.send(message.last!.content)
+    func disconnectStream() {
+        return webSocketService.disconnect()
+    }
+    
+    func sendMessage(message: MessageModel, companion: CompanionType) {
+        let requestModel = MessageRequestModel(message: message.content, model: companion)
+        webSocketService.send(requestModel)
     }
     
     func getBalance() -> AnyPublisher<Balance, NetworkError> {

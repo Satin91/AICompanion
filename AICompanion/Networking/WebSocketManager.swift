@@ -19,7 +19,7 @@ class WebSocketService {
     private var currentMessageIndex = 0
     
     func connect(url: URL) -> AnyPublisher<ResponseModel, NetworkError> {
-        let url = URL(string: "ws://192.168.1.2:8082")!
+//        let url = URL(string: "ws://192.168.1.5:8082")!
         let session = URLSession(configuration: .default)
         webSocketTask = session.webSocketTask(with: url)
         webSocketTask?.resume()
@@ -27,9 +27,10 @@ class WebSocketService {
         return subject.eraseToAnyPublisher()
     }
     
-    func send(_ text: String) {
+    func send(_ text: MessageRequestModel) {
         print("DEBUG: stream start text \(text)")
-            webSocketTask?.send(.string(text)) { error in
+        var data = try? JSONEncoder().encode(text)
+        webSocketTask?.send(.data(data!)) { error in
                 print("DEBUG: stream send text \(text)")
                 if let error = error {
                     self.subject.send(completion: .failure(.serverError(code: 0, text: error.localizedDescription)))
@@ -46,12 +47,14 @@ class WebSocketService {
                 case .string(let text):
                     print("DEBUG: stream received text \(text)")
                     if text == "[END]" {
-//                        self.subject.send(completion: .finished)
-                        currentMessageIndex += 1
+                        var response: ResponseModel = .init(message: text)
+                        response.streamStatus = .finished
+                        self.subject.send(response)
+                        self.receive() // слушаем дальше
 //                        self.webSocketTask?.cancel()
                     } else {
                         var response: ResponseModel = .init(message: text)
-                        response.created = currentMessageIndex
+                        response.streamStatus = .open
                         self.subject.send(response)
                         self.receive() // слушаем дальше
                     }
@@ -68,6 +71,12 @@ class WebSocketService {
     
     func disconnect() {
         webSocketTask?.cancel(with: .goingAway, reason: nil)
-        subject.send(completion: .failure(.notFound))
+//        subject.send(completion: .failure(.notFound))
+        subject.send(completion: .finished)
     }
+}
+
+struct MessageRequestModel: Codable {
+    var message: String
+    var model: CompanionType
 }

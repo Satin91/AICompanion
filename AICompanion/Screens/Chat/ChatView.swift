@@ -12,7 +12,8 @@ import Combine
 struct ChatView: View {
     @EnvironmentObject private var coordinator: Coordinator
     
-    @StateObject var store: ChatViewStore
+//    @StateObject var store: ChatViewStore
+    @StateObject var viewModel: ChatViewModel
     
     @FocusState var isKeyboardForeground: Bool
     @State var textFieldText = ""
@@ -22,11 +23,12 @@ struct ChatView: View {
     private let fontSize: CGFloat = 14
     
     init(chat: ChatModelObserver) {
-        _store = StateObject(wrappedValue: ChatViewStore(initialState: ChatState(chat: chat), networkService: ChatsNetworkService()))
+        _viewModel = StateObject(wrappedValue: ChatViewModel(chat: chat))
     }
     @State var isShowCamera = false
     @State var isShowPicker = false
     @State var isShowAlert = false
+    
     var body: some View {
         content
             .toolbar(.hidden)
@@ -39,10 +41,6 @@ struct ChatView: View {
             }
             .onTapGesture {
                 isShowAttachItems = false
-            }
-            .onAppear {
-                store.dispatch(.onViewAppear)
-                store.dispatch(.connectToStream)
             }
             .sheet(isPresented: $isShowPicker) {
                 imagePicker
@@ -70,14 +68,11 @@ struct ChatView: View {
         .ignoresSafeArea(.all, edges: .bottom)
     }
     
-    
-    @State var scrollViewOffset: CGFloat = 0
-    
     private var messagesView: some View {
-        MessagesView(messages: store.state.chat.value.messages, onDeleteClosure: { message in
-            store.dispatch(.delete(message: message))
+        MessagesView(messages: viewModel.chat.value.messages, observer: viewModel.chat, onDeleteClosure: { message in
+            viewModel.delete(message: message)
         }, onTapFavorite: { message in
-            store.dispatch(.tapFavorite(message: message))
+            viewModel.tapFavorite(message: message)
         })
         .onTapGesture {
             isKeyboardForeground = false
@@ -88,19 +83,20 @@ struct ChatView: View {
     private var navigationBarView: some View {
         NavigationBarView()
             .addCentralContainer {
-                Text(store.state.navigationTitle)
+                Text(viewModel.navigationTitle)
                     .overlay {
                         ProgressView()
                             .frame(maxWidth: .infinity, alignment: .trailing)
                             .offset(x: 30)
-                            .opacity(store.state.isMessageReceiving ? 1 : 0)
+                            .opacity(viewModel.isMessageReceiving ? 1 : 0)
                     }
                 
-            .font(Fonts.museoSans(weight: .bold, size: 22))
-            .foregroundColor(Colors.subtitle)
+                    .font(Fonts.museoSans(weight: .bold, size: 22))
+                    .foregroundColor(Colors.subtitle)
             }
             .addLeftContainer {
                 Button {
+                    viewModel.disconnectStream()
                     coordinator.pop()
                 } label: {
                     HStack(spacing: 4) {
@@ -112,7 +108,7 @@ struct ChatView: View {
                 }
             }
             .addRightContainer {
-                let isHistoryEnabled = store.state.isHistoryEnabled
+                let isHistoryEnabled = viewModel.isHistoryEnabled
                 return  HStack(spacing: Layout.Padding.medium) {
                     Image(systemName: "bubble.left.and.bubble.right.fill")
                         .resizable()
@@ -123,12 +119,12 @@ struct ChatView: View {
                         .shadow(color: Colors.primary.opacity(isHistoryEnabled ? 0.3 : 0), radius: 5)
                         .animation(.easeInOut(duration: 0.1), value: isHistoryEnabled)
                         .onTapGesture {
-                            store.dispatch(.toggleHistoryValue)
+                            viewModel.toggleHistoryValue()
                         }
                     
                     Menu {
                         Button("Скопировать историю") {  }
-                        Button("Очистить всё", role: .destructive) { store.dispatch(.deleteAllMessages) }
+                        Button("Очистить всё", role: .destructive) { viewModel.deleteAllMessages() }
                     } label: {
                         Image(systemName: "ellipsis.circle")
                             .font(.system(size: 22, weight: .regular))
@@ -146,7 +142,7 @@ struct ChatView: View {
     }
     
     @ViewBuilder var previewPhotoContainer: some View {
-        if let imageData = store.state.sendableImageData {
+        if let imageData = viewModel.sendableImageData {
             HStack {
                 let image = Image(uiImage: UIImage(data: imageData) ?? UIImage())
                     .resizable()
@@ -180,7 +176,7 @@ struct ChatView: View {
                             .padding(.top, 14)
                             .padding(.trailing, 14)
                             .onTapGesture {
-                                store.dispatch(.closePhotoPreview)
+                                viewModel.closePhotoPreview()
                             }
                     }
                 Spacer()
@@ -239,11 +235,11 @@ struct ChatView: View {
     
     
     var camera: some View {
-        CameraView { store.dispatch(.displayPhotoFromCamera(photoData: $0)) }
+        CameraView { viewModel.displayPhotoFromCamera(photoData: $0) }
     }
     
     var imagePicker: some View {
-        ImagePickerView { store.dispatch(.displayPhotoFromCamera(photoData: $0)) }
+        ImagePickerView { viewModel.displayPhotoFromCamera(photoData: $0) }
     }
     
     var textField: some View {
@@ -254,9 +250,9 @@ struct ChatView: View {
         Button {
             isKeyboardForeground = false
             guard !textFieldText.isEmpty else { return }
-            store.dispatch(.sendMessage(text: textFieldText, isHistoryEnabled: store.state.isHistoryEnabled))
+            viewModel.sendMessage(text: textFieldText, isHistoryEnabled: viewModel.isHistoryEnabled)
             textFieldText = ""
-            store.dispatch(.closePhotoPreview)
+            viewModel.closePhotoPreview()
         } label: {
             Image(systemName: "paperplane.fill")
                 .font(.system(size: 26))
@@ -290,7 +286,7 @@ struct ChatView: View {
     
     //TODO: Сделать кастомный алёрт
     var alertView: Alert {
-        Alert(title: Text("") , message: Text(store.state.alertText), dismissButton: .cancel(Text("Понятно..")))
+        Alert(title: Text("") , message: Text(viewModel.alertText), dismissButton: .cancel(Text("Понятно..")))
         
     }
 }

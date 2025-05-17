@@ -7,6 +7,11 @@
 
 import Foundation
 
+enum WebSocketStreamStatus: String, Codable {
+    case open = "open"
+    case finished = "finished"
+}
+
 struct TokenCostInfo: Decodable {
     var completion_cost: String
     var completion_tokens: String
@@ -15,24 +20,17 @@ struct TokenCostInfo: Decodable {
 struct ResponseModel: Codable {
     let id, object: String
     var created: Int
-//    let provider: String
-//    let model: String
     let choices: [Choice]
-//    let usage: Usage?
     let message: String
-//    let wordsCount: Int
-//
-//
+    var streamStatus: WebSocketStreamStatus
+    
     enum CodingKeys: String, CodingKey {
         case id
         case object
-//        case provider
         case created
-//        case model
         case choices
-//        case usage
         case message = "response"
-//        case wordsCount = "used_words_count"
+        case streamStatus
     }
     
     init(message: String) {
@@ -41,6 +39,7 @@ struct ResponseModel: Codable {
         self.message = message
         self.choices = []
         self.created = Int(Date().timeIntervalSince1970)
+        self.streamStatus = .finished
     }
     
     init(from decoder: Decoder) throws {
@@ -54,6 +53,7 @@ struct ResponseModel: Codable {
         self.message = try container.decodeIfPresent(String.self, forKey: .message) ?? choices.first?.message.content ?? ""
 //        self.wordsCount = try container.decodeIfPresent(Int.self, forKey: .wordsCount) ?? 0
 //        self.provider = try container.decodeIfPresent(String.self, forKey: .provider) ?? ""
+        self.streamStatus = try container.decodeIfPresent(WebSocketStreamStatus.self, forKey: .streamStatus) ?? .finished
     }
 }
 

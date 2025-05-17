@@ -15,6 +15,7 @@ enum NetworkError: Error {
 }
 
 final class NetworkManager {
+    
     func request<T: Decodable>(request: URLRequest) -> AnyPublisher<T, NetworkError> {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForResource = 45

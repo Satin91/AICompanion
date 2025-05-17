@@ -81,7 +81,7 @@ class ChatViewStore: ViewStore {
             // Для удешевления контекст берётся с 10 последних сообщений
             let last12Messages = Array(state.chat.value.messages.suffix(12))
             
-            self.network.sendMessage(message: isHistoryEnabled ? last12Messages : [sendableMessage])
+            self.network.sendMessage(message: isHistoryEnabled ? last12Messages : [sendableMessage], companion: state.chat.value.companion)
             
             return .none
 //                .sendMessage(message: isHistoryEnabled ? last12Messages : [sendableMessage], companion: model.companion)
